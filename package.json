@@ -25,7 +25,9 @@
     "hubot-slack": "^3.3.0",
     "hubot-soon": "^1.0.0",
     "hubot-thank-you": "0.0.3",
-    "moment": "^2.10.3"
+    "livescript": "^1.4.0",
+    "moment": "^2.10.3",
+    "prelude-ls": "^1.1.2"
   },
   "engines": {
     "node": "0.10.x"
