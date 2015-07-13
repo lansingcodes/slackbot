@@ -2,6 +2,14 @@ moment = require 'moment'
 
 KEY = process.env.LUBOT_MEETUP_API_KEY
 
+organizerFor = (meetup) ->
+  {
+    'Lansing DevOps Meetup': 'davin'
+    'Lansing Ruby Meetup Group': 'atomaka'
+    'Lansing JavaScript Meetup': 'leo'
+    'Mobile Monday Lansing': 'leo'
+  }[meetup.name]
+
 module.exports = (robot) ->
 
   robot.hear /next (.*) (?:meetup|event)/i, (res) ->
@@ -35,4 +43,8 @@ module.exports = (robot) ->
                 meetup = meetups[0]
                 res.send "\"#{meetup.name}\" on #{moment(meetup.time).format('dddd, MMMM Do [at] h:mma')}. Find out more at #{meetup.event_url}"
               else
-                res.send "There aren't any upcoming meetups scheduled for #{matches[0].name}"
+                organizerNag = if (organizer = organizerFor matches[0])?
+                  "Hey @#{organizer}, can you post the next meetup please?"
+                else
+                  ''
+                res.send "There aren't any upcoming meetups scheduled for #{matches[0].name}. #{organizerNag}"
