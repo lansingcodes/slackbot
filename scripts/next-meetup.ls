@@ -54,7 +54,6 @@ module.exports = (robot) !->
           it |> map (.length)
         |> transpose
         |> map maximum
-      console.log max-column-lengths
       list = list
         |> map (event) ->
           number-of-spaces = [0 til event.length]
