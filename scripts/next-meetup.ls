@@ -67,5 +67,5 @@ module.exports = (robot) !->
         |> (.join '\n')
       # Display the table
       message.send "Here are the upcoming events (soonest first):"
-      message.send "```\n#list\n```"
+      message.send "```\n#{list}\n```"
       message.send "Enter `next <meetup-focus> event` (e.g. `next javascript event`) for more details on a specific event, including a link to RSVP."
