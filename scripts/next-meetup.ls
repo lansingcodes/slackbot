@@ -63,7 +63,7 @@ module.exports = (robot) !->
             new Array(it)
               |> map -> ' '
               |> (.join '')
-          event.0 + '```' + ( [event.1 + spaces.1] ++ [event.2 + spaces.2] ++ [event.3 + spaces.3] ).join(' :: ') + '```'
+          event.0 + '`' + ( [event.1 + spaces.1] ++ [event.2 + spaces.2] ++ [event.3 + spaces.3] ).join(' :: ') + '`'
         |> (.join '\n')
       # Display the table
       message.send "Here are the upcoming events (soonest first):"
