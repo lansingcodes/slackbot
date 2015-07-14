@@ -33,7 +33,6 @@ module.exports = (robot) !->
       # Turn the events into a table
       thead = <[ Title Group Date ]>
       tbody = events
-        |> sort-by (.time)
         |> map -> [ it.name, it.group.name, formatted-time(it) ]
       table = new Table(head: thead, col-widths: [50 35 37])
         ..push(...tbody)

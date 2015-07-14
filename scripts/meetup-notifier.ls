@@ -50,7 +50,7 @@ module.exports = (robot) !->
           # Cache that we announced the event
           cache-event event
           # Announce today's event
-          robot.message-room ROOM, "WAHH! Meetup tonight! It's \"#{event.name}\" at #{formatted-time-only event}. Find out more at #{event.event_url}"
+          robot.message-room ROOM, "WAHH! Meetup tonight! It's \"#{event.name}\" at #{formatted-time-only event}. Learn more and RSVP at #{event.event_url}"
         else unless already-notified-regarding event
           # Remember that there was at least one new meetup found
           events-were-announced = true

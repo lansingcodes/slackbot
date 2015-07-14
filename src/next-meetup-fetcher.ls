@@ -45,7 +45,10 @@ module.exports = class NextMeetupFetcher
         @fetch-next-group-event group, (event) !->
           events.push event
           if events.length is groups.length
-            callback compact events
+            events
+              |> compact
+              |> sort-by (.time)
+              |> callback
 
   by-query: (query, callback) !->
     # Fetch the groups that Lansing Codes subscribes to on meetup.com
@@ -59,7 +62,7 @@ module.exports = class NextMeetupFetcher
           # If an upcoming event exists...
           if next-event?
             # Share details about the event
-            callback "\"#{next-event.name}\" on #{formatted-time next-event}. RSVP at #{next-event.event_url}"
+            callback "\"#{next-event.name}\" on #{formatted-time next-event}. Learn more and RSVP at #{next-event.event_url}"
           # Otherwise...
           else
             # Share the bad news and prod the organizer to post something
