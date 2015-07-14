@@ -41,4 +41,4 @@ module.exports = (robot) !->
       # Display the table
       message.send "Here are the upcoming events (soonest first):"
       message.send "```\n#{table}\n```"
-      message.send "Type in \"next <TYPE-OF-MEETUP> event\" for more details and a link to register for a specific event."
+      message.send "Enter `next <meetup-focus> event` (e.g. `next javascript event`) for more details on a specific event, including a link to RSVP."
