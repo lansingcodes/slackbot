@@ -41,11 +41,9 @@ module.exports = class NextMeetupFetcher
   all: (callback) !->
     @fetch-groups (groups) !~>
       events = []
-      console.log "Groups #{JSON.stringify groups}"
       for group in groups
         @fetch-next-group-event group, (event) !->
           events.push event
-          console.log "Events: #{JSON.stringify events}"
           if events.length is groups.length
             callback compact events
 
