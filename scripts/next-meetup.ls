@@ -26,6 +26,11 @@ focus-of = (event) ->
   case \MoMoLansing               then \Mobile
   default event.group.name
 
+transpose = (array) ->
+  Object.keys(array[0])
+    |> map (column) ->
+       array |> map (row) -> row[column]
+
 module.exports = (robot) !->
 
   # When you hear someone talking/asking about an upcoming event...
@@ -43,7 +48,22 @@ module.exports = (robot) !->
     new NextMeetupFetcher(robot).all (events) !->
       # Turn the events into a list
       list = events
-        |> map -> "• #{formatted-time it} :: #{focus-of it} :: \"#{it.name}\""
+        |> map -> [ "• " "#{formatted-time it}" "#{focus-of it}" "\"#{it.name}\"" ]
+      max-column-lengths = list
+        |> map ->
+          it |> map (.length)
+        |> transpose
+        |> map maximum
+      console.log max-column-lengths
+      list = list
+        |> map (event) ->
+          number-of-spaces = [0 til event.length]
+            |> map (i) -> max-column-lengths[i] - event[i].length
+          spaces = number-of-spaces |> map ->
+            new Array(it)
+              |> map -> ' '
+              |> (.join '')
+          event.0 + '```' + ( [event.1 + spaces.1] ++ [event.2 + spaces.2] ++ [event.3 + spaces.3] ).join(' :: ') + '```'
         |> (.join '\n')
       # Display the table
       message.send "Here are the upcoming events (soonest first):"
