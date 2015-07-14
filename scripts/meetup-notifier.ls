@@ -35,7 +35,7 @@ module.exports = (robot) !->
 
   check-for-new-meetups = !->
     # We haven't found any new meetups yet
-    new-meetups-were-found = false
+    events-were-announced = false
     # Say goodmorning
     robot.message-room ROOM, "Good morning everyone! Yawn... I'm gonna grab some coffee and check for newly scheduled meetups."
     # Fetch the latest upcoming event for each group that Lansing Codes is
@@ -46,20 +46,20 @@ module.exports = (robot) !->
         # If we've already notified people about this event...
         if is-today event
           # Remember that there was at least one new meetup found
-          new-meetups-were-found = true
+          events-were-announced = true
           # Cache that we announced the event
           cache-event event
           # Announce today's event
           robot.message-room ROOM, "WAHH! Meetup tonight! It's \"#{event.name}\" at #{formatted-time-only event}. Find out more at #{event.event_url}"
         else unless already-notified-regarding event
           # Remember that there was at least one new meetup found
-          new-meetups-were-found = true
+          events-were-announced = true
           # Cache that we announced the event
           cache-event event
           # Announce the new event
           robot.message-room ROOM, "There's a new event scheduled for #{event.group.name}: \"#{event.name}\". Find more details at #{event.event_url}"
       # Unless we told people about new meetups...
-      unless new-meetups-were-found
+      unless events-were-announced
         # Tell people we didn't find any meetups.
         robot.message-room ROOM, "I didn't find any new meetups. This coffee's great though!"
 
