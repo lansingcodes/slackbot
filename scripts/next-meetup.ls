@@ -48,7 +48,7 @@ module.exports = (robot) !->
     new NextMeetupFetcher(robot).all (events) !->
       # Turn the events into a list
       list = events
-        |> map -> [ "• " "#{formatted-time it}" "#{focus-of it}" "\"#{it.name}\"" ]
+        |> map -> [ "#{formatted-time it}" "#{focus-of it}" "\"#{it.name}\"" ]
       max-column-lengths = list
         |> map ->
           it |> map (.length)
@@ -63,9 +63,9 @@ module.exports = (robot) !->
             new Array(it)
               |> map -> ' '
               |> (.join '')
-          event.0 + '`' + ( [event.1 + spaces.1] ++ [event.2 + spaces.2] ++ [event.3] ).join(' :: ') + '`'
+          [ event.0 + spaces.0, event.1 + spaces.1, event.2 ].join ' :: '
         |> (.join '\n')
       # Display the table
       message.send "Here are the upcoming events (soonest first):"
-      message.send list
+      message.send "```\n#list\n```"
       message.send "Enter `next <meetup-focus> event` (e.g. `next javascript event`) for more details on a specific event, including a link to RSVP."
