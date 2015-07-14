@@ -59,7 +59,7 @@ module.exports = class NextMeetupFetcher
           # If an upcoming event exists...
           if next-event?
             # Share details about the event
-            callback "\"#{next-event.name}\" on #{formatted-time next-event}. Find out more at #{next-event.event_url}"
+            callback "\"#{next-event.name}\" on #{formatted-time next-event}. RSVP at #{next-event.event_url}"
           # Otherwise...
           else
             # Share the bad news and prod the organizer to post something
