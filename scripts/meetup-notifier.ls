@@ -1,10 +1,21 @@
 require! {
   '../src/next-meetup-fetcher': NextMeetupFetcher
+  moment
 }
 
 CronJob = require('cron').CronJob
 
 const ROOM = \general
+
+is-today = (event) ->
+  event-date = new Date(event.time).set-hours 0 0 0 0
+  todays-date = new Date().set-hours 0 0 0 0
+  event-date is todays-date
+
+formatted-time-only = (event) ->
+  event.time
+    |> moment
+    |> (.format 'h:mma')
 
 module.exports = (robot) !->
 
@@ -16,6 +27,12 @@ module.exports = (robot) !->
   already-notified-regarding = (event) ->
     notifications-cache?[event.group.urlname]?[event.id] is true
 
+  cache-event = (event) !->
+    # Update the cache to remember that we've already found this event
+    notifications-cache{}[event.group.urlname][event.id] = true
+    # Save the updated cache to lubot's persistent brain
+    robot.brain.set \notifications-cache, notifications-cache
+
   check-for-new-meetups = !->
     # We haven't found any new meetups yet
     new-meetups-were-found = false
@@ -26,14 +43,19 @@ module.exports = (robot) !->
     new NextMeetupFetcher(robot).all (events) !->
       # For every event...
       for event in events
-        # Unless we've already notified people about this event...
-        unless already-notified-regarding event
+        # If we've already notified people about this event...
+        if is-today event
           # Remember that there was at least one new meetup found
           new-meetups-were-found = true
-          # Update the cache to remember that we've already found this event
-          notifications-cache{}[event.group.urlname][event.id] = true
-          # Save the updated cache to lubot's persistent brain
-          robot.brain.set \notifications-cache, notifications-cache
+          # Cache that we announced the event
+          cache-event event
+          # Announce today's event
+          robot.message-room ROOM, "WAHH! Meetup tonight! It's \"#{event.name}\" at #{formatted-time-only event}. Find out more at #{event.event_url}"
+        else unless already-notified-regarding event
+          # Remember that there was at least one new meetup found
+          new-meetups-were-found = true
+          # Cache that we announced the event
+          cache-event event
           # Announce the new event
           robot.message-room ROOM, "There's a new event scheduled for #{event.group.name}: \"#{event.name}\". Find more details at #{event.event_url}"
       # Unless we told people about new meetups...
