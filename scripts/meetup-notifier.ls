@@ -18,67 +18,68 @@ formatted-time-only = (event) ->
     |> (.format 'h:mma')
 
 module.exports = (robot) !->
+  notifications-cache = undefined
 
   robot.brain.on 'loaded', !->
     # Get the notifications cache, so that we don't keep notifying about the same
     # meetups over and over again
-    notifications-cache = robot.brain.get(\notifications-cache) || {}
+    notifications-cache := robot.brain.get(\notifications-cache) || {}
 
-    # Checks if we've already notified about this event
-    already-notified-regarding = (event) ->
-      notifications-cache[event.id.to-string!] is true
+  # Checks if we've already notified about this event
+  already-notified-regarding = (event) ->
+    notifications-cache[event.id.to-string!] is true
 
-    cache-event = (event) !->
-      # Update the cache to remember that we've already found this event
-      notifications-cache[event.id.to-string!] = true
-      # Save the updated cache to lubot's persistent brain
-      robot.brain.set \notifications-cache, notifications-cache
+  cache-event = (event) !->
+    # Update the cache to remember that we've already found this event
+    notifications-cache[event.id.to-string!] = true
+    # Save the updated cache to lubot's persistent brain
+    robot.brain.set \notifications-cache, notifications-cache
 
-    check-for-new-meetups = !->
-      # We haven't found any new meetups yet
-      events-were-announced = false
-      # Say goodmorning
-      robot.message-room ROOM, "Good morning everyone! Yawn... I'm gonna grab some coffee and check for newly scheduled meetups."
-      # Fetch the latest upcoming event for each group that Lansing Codes is
-      # following on meetup.com
+  check-for-new-meetups = !->
+    # We haven't found any new meetups yet
+    events-were-announced = false
+    # Say goodmorning
+    robot.message-room ROOM, "Good morning everyone! Yawn... I'm gonna grab some coffee and check for newly scheduled meetups."
+    # Fetch the latest upcoming event for each group that Lansing Codes is
+    # following on meetup.com
+    new NextMeetupFetcher(robot).all (events) !->
+      # For every event...
+      for event in events
+        # If we've already notified people about this event...
+        if is-today event
+          # Remember that there was at least one new meetup found
+          events-were-announced = true
+          # Cache that we announced the event
+          cache-event event
+          # Announce today's event
+          robot.message-room ROOM, "WAHH! Meetup tonight! It's \"#{event.name}\" at #{formatted-time-only event}. Learn more and RSVP at #{event.event_url}"
+        else unless already-notified-regarding event
+          # Remember that there was at least one new meetup found
+          events-were-announced = true
+          # Cache that we announced the event
+          cache-event event
+          # Announce the new event
+          robot.message-room ROOM, "There's a new event scheduled for #{event.group.name}: \"#{event.name}\". Find more details at #{event.event_url}"
+      # Unless we told people about new meetups...
+      unless events-were-announced
+        # Tell people we didn't find any meetups.
+        robot.message-room ROOM, "I didn't find any new meetups. This coffee's great though!"
+
+  new CronJob '0 0 9 * * *', check-for-new-meetups, null, true
+
+  robot.respond /silently update notifications cache/, (message) !->
+    if message.envelope.user.name is \chrisvfritz
+      message.send "Silently updating the notifications cache..."
       new NextMeetupFetcher(robot).all (events) !->
-        # For every event...
         for event in events
-          # If we've already notified people about this event...
-          if is-today event
-            # Remember that there was at least one new meetup found
-            events-were-announced = true
-            # Cache that we announced the event
-            cache-event event
-            # Announce today's event
-            robot.message-room ROOM, "WAHH! Meetup tonight! It's \"#{event.name}\" at #{formatted-time-only event}. Learn more and RSVP at #{event.event_url}"
-          else unless already-notified-regarding event
-            # Remember that there was at least one new meetup found
-            events-were-announced = true
-            # Cache that we announced the event
-            cache-event event
-            # Announce the new event
-            robot.message-room ROOM, "There's a new event scheduled for #{event.group.name}: \"#{event.name}\". Find more details at #{event.event_url}"
-        # Unless we told people about new meetups...
-        unless events-were-announced
-          # Tell people we didn't find any meetups.
-          robot.message-room ROOM, "I didn't find any new meetups. This coffee's great though!"
+          cache-event event
 
-    new CronJob '0 0 9 * * *', check-for-new-meetups, null, true
+  robot.respond /inspect notifications cache/, (message) !->
+    if message.envelope.user.name is \chrisvfritz
+      console.log JSON.stringify robot.brain.get \notifications-cache
+      message.send "Just printed the cache to the server logs."
 
-    robot.respond /silently update notifications cache/, (message) !->
-      if message.envelope.user.name is \chrisvfritz
-        message.send "Silently updating the notifications cache..."
-        new NextMeetupFetcher(robot).all (events) !->
-          for event in events
-            cache-event event
-
-    robot.respond /inspect notifications cache/, (message) !->
-      if message.envelope.user.name is \chrisvfritz
-        console.log JSON.stringify robot.brain.get \notifications-cache
-        message.send "Just printed the cache to the server logs."
-
-    robot.respond /clear notifications cache/, (message) !->
-      if message.envelope.user.name is \chrisvfritz
-        robot.brain.set \notifications-cache, {}
-        message.send "Just cleared the notifications cache."
+  robot.respond /clear notifications cache/, (message) !->
+    if message.envelope.user.name is \chrisvfritz
+      robot.brain.set \notifications-cache, {}
+      message.send "Just cleared the notifications cache."
