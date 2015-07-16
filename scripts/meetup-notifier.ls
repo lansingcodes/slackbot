@@ -68,7 +68,12 @@ module.exports = (robot) !->
 
     robot.respond /silently update notifications cache/, (message) !->
       if message.envelope.user.name is \chrisvfritz
-        message.send "Silently updating the cache notifications cache..."
+        message.send "Silently updating the notifications cache..."
         new NextMeetupFetcher(robot).all (events) !->
           for event in events
             cache-event event
+
+    robot.respond /inspect notifications cache/, (message) !->
+      if message.envelope.user.name is \chrisvfritz
+        console.log JSON.stringify robot.brain.get \notifications-cache
+        message.send "Just printed the cache to the server logs."
