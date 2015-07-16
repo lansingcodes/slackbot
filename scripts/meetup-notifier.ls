@@ -77,3 +77,8 @@ module.exports = (robot) !->
       if message.envelope.user.name is \chrisvfritz
         console.log JSON.stringify robot.brain.get \notifications-cache
         message.send "Just printed the cache to the server logs."
+
+    robot.respond /clear notifications cache/, (message) !->
+      if message.envelope.user.name is \chrisvfritz
+        robot.brain.set \notifications-cache, {}
+        message.send "Just cleared the notifications cache."
