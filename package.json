@@ -12,6 +12,7 @@
     "hubot-bikeshed": "^1.1.0",
     "hubot-business-cat": "^1.2.2",
     "hubot-darts": "^1.0.1",
+    "hubot-devops-reactions": "^1.0.2",
     "hubot-diagnostics": "0.0.1",
     "hubot-google-images": "^0.1.5",
     "hubot-google-translate": "^0.2.0",
