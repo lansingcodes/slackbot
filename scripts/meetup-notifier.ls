@@ -66,8 +66,9 @@ module.exports = (robot) !->
 
     new CronJob '0 0 9 * * *', check-for-new-meetups, null, true
 
-    # robot.respond /silently update notifications cache/, (message) !->
-    #   if message.envelope.user.id is 'whatever-my-id-is'
-    #   new NextMeetupFetcher(robot).all (events) !->
-    #     for event in events
-    #       cache-event event
+    robot.respond /silently update notifications cache/, (message) !->
+      if message.envelope.user.name is \chrisvfritz
+        message.send "Silently updating the cache notifications cache..."
+        new NextMeetupFetcher(robot).all (events) !->
+          for event in events
+            cache-event event
