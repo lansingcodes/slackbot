@@ -19,48 +19,55 @@ formatted-time-only = (event) ->
 
 module.exports = (robot) !->
 
-  # Get the notifications cache, so that we don't keep notifying about the same
-  # meetups over and over again
-  notifications-cache = robot.brain.get(\notifications-cache) || {}
+  robot.brain.on 'loaded', !->
+    # Get the notifications cache, so that we don't keep notifying about the same
+    # meetups over and over again
+    notifications-cache = robot.brain.get(\notifications-cache) || {}
 
-  # Checks if we've already notified about this event
-  already-notified-regarding = (event) ->
-    notifications-cache?[event.group.urlname]?[event.id] is true
+    # Checks if we've already notified about this event
+    already-notified-regarding = (event) ->
+      notifications-cache[event.id.to-string!] is true
 
-  cache-event = (event) !->
-    # Update the cache to remember that we've already found this event
-    notifications-cache{}[event.group.urlname][event.id] = true
-    # Save the updated cache to lubot's persistent brain
-    robot.brain.set \notifications-cache, notifications-cache
+    cache-event = (event) !->
+      # Update the cache to remember that we've already found this event
+      notifications-cache[event.id.to-string!] = true
+      # Save the updated cache to lubot's persistent brain
+      robot.brain.set \notifications-cache, notifications-cache
 
-  check-for-new-meetups = !->
-    # We haven't found any new meetups yet
-    events-were-announced = false
-    # Say goodmorning
-    robot.message-room ROOM, "Good morning everyone! Yawn... I'm gonna grab some coffee and check for newly scheduled meetups."
-    # Fetch the latest upcoming event for each group that Lansing Codes is
-    # following on meetup.com
-    new NextMeetupFetcher(robot).all (events) !->
-      # For every event...
-      for event in events
-        # If we've already notified people about this event...
-        if is-today event
-          # Remember that there was at least one new meetup found
-          events-were-announced = true
-          # Cache that we announced the event
-          cache-event event
-          # Announce today's event
-          robot.message-room ROOM, "WAHH! Meetup tonight! It's \"#{event.name}\" at #{formatted-time-only event}. Learn more and RSVP at #{event.event_url}"
-        else unless already-notified-regarding event
-          # Remember that there was at least one new meetup found
-          events-were-announced = true
-          # Cache that we announced the event
-          cache-event event
-          # Announce the new event
-          robot.message-room ROOM, "There's a new event scheduled for #{event.group.name}: \"#{event.name}\". Find more details at #{event.event_url}"
-      # Unless we told people about new meetups...
-      unless events-were-announced
-        # Tell people we didn't find any meetups.
-        robot.message-room ROOM, "I didn't find any new meetups. This coffee's great though!"
+    check-for-new-meetups = !->
+      # We haven't found any new meetups yet
+      events-were-announced = false
+      # Say goodmorning
+      robot.message-room ROOM, "Good morning everyone! Yawn... I'm gonna grab some coffee and check for newly scheduled meetups."
+      # Fetch the latest upcoming event for each group that Lansing Codes is
+      # following on meetup.com
+      new NextMeetupFetcher(robot).all (events) !->
+        # For every event...
+        for event in events
+          # If we've already notified people about this event...
+          if is-today event
+            # Remember that there was at least one new meetup found
+            events-were-announced = true
+            # Cache that we announced the event
+            cache-event event
+            # Announce today's event
+            robot.message-room ROOM, "WAHH! Meetup tonight! It's \"#{event.name}\" at #{formatted-time-only event}. Learn more and RSVP at #{event.event_url}"
+          else unless already-notified-regarding event
+            # Remember that there was at least one new meetup found
+            events-were-announced = true
+            # Cache that we announced the event
+            cache-event event
+            # Announce the new event
+            robot.message-room ROOM, "There's a new event scheduled for #{event.group.name}: \"#{event.name}\". Find more details at #{event.event_url}"
+        # Unless we told people about new meetups...
+        unless events-were-announced
+          # Tell people we didn't find any meetups.
+          robot.message-room ROOM, "I didn't find any new meetups. This coffee's great though!"
 
-  new CronJob '0 0 9 * * *', check-for-new-meetups, null, true
+    new CronJob '0 0 9 * * *', check-for-new-meetups, null, true
+
+    # robot.respond /silently update notifications cache/, (message) !->
+    #   if message.envelope.user.id is 'whatever-my-id-is'
+    #   new NextMeetupFetcher(robot).all (events) !->
+    #     for event in events
+    #       cache-event event
