@@ -7,11 +7,14 @@ path = require 'path'
 
 module.exports = (robot) ->
 
-  for file in fs.readdirSync(__dirname)
+  livescriptFolder = path.join __dirname, '_livescripts'
+
+  for file in fs.readdirSync(livescriptFolder)
     ext = path.extname file
     if ext is '.ls'
       try
-        filepath = path.join __dirname, file
+        filepath = path.join livescriptFolder, file
+        require(filepath) robot
         robot.parseHelp filepath
       catch error
         robot.logger.error "Unable to load #{file}: #{error.stack}"

@@ -5,6 +5,7 @@
   "author": "Chris Fritz <chrisvfritz@gmail.com>",
   "description": "Lansing Code's helpful, neighborhood robot",
   "dependencies": {
+    "cheerio": "^0.19.0",
     "cli-table": "^0.3.1",
     "cron": "^1.0.9",
     "hubot": "^2.13.2",
@@ -18,7 +19,6 @@
     "hubot-google-translate": "^0.2.0",
     "hubot-help": "^0.1.1",
     "hubot-heroku-keepalive": "0.0.4",
-    "hubot-http-status": "0.2.0",
     "hubot-maps": "0.0.2",
     "hubot-principles": "^1.0.0",
     "hubot-pugme": "^0.1.0",

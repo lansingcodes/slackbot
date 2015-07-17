@@ -1,5 +1,5 @@
 require! {
-  '../src/next-meetup-fetcher': NextMeetupFetcher
+  '../../src/next-meetup-fetcher': NextMeetupFetcher
   'cli-table': Table
   moment
 }
