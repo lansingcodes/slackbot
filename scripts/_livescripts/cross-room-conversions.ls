@@ -4,9 +4,7 @@ module.exports = (robot) !->
 
     possible-room = message.match.1
     user-room = message.envelope.user.room
+    message-id = message.message.id.replace /\./g, ''
 
-    # unless possible-room is user-room
-    # robot.message-room
-    console.log possible-room
-    console.log user-room
-    console.log JSON.stringify message.message.id
+    unless possible-room is user-room
+      robot.message-room possible-room, "This room was just referenced at: https://lansingcodes.slack.com/archives/#{user-room}/p#{message-id}"
