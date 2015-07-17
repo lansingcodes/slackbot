@@ -18,6 +18,7 @@
     "hubot-google-translate": "^0.2.0",
     "hubot-help": "^0.1.1",
     "hubot-heroku-keepalive": "0.0.4",
+    "hubot-http-status": "0.2.0",
     "hubot-maps": "0.0.2",
     "hubot-principles": "^1.0.0",
     "hubot-pugme": "^0.1.0",
