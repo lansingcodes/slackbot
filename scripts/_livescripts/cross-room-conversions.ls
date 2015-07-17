@@ -9,4 +9,4 @@ module.exports = (robot) !->
     # robot.message-room
     console.log possible-room
     console.log user-room
-    console.log JSON.stringify Object.keys message.message.id
+    console.log JSON.stringify message.message.id
