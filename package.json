@@ -8,6 +8,7 @@
     "cheerio": "^0.19.0",
     "cli-table": "^0.3.1",
     "cron": "^1.0.9",
+    "google-url": "0.0.4",
     "hubot": "^2.13.2",
     "hubot-appearin": "^1.0.2",
     "hubot-bikeshed": "^1.1.0",

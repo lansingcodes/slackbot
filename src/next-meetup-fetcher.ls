@@ -1,14 +1,9 @@
-require! moment
+require! {
+  moment
+  './organizer-for'
+}
 
 const KEY = process.env.LUBOT_MEETUP_API_KEY
-
-organizer-for = (group) ->
-  {
-    'Lansing DevOps Meetup': 'davin'
-    'Lansing Ruby Meetup Group': 'atomaka'
-    'Lansing JavaScript Meetup': 'leo'
-    'Mobile Monday Lansing': 'leo'
-  }[group.name]
 
 api-results = (body) ->
   body |> JSON.parse |> (.results)
