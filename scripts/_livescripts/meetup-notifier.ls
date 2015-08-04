@@ -73,7 +73,7 @@ module.exports = (robot) !->
           # Send a welcome template to the organizer
           organizer = organizer-for event.group
           if organizer?
-            email-subject = "#{event.name} Tonight!"
+            email-subject = "#{event.name} Tonight!" |> encode-URI-component
             email-body = """
               <p>Fellow #{member-alias-for event.group},</p>
 
@@ -103,7 +103,7 @@ module.exports = (robot) !->
               <p>See you tonight,</p>
 
               <p>#{first-name-for organizer}</p>
-            """.replace />\s+</g, '><'
+            """ |> (.replace />\s+</g, '><') |> encode-URI-component
             welcome-template-link = "http://www.meetup.com/#{event.group.urlname}/messages/send/?who=oneevent&eventId=#{event.id}&boards=1&subject=#{email-subject}&body=#{email-body}"
             shorten-url welcome-template-link, (short-url) !->
               robot.message-room organizer, "One of your meetups is tonight! Time to send out a friendly email. But guess what? I like you. So here's a link that will fill out almost everything for you.\n#{short-url}\nYou're welcome. And I love you. Ugh, that was too strong, wasn't it? Just... you're welcome."
