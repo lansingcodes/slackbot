@@ -2,7 +2,7 @@ require! cheerio
 
 module.exports = (robot) !->
 
-  robot.hear /http (\d+)/i, (message) !->
+  robot.hear /(?:http|status code) ?(?:status)? (\d+)/i, (message) !->
 
     http-code = message.match.1
 
