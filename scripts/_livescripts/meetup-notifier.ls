@@ -88,7 +88,7 @@ module.exports = (robot) !->
               <p>As for attire, we're not even business casual - it's casual casual. Though you can wear a fancy dress or nice suit too. That would also be OK. :-)</p>
 
               <p><strong>Food and drink options</strong></p>
-              <p>We'll have Cottage Inn pizza (plain cheese and usually also pepperoni), Soylent (vegan-friendly), Chardonnay, Blue Moon, Sprite, and there's a water fountain where you can fill up a cup. If these options don't work for you, it's totally cool to bring something else for yourself.</p>
+              <p>We'll have Cottage Inn pizza (plain cheese and usually also pepperoni), Chardonnay, Blue Moon, Sprite, and there's a water fountain where you can fill up a cup. If these options don't work for you, it's totally cool to bring something else for yourself.</p>
 
               <p><strong>Psst. Over here. I've got a proposition for ya.</strong></p>
               <p>We'd love for you (yes, you!) to reach out to the community and show us what you're excited about. It could be a quick topic (10-20 minutes) or a longer presentation (30-60 minutes). It could be focused on A_FEW_TOPIC_SUGGESTIONS, or whatever else you're into.</p>
