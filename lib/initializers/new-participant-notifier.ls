@@ -1,4 +1,4 @@
-welcomer_for = (room) ->
+welcomer-for = (room) ->
   {
     'general': \chrisvfritz
     'devops': \davin
@@ -13,7 +13,7 @@ module.exports = (robot) !->
 
     room = message.envelope.user.room
     user = message.envelope.user.name
-    welcomer = welcomer_for(room)
+    welcomer = welcomer-for room
 
     if welcomer?
       robot.message-room welcomer, "#{user} just joined #{room} - just giving you a heads up so they can receive a warm welcome :-)"
