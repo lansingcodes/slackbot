@@ -8,8 +8,8 @@ describe 'choose-beverage' (_) !->
   before-each !->
     [beverage-choice, beverage-reaction] := choose-beverage!
 
-  it 'should return a defined beverage choice' !->
+  she 'should return a defined beverage choice' !->
     expect beverage-choice .to-be-defined!
 
-  it 'should return a defined beverage reaction' !->
+  she 'should return a defined beverage reaction' !->
     expect beverage-reaction .to-be-defined!

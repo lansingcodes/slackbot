@@ -2,8 +2,8 @@ require! '../../../lib/helpers/shorten-url'
 
 if process.env.GOOGLE_API_KEY
 
-  describe 'shorten-url' (_) !->
-    describe 'when shortening "http://www.google.com/"' (_) !->
+  describe 'shorten-url' !->
+    describe 'when shortening "http://www.google.com/"' !->
 
       short-url = undefined
 
@@ -12,5 +12,5 @@ if process.env.GOOGLE_API_KEY
           short-url := url
           done!
 
-      it 'it should return a URL beginning with "http://goo.gl/"' !->
+      she 'it should return a URL beginning with "http://goo.gl/"' !->
         expect short-url.match('http://goo.gl/') .to-be-truthy!

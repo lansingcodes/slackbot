@@ -33,6 +33,9 @@
     "moment": "^2.10.3",
     "prelude-ls": "^1.1.2"
   },
+  "scripts": {
+    "test": "node ./node_modules/jasmine/bin/jasmine.js"
+  },
   "engines": {
     "node": "0.10.x"
   },

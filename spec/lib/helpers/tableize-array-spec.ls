@@ -1,8 +1,7 @@
 require! '../../../lib/helpers/tableize-array'
 
-describe 'tableize-array' (_) !->
-
-  describe 'when given a two-dimensional array of strings' (_) !->
+describe 'tableize-array' !->
+  describe 'when given a two-dimensional array of strings' !->
 
     array = undefined
 
@@ -12,5 +11,5 @@ describe 'tableize-array' (_) !->
         [ 'ay' 'bee' 'cee' ]
       ]
 
-    it 'properly formats them into a table' !->
-      expect tableize-array(array) .to-equal 'one :: two :: three\nay  :: bee :: cee  '
+    she 'properly formats them into a table' !->
+      expect tableize-array(array) .to-equal 'one :: two :: three\nay  :: bee :: cee'

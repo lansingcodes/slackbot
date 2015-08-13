@@ -8,6 +8,6 @@ const supported-groups = [
 ]
 
 describe 'organizer-for' (_) !->
-  it 'should not return `undefined` for supported groups' !->
+  she 'should not return `undefined` for supported groups' !->
     for group in supported-groups
       expect organizer-for(group) .to-be-defined!
