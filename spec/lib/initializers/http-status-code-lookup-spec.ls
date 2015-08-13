@@ -43,7 +43,7 @@ describe 'http-status-code-lookup', !->
   she 'correctly returns the description for the "http 200"', (done) !->
 
     adapter.on 'send', (envelope, strings) !->
-      expect strings.0 .to-match "Standard response for successful HTTP requests. The actual response will depend on the request method used. In a GET request, the response will contain an entity corresponding to the requested resource. In a POST request, the response will contain an entity describing or containing the result of the action."
+      expect strings.0 .to-match "200 OK\nStandard response for successful HTTP requests. The actual response will depend on the request method used. In a GET request, the response will contain an entity corresponding to the requested resource. In a POST request, the response will contain an entity describing or containing the result of the action."
       done!
 
     adapter.receive new TextMessage user, 'http 200'
