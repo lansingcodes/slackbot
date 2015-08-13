@@ -8,8 +8,9 @@ module.exports = (list) ->
 
   list
     |> map (columns) ->
-      number-of-spaces = [0 til columns.length]
+      number-of-spaces = [0 til columns.length - 1]
         |> map (i) -> max-column-lengths[i] - columns[i].length
+        |> (++ [0])
       spaces = number-of-spaces |> map ->
         new Array(it)
           |> map -> ' '
