@@ -12,6 +12,6 @@ module.exports = (robot) !->
         $ = cheerio.load(body)
         $element = $("##{http-code}").parent!
         status-code = $element.text!
-        status-description = $element.next(\dd).text!
+        status-description = $element.next('dd').text!
         if status-code
           message.send status-code + '\n' + status-description
