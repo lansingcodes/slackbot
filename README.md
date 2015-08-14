@@ -62,6 +62,8 @@ It's worth noting that this particular hubot project is organized differently fr
 - Templates (for emails, for example) are in `templates`.
 - General helper functions are `helpers`.
 
+One significant advantage to this organization is that we can write not only in JavaScript and CoffeeScript, but *anything* that transpiles to JavaScript, including LiveScript and Babel. The vast majority of this project is actually written in LiveScript.
+
 ## external-scripts
 
 There will inevitably be functionality that everyone will want. Instead of

@@ -1,4 +1,5 @@
 require 'livescript'
+require 'babel/register'
 for key, value of require('prelude-ls')
   global[key] = value
 
