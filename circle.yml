@@ -1,0 +1,8 @@
+machine:
+  timezone: America/Detroit
+
+deployment:
+  production:
+    branch: master
+    heroku:
+      appname: lansingcodes-lubot
