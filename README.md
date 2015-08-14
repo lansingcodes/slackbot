@@ -58,7 +58,7 @@ It's worth noting that this particular hubot project is organized differently fr
 
 - Traditional hubot scripts are in `initializers` and are run when hubot starts.
 - Fetchers to api.lansing.codes are in `fetchers`.
-- Scheduled tasks are are in `scheduled-tasks`. It should be noted that to actually schedule that task, you'll need to register it as a cron job in `initializers/scheduler.ls`.
+- Scheduled tasks are in `scheduled-tasks`. It should be noted that to actually schedule that task, you'll need to register it as a cron job in `initializers/scheduler.ls`.
 - Templates (for emails, for example) are in `templates`.
 - General helper functions are `helpers`.
 
