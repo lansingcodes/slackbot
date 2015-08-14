@@ -1,0 +1,14 @@
+describe-hubot-initializer 'new-participant-notifier', (robot, hubot-helpers) !->
+
+  she 'notifies "chrisvfritz" when a new user enters the "general" room', (done) !->
+
+    new-user = robot.brain.userForId '2',
+      name: 'new-user'
+      room: 'general'
+
+    robot.adapter.on 'send', (envelope, strings) !->
+      expect envelope.room .to-equal 'chrisvfritz'
+      expect strings.0 .to-equal 'new-user just joined general - just giving you a heads up so they can receive a warm welcome :-)'
+      done!
+
+    hubot-helpers.receive-entrance new-user

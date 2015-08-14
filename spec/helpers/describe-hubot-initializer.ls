@@ -1,8 +1,8 @@
 require! {
   'hubot/src/robot': Robot
-  # 'hubot/src/message':
 }
 TextMessage = require('hubot/src/message').TextMessage
+EnterMessage = require('hubot/src/message').EnterMessage
 
 module.exports = (describe-text, describe-contents) !->
 
@@ -19,9 +19,12 @@ module.exports = (describe-text, describe-contents) !->
         name: 'jasmine'
         room: 'jasmine'
       # Defined helper-method for receiving messages
-      receive-message = (message) !->
-        robot.adapter.receive new TextMessage user, message
-      describe-contents(robot, receive-message)
+      hubot-helpers =
+        receive-message: (message) !->
+          robot.adapter.receive new TextMessage user, message
+        receive-entrance: (new-user) !->
+          robot.adapter.receive new EnterMessage new-user
+      describe-contents(robot, hubot-helpers)
       robot.shutdown!
 
     robot.run!
