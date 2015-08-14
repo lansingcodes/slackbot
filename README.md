@@ -1,3 +1,5 @@
+[![Circle CI](https://circleci.com/gh/lansingcodes/lubot.svg?style=svg)](https://circleci.com/gh/lansingcodes/lubot)
+
 # lubot
 
 lubot is a chat bot built on the [Hubot][hubot] framework. It was
