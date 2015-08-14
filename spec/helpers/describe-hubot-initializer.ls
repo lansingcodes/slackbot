@@ -17,7 +17,7 @@ module.exports = (describe-text, describe-contents) !->
       # Create a user
       user = robot.brain.userForId '1',
         name: 'jasmine'
-        room: '#jasmine'
+        room: 'jasmine'
       # Defined helper-method for receiving messages
       receive-message = (message) !->
         robot.adapter.receive new TextMessage user, message
