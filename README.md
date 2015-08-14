@@ -1,6 +1,6 @@
 # lubot
 
-[![Circle CI](https://circleci.com/gh/lansingcodes/lubot.svg?style=svg)](https://circleci.com/gh/lansingcodes/lubot)
+[![Circle CI](https://circleci.com/gh/lansingcodes/lubot.svg?style=svg)](https://circleci.com/gh/lansingcodes/lubot) [![Dependency Status](https://gemnasium.com/lansingcodes/lubot.svg)](https://gemnasium.com/lansingcodes/lubot)
 
 lubot is Lansing Codes's helpful, neighborhood robot. It lives on [our Slack](http://lansingcodes.slack.com/) and does a lot of cool stuff, like notifying us of upcoming, code-related events and helping meetup organizers get their work done faster.
 
