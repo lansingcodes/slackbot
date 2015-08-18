@@ -3,13 +3,11 @@ require! '../../../lib/helpers/tableize-array'
 describe 'tableize-array' !->
   describe 'when given a two-dimensional array of strings' !->
 
-    array = undefined
-
     before-each !->
-      array := [
+      @array = [
         [ 'one' 'two' 'three' ]
         [ 'ay' 'bee' 'cee' ]
       ]
 
     she 'properly formats them into a table' !->
-      expect tableize-array(array) .to-equal 'one :: two :: three\nay  :: bee :: cee'
+      expect tableize-array(@array) .to-equal 'one :: two :: three\nay  :: bee :: cee'

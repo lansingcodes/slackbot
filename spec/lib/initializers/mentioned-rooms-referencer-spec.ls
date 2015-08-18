@@ -13,12 +13,13 @@ describe 'mentioned-rooms-referencer' !->
 
     hubot-helpers.receive-message 'This is a reference to the #test room.'
 
+
   she 'does NOT send a notification when the current room is mentioned', (done) !->
 
     message-was-sent = false
 
     robot.adapter.on 'send', (envelope, strings) !->
-      message-was-sent = true
+      message-was-sent := true
 
     hubot-helpers.receive-message 'This is a reference to the #jasmine room.'
 
