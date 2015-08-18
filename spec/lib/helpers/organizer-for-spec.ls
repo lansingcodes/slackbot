@@ -7,7 +7,7 @@ const supported-groups = [
   { name: 'Mobile Monday Lansing'     }
 ]
 
-describe 'organizer-for' (_) !->
+describe 'organizer-for' !->
   she 'should not return `undefined` for supported groups' !->
     for group in supported-groups
       expect organizer-for(group) .to-be-defined!

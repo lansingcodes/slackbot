@@ -7,7 +7,7 @@ const supported-groups = [
   { name: 'Mobile Monday Lansing'     }
 ]
 
-describe 'member-alias-for' (_) !->
+describe 'member-alias-for' !->
   she 'should not return `undefined` for supported groups' !->
     for group in supported-groups
       expect member-alias-for(group) .to-be-defined!

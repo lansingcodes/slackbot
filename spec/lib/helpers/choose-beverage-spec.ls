@@ -1,6 +1,6 @@
 require! '../../../lib/helpers/choose-beverage'
 
-describe 'choose-beverage' (_) !->
+describe 'choose-beverage' !->
 
   beverage-choice = undefined
   beverage-reaction = undefined
