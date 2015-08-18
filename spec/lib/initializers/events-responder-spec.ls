@@ -1,4 +1,8 @@
-describe-hubot-initializer 'events-responder', (robot, hubot-helpers) !->
+describe 'events-responder' !->
+  include-hubot!
+
+  before-each !->
+    require('../../../lib/initializers/events-responder') robot
 
   she 'returns the next js meetup when asked for "next js meetup"', (done) !->
 
@@ -7,8 +11,6 @@ describe-hubot-initializer 'events-responder', (robot, hubot-helpers) !->
       done!
 
     hubot-helpers.receive-message 'next js meetup'
-
-describe-hubot-initializer 'events-responder', (robot, hubot-helpers) !->
 
   she 'returns a table of upcoming meetups when asked for "upcoming events"' (done) !->
 

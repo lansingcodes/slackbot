@@ -1,4 +1,8 @@
-describe-hubot-initializer 'new-participant-notifier', (robot, hubot-helpers) !->
+describe 'new-participant-notifier' !->
+  include-hubot!
+
+  before-each !->
+    require('../../../lib/initializers/new-participant-notifier') robot
 
   she 'notifies "chrisvfritz" when a new user enters the "general" room', (done) !->
 

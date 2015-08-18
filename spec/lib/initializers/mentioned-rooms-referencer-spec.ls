@@ -1,4 +1,8 @@
-describe-hubot-initializer 'mentioned-rooms-referencer', (robot, hubot-helpers) !->
+describe 'mentioned-rooms-referencer' !->
+  include-hubot!
+
+  before-each !->
+    require('../../../lib/initializers/mentioned-rooms-referencer') robot
 
   she 'sends a notification to a room when it is mentioned elsewhere', (done) !->
 
@@ -8,8 +12,6 @@ describe-hubot-initializer 'mentioned-rooms-referencer', (robot, hubot-helpers) 
       done!
 
     hubot-helpers.receive-message 'This is a reference to the #test room.'
-
-describe-hubot-initializer 'mentioned-rooms-referencer', (robot, hubot-helpers) !->
 
   she 'does NOT send a notification when the current room is mentioned', (done) !->
 

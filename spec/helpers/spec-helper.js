@@ -12,5 +12,4 @@ Object.keys(prelude).forEach(function(key){
 // Alias she for it, to bypass it being semi-reserved in LiveScript
 she = it;
 
-// Defined special describe function for hubot initializers
-describeHubotInitializer = require('./describe-hubot-initializer');
+includeHubot = require('./include-hubot');

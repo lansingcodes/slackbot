@@ -1,4 +1,8 @@
-describe-hubot-initializer 'http-status-code-lookup', (robot, hubot-helpers) !->
+describe 'http-status-code-lookup' !->
+  include-hubot!
+
+  before-each !->
+    require('../../../lib/initializers/http-status-code-lookup') robot
 
   she 'returns the correct description for "http 200"', (done) !->
 
