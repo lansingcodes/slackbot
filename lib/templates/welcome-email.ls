@@ -9,7 +9,7 @@ module.exports = (event, callback) ->
 
   organizer = organizer-for event.relationships.group.attributes
 
-  email-subject = "#{event.name} Tonight!" |> encode-URI-component
+  email-subject = "#{event.attributes.name} Tonight!" |> encode-URI-component
 
   email-body = """
     <p>Fellow #{member-alias-for event.relationships.group.attributes},</p>
@@ -42,6 +42,6 @@ module.exports = (event, callback) ->
     <p>#{first-name-for organizer}</p>
   """ |> (.replace />\s+</g, '><') |> encode-URI-component
 
-  welcome-template-link = "http://www.meetup.com/#{event.relationships.group.slug}/messages/send/?who=oneevent&eventId=#{event.attributes.id}&boards=1&subject=#{email-subject}&body=#{email-body}"
+  welcome-template-link = "http://www.meetup.com/#{event.relationships.group.attributes.slug}/messages/send/?who=oneevent&eventId=#{event.attributes.id}&boards=1&subject=#{email-subject}&body=#{email-body}"
 
   shorten-url welcome-template-link, callback
