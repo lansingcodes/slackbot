@@ -24,7 +24,7 @@ module.exports = (describe-text, describe-contents) !->
           robot.adapter.receive new TextMessage user, message
         receive-entrance: (new-user) !->
           robot.adapter.receive new EnterMessage new-user
-      describe-contents(robot, hubot-helpers)
+      describe-contents robot, hubot-helpers
       robot.shutdown!
 
     robot.run!
