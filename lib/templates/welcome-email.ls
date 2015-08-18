@@ -1,4 +1,5 @@
 require! {
+  '../helpers/shorten-url'
   '../helpers/organizer-for'
   '../helpers/member-alias-for'
   '../helpers/first-name-for'

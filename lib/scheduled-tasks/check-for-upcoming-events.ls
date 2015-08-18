@@ -1,8 +1,8 @@
 require! {
   moment
   '../helpers/organizer-for'
-  '../helpers/shorten-url'
   '../helpers/choose-beverage'
+  '../templates/welcome-email'
   '../fetchers/upcoming-events-fetcher': UpcomingEventsFetcher
 }
 
