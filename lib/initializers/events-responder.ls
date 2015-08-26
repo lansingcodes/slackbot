@@ -13,11 +13,11 @@ module.exports = (robot) !->
     # Get the type of meetup being searched for
     meetup-type = message.match.1
     # Check for a matching upcoming meetup, then display an appropriate message
-    upcoming-events-fetcher.search meetup-type, (json) !->
-      if empty json
+    upcoming-events-fetcher.search meetup-type, (events) !->
+      if empty events
         message.send "I couldn't find any upcoming events about _#{meetup-type}_. If you think this is a mistake, tell @chrisvfritz."
       else
-        event = json.0
+        event = events.0
         message.send "\"#{event.attributes.name}\" on #{format-time event.attributes.time.absolute}. Learn more and RSVP at #{event.links.self}"
 
   # When you heare someone talking/asking about upcoming events...

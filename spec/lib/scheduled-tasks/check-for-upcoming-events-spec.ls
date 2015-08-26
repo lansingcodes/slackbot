@@ -88,8 +88,10 @@ describe 'check-for-upcoming-events' !->
     #       expect strings.0 .to-match /I didn't find any new meetups\./
     #       done!
     #
-    #   for [1 to 2]
-    #     require('../../../lib/scheduled-tasks/check-for-upcoming-events') robot
+    #   for iteration in [0 to 1]
+    #     setTimeout !->
+    #       require('../../../lib/scheduled-tasks/check-for-upcoming-events') robot
+    #     , iteration * 3000
 
   describe 'when there are NO upcoming events' !->
 
