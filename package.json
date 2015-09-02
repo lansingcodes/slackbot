@@ -27,7 +27,6 @@
     "hubot-scripts": "^2.16.2",
     "hubot-shipit": "^0.2.0",
     "hubot-slack": "^3.3.0",
-    "hubot-slack-twitter": "git+https://github.com/chrisvfritz/hubot-slack-twitter",
     "hubot-soon": "^1.0.0",
     "hubot-thank-you": "0.0.3",
     "livescript": "^1.4.0",
