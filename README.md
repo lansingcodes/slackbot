@@ -4,6 +4,16 @@
 
 lubot is Lansing Codes's helpful, neighborhood robot. It lives on [our Slack](http://lansingcodes.slack.com/) and does a lot of cool stuff, like notifying us of upcoming, code-related events and helping meetup organizers get their work done faster.
 
+## TODO
+
+If you'd like to help improve lubot, here are some features we'd like to add. These are ordered by level of estimated time and difficulty, starting with the shortest and simplest.
+
+- Remove business cat!
+- Update dependencies
+- When someone says `need a ride` or `drive me home`, tell people about [*DriverOnTap*](http://www.driverontap.com/), a local startup formed from people who met at our Ruby meetup! Explain that if they can't drive, DriverOnTap will send a driver to their location and drive them and their car home or wherever else they want to go. And the first use is only $5! The number is (517) 242-7906.
+- Add proper documentation to available commands, [in this format](https://github.com/github/hubot/blob/master/docs/scripting.md#documenting-scripts), so that `lubot help` will properly return info on what lubot can do.
+- Return a list of upcoming and nearby conferences from a specific keyword. [Like this](http://lanyrd.com/search/?q=devops&places=midwestern-usa%2Cusa&context=future). Maybe get this info from Lanyrd? As a possible trigger, maybe have it run on `<keyword> conferences`?
+
 ## Running lubot Locally
 
 You can start lubot locally by running:
