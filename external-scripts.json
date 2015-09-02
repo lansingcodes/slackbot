@@ -15,5 +15,6 @@
   "hubot-bikeshed",
   "hubot-soon",
   "hubot-principles",
-  "hubot-devops-reactions"
+  "hubot-devops-reactions",
+  "hubot-slack-twitter"
 ]
