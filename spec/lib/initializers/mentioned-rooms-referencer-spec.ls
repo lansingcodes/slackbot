@@ -13,8 +13,9 @@ describe 'mentioned-rooms-referencer' !->
 
     hubot-helpers.receive-message 'This is a reference to the #test room.'
 
-  she 'does NOT send a notification when the current room is mentioned', (done) !->
+  she 'does NOT send a notification when the current room is mentioned' !->
 
+    jasmine.clock!.install!
     message-was-sent = false
 
     robot.adapter.on 'send', (envelope, strings) !->
@@ -22,7 +23,6 @@ describe 'mentioned-rooms-referencer' !->
 
     hubot-helpers.receive-message 'This is a reference to the #jasmine room.'
 
-    setTimeout !->
-      expect message-was-sent .to-be false
-      done!
-    , 1000
+    jasmine.clock!.tick 1000
+    expect message-was-sent .to-be false
+    jasmine.clock!.uninstall!

@@ -1,9 +1,9 @@
-require! nock
-
 describe 'check-for-upcoming-events' !->
   include-hubot!
 
   describe 'when there is at least 1 new event' !->
+
+    require! nock
 
     before-each !->
       nock('http://api.lansing.codes/v1')
@@ -75,25 +75,28 @@ describe 'check-for-upcoming-events' !->
 
       require('../../../lib/scheduled-tasks/check-for-upcoming-events') robot
 
-    # This is broken.
+    # BROKEN - Hubot's redis brain not working in test?
     # she 'will NOT notify regarding the same event twice' (done) !->
     #
+    #   jasmine.clock!.install!
     #   message-count = 0
     #
     #   robot.adapter.on 'send', (envelope, strings) !->
-    #     console.log strings.0
     #     message-count += 1
     #     if message-count is 4
     #       expect envelope.room .to-equal 'general'
     #       expect strings.0 .to-match /I didn't find any new meetups\./
+    #       jasmine.clock!.uninstall!
     #       done!
     #
     #   for iteration in [0 to 1]
-    #     setTimeout !->
-    #       require('../../../lib/scheduled-tasks/check-for-upcoming-events') robot
-    #     , iteration * 3000
+    #     jasmine.clock!.tick iteration * 500
+    #     require('../../../lib/scheduled-tasks/check-for-upcoming-events') robot
 
   describe 'when there are NO upcoming events' !->
+
+    nock = undefined
+    require! nock
 
     before-each !->
       nock('http://api.lansing.codes/v1')
@@ -102,7 +105,7 @@ describe 'check-for-upcoming-events' !->
           data: []
           included: {}
 
-    she 'announces that it could not find any new meetups.' (done) !->
+    she 'announces that it could not find any new meetups' (done) !->
 
       message-count = 0
 

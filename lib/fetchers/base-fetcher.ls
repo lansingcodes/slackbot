@@ -5,7 +5,6 @@ module.exports = class BaseFetcher
   fetch: (url, callback) !->
     @robot.http(url).get! (error, response, body) !~>
       @robot.emit( 'Error', error, response ) if error?
-      # console.log response
       body
         |> JSON.parse
         |> @rehydrate
