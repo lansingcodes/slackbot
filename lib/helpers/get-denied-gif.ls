@@ -1,0 +1,11 @@
+sample = (array) ->
+  array[ Math.floor( Math.random() * array.length ) ]
+
+module.exports = ->
+  [
+    'https://media.giphy.com/media/yPBHuNVGsrrxK/giphy.gif'
+    'https://media.giphy.com/media/777J8bECVBEOs/giphy.gif'
+    'https://media.giphy.com/media/fu1L7oyPvWPRu/giphy.gif'
+    'https://media.giphy.com/media/fu1L7oyPvWPRu/giphy.gif'
+    'https://media0.giphy.com/media/xG4afhS6XO2HK/200.gif'
+  ] |> sample
