@@ -7,7 +7,7 @@ const approved-tweeters = <[ chrisvfritz davin leo ]>
 
 module.exports = (robot) !->
 
-  robot.hear /^tweet (.+)/i, (message) !->
+  robot.respond /tweet (.+)/i, (message) !->
 
     tweet-text = message.match.1
 
