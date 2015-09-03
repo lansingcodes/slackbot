@@ -11,7 +11,7 @@ module.exports = (robot) !->
 
     tweet-text = message.match.1
 
-    if true or message.envelope.user.name in approved-tweeters
+    if message.envelope.user.name in approved-tweeters
 
       tweet do
         tweet-text
