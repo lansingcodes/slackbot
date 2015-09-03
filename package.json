@@ -31,7 +31,8 @@
     "hubot-thank-you": "0.0.3",
     "livescript": "^1.4.0",
     "moment": "^2.10.6",
-    "prelude-ls": "^1.1.2"
+    "prelude-ls": "^1.1.2",
+    "twitter-node-client": "0.0.6"
   },
   "scripts": {
     "test": "node ./node_modules/jasmine/bin/jasmine.js"
