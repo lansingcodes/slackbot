@@ -29,7 +29,7 @@ const beverage-reactions = [
   "Ah, how refreshing. Does anyone else want a {beverage}?"
   "Yuck, does anyone else want my {beverage}? It doesn't taste quite right."
   "This {beverage} needs something... maybe sugar?"
-  "Mmm, {beverage}, so refreshing!"
+  "But mmm, {beverage}, so refreshing!"
   "Aww, not again! Who put a fly in my {beverage}?"
   "Another {beverage}? Someone needs to refresh this menu."
 ]
