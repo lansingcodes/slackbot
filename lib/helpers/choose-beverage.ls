@@ -14,7 +14,6 @@ const beverage-options = [
   "pomegranate juice"
   "protein shake"
   "red bull"
-  "starbucks"
   "smoothie"
 ]
 
@@ -26,11 +25,11 @@ const beverage-reactions = [
   "Oh yuck, when did I open this? The {beverage} must have gone bad."
   "Who made this {beverage}? If it was you, then please make a couple more!"
   "Does anyone want to join me for some {beverage}? It is delicious."
-  "Wait... is this {beverage} supposed to be hot? It's pretty cold."
+  "Wait... I usually drink my {beverage} with a little umbrella. There's... there's no... umbrella today. :-("
   "Ah, how refreshing. Does anyone else want a {beverage}?"
   "Yuck, does anyone else want my {beverage}? It doesn't taste quite right."
   "This {beverage} needs something... maybe sugar?"
-  "Mmm, {beverage], so refreshing!"
+  "Mmm, {beverage}, so refreshing!"
   "Aww, not again! Who put a fly in my {beverage}?"
   "Another {beverage}? Someone needs to refresh this menu."
 ]
