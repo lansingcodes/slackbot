@@ -10,3 +10,4 @@ module.exports = (robot) !->
     schedule '*/10 * * * * *', \check-for-upcoming-events
   else
     schedule '0 0 9 * * *', \check-for-upcoming-events
+    schedule '0 50 8 * * *', \ping-scheduled-meetups-api
