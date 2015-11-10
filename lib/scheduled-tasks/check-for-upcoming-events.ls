@@ -51,7 +51,7 @@ module.exports = (robot) !->
         # Cache that we announced the event
         cache-event event
         # Announce today's event
-        robot.message-room announcement-room, "WAHH! Meetup tonight! It's \"#{event.attributes.name}\" at #{format-time-only event.attributes.time.absolute}. Join #{event.rsvps.yes} others and RSVP at #{event.links.self}"
+        robot.message-room announcement-room, "WAHH! Meetup tonight! It's \"#{event.attributes.name}\" at #{format-time-only event.attributes.time.absolute}. Join #{event.rsvps?yes or 'some'} others and RSVP at #{event.links.self}"
         # Send a welcome template to the organizer if one exists
         organizer = organizer-for event.relationships.group.attributes
         if organizer?
