@@ -1,6 +1,5 @@
 // Allow LiveScript and CoffeeScript in specs
 require('livescript');
-require('babel/register');
 require('coffee-script/register');
 
 // Globalize the prelude standard library
