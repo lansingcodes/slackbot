@@ -1,1 +1,1 @@
-web: bin/hubot --adapter slack --no-color
+web: bin/hubot --adapter slack
