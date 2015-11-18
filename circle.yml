@@ -4,5 +4,5 @@ machine:
 deployment:
   production:
     branch: master
-    heroku:
-      appname: lansingcodes-lubot
+    commands:
+      - ssh lubot@app.atomaka.com "bash /home/lubot/deploy.sh"
