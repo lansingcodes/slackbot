@@ -26,4 +26,5 @@ sudo docker run -d --restart=always --name lubot \
   -e GOOGLE_API_KEY=$GOOGLE_API_KEY \
   -e LUBOT_MEETUP_API_KEY=$LUBOT_MEETUP_API_KEY \
   -e TZ=$TZ \
+  -e REDIS_URL=$REDIS_URL \
   lansingcodes/lubot
