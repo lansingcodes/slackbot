@@ -5,4 +5,5 @@ deployment:
   production:
     branch: master
     commands:
+      - scp deploy/deploy.sh lubot@app.atomaka.com:/home/lubot
       - ssh lubot@app.atomaka.com "bash /home/lubot/deploy.sh"
