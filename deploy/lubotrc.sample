@@ -14,4 +14,5 @@ export GOOGLE_API_KEY=
 export LUBOT_MEETUP_API_KEY=
 
 # app settings
+export REDIS_URL=
 export TZ=
