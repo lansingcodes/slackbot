@@ -1,20 +1,14 @@
 #!/bin/bash
 
-$HOME=/home/lubot
-
 cd $HOME
 source lubotrc
 
-if [ ! -d lubut ]; then
-  git clone https://github.com/lubot/lubot.git
-fi
+git clone https://github.com/lansingcodes/lubot.git
 
-
-cd lubot
-git checkout master
-git pull
-
+cd $HOME/lubot
 sudo docker build -t lansingcodes/lubot .
+cd $HOME
+rm -rf $HOME/lubot
 
 sudo docker rm -f lubot
 sudo docker run -d --restart=always --name lubot \
