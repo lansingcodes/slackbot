@@ -1,3 +1,7 @@
+require! {
+  '../fetchers/upcoming-events-fetcher': UpcomingEventsFetcher
+}
+
 module.exports = (robot) !->
 
   robot.respond /identify me/, (message) !->
@@ -10,7 +14,7 @@ module.exports = (robot) !->
   robot.respond /silently update notifications cache/, (message) !->
     if message.envelope.user.name is \chrisvfritz
       message.send "Silently updating the notifications cache..."
-      new NextMeetupFetcher(robot).all (events) !->
+      new UpcomingEventsFetcher(robot).all (events) !->
         for event in events
           cache-event event
 
