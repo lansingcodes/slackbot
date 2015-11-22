@@ -1,5 +1,6 @@
 require! {
   '../fetchers/upcoming-events-fetcher': UpcomingEventsFetcher
+  '../cachers/events-cacher': EventsCacher
 }
 
 module.exports = (robot) !->
@@ -12,11 +13,12 @@ module.exports = (robot) !->
     console.log JSON.stringify message.envelope.user
 
   robot.respond /silently update notifications cache/, (message) !->
+    events-cacher = new EventsCacher(robot)
     if message.envelope.user.name is \chrisvfritz
       message.send "Silently updating the notifications cache..."
       new UpcomingEventsFetcher(robot).all (events) !->
         for event in events
-          cache-event event
+          events-cacher.cache event
 
   robot.respond /inspect notifications cache/, (message) !->
     if message.envelope.user.name is \chrisvfritz
