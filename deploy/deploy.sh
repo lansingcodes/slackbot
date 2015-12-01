@@ -3,12 +3,15 @@
 cd $HOME
 source lubotrc
 
-git clone https://github.com/lansingcodes/lubot.git
+if [ ! -d lubot ]; then
+  git clone https://github.com/lansingcodes/lubot.git
+fi
 
 cd $HOME/lubot
+git fetch origin
+get reset --hard origin/master
+
 sudo docker build -t lansingcodes/lubot .
-cd $HOME
-rm -rf $HOME/lubot
 
 sudo docker rm -f lubot
 sudo docker run -d --restart=always --name lubot \
