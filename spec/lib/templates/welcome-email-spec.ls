@@ -1,4 +1,4 @@
-if process.env.GOOGLE_API_KEY
+if process.env.GOOGLE_API_KEY and not process.env.CIRCLECI
 
   require! {
     'expand-url': url-expander

@@ -1,13 +1,15 @@
-describe 'http-status-code-lookup' !->
-  include-hubot!
+unless process.env.CIRCLECI
 
-  before-each !->
-    require('../../../lib/initializers/http-status-code-lookup') robot
+  describe 'http-status-code-lookup' !->
+    include-hubot!
 
-  she 'returns the correct description for "http 200"', (done) !->
+    before-each !->
+      require('../../../lib/initializers/http-status-code-lookup') robot
 
-    robot.adapter.on 'send', (envelope, strings) !->
-      expect strings.0 .to-equal "200 OK\nStandard response for successful HTTP requests. The actual response will depend on the request method used. In a GET request, the response will contain an entity corresponding to the requested resource. In a POST request, the response will contain an entity describing or containing the result of the action."
-      done!
+    she 'returns the correct description for "http 200"', (done) !->
 
-    hubot-helpers.receive-message 'http 200'
+      robot.adapter.on 'send', (envelope, strings) !->
+        expect strings.0 .to-equal "200 OK\nStandard response for successful HTTP requests. The actual response will depend on the request method used. In a GET request, the response will contain an entity corresponding to the requested resource. In a POST request, the response will contain an entity describing or containing the result of the action."
+        done!
+
+      hubot-helpers.receive-message 'http 200'

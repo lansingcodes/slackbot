@@ -1,8 +1,8 @@
 require! '../../../lib/helpers/shorten-url'
 
-if process.env.GOOGLE_API_KEY
+if process.env.GOOGLE_API_KEY and not process.env.CIRCLECI
 
-  describe 'shorten-url' !->
+  xdescribe 'shorten-url' !->
     describe 'when shortening "http://www.google.com/"' !->
 
       before-each (done) !->
