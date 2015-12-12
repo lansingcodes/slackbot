@@ -1,4 +1,5 @@
 require! {
+  'moment'
   '../helpers/shorten-url'
   '../helpers/organizer-for'
   '../helpers/member-alias-for'
@@ -7,6 +8,9 @@ require! {
 
 module.exports = (event, callback) ->
 
+  format-time-for = (event) ->
+    moment event.attributes.time.absolute
+
   organizer = organizer-for event.relationships.group.attributes
 
   email-subject = "#{event.attributes.name} Today!" |> encode-URI-component
@@ -14,7 +18,7 @@ module.exports = (event, callback) ->
   email-body = """
     <p>Fellow #{member-alias-for event.relationships.group.attributes},</p>
 
-    <p>Thank you for your RSVP for today's 7pm meetup. We're going to have a great crowd! I'm pretty excited to see SOMETHING_EXCITING.</p>
+    <p>Thank you for your RSVP for today's #{moment(event.attributes.time.absolute).format('h:mma')} meetup. We're going to have a great crowd! I'm pretty excited to see SOMETHING_EXCITING.</p>
 
     <p><strong>How to find us</strong></p>
     <p>If this is your first time and you need help getting to our group, be sure to park in <a href="https://www.google.com/maps/@42.734268,-84.480879,3a,75y,170.84h,85.88t/data=!3m6!1e1!3m4!1sd_i04cP0uHvJdD9MbRm6Zw!2e0!7i13312!8i6656">the MSU parking structure</a> across the street - it's free after 6pm! Then <a href="https://www.google.com/maps/@42.734483,-84.480627,3a,75y,29.57h,89.85t/data=!3m7!1e1!3m5!1sVPGJPxSePSIAAAQfCOpZDA!2e0!3e2!7i13312!8i6656">walk through these doors</a>, take the elevators at the end of the hall to the 3rd floor, and we'll be directly to your left when you exit the elevator.</p>
