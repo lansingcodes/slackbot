@@ -9,12 +9,12 @@ module.exports = (event, callback) ->
 
   organizer = organizer-for event.relationships.group.attributes
 
-  email-subject = "#{event.attributes.name} Tonight!" |> encode-URI-component
+  email-subject = "#{event.attributes.name} Today!" |> encode-URI-component
 
   email-body = """
     <p>Fellow #{member-alias-for event.relationships.group.attributes},</p>
 
-    <p>Thank you for your RSVP for tonight's 7pm meetup. We're going to have a great crowd! I'm pretty excited to see SOMETHING_EXCITING.</p>
+    <p>Thank you for your RSVP for today's 7pm meetup. We're going to have a great crowd! I'm pretty excited to see SOMETHING_EXCITING.</p>
 
     <p><strong>How to find us</strong></p>
     <p>If this is your first time and you need help getting to our group, be sure to park in <a href="https://www.google.com/maps/@42.734268,-84.480879,3a,75y,170.84h,85.88t/data=!3m6!1e1!3m4!1sd_i04cP0uHvJdD9MbRm6Zw!2e0!7i13312!8i6656">the MSU parking structure</a> across the street - it's free after 6pm! Then <a href="https://www.google.com/maps/@42.734483,-84.480627,3a,75y,29.57h,89.85t/data=!3m7!1e1!3m5!1sVPGJPxSePSIAAAQfCOpZDA!2e0!3e2!7i13312!8i6656">walk through these doors</a>, take the elevators at the end of the hall to the 3rd floor, and we'll be directly to your left when you exit the elevator.</p>
@@ -37,11 +37,12 @@ module.exports = (event, callback) ->
     </ul>
     <p>If you've never presented before, don't worry, we love first-time presenters! If you're nervous and would like some feedback before you present, we're also happy to meet with you and help you refine it. Reply to this discussion or send me a message with your topic idea and we'll work out a date.</p>
 
-    <p>See you tonight,</p>
+    <p>See you soon,</p>
 
     <p>#{first-name-for organizer}</p>
   """ |> (.replace />\s+</g, '><') |> encode-URI-component
 
   welcome-template-link = "http://www.meetup.com/#{event.relationships.group.attributes.slug}/messages/send/?who=oneevent&eventId=#{event.attributes.id}&boards=1&subject=#{email-subject}&body=#{email-body}"
 
-  shorten-url welcome-template-link, callback
+  shorten-url welcome-template-link, (short-url) !->
+    callback short-url, event

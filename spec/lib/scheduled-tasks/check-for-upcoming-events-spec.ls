@@ -117,3 +117,103 @@ describe 'check-for-upcoming-events' !->
           done!
 
       require('../../../lib/scheduled-tasks/check-for-upcoming-events') robot
+
+  describe 'when there are two events happing today' !->
+
+    nock = undefined
+    require! nock
+
+    before-each !->
+      nock('http://api.lansing.codes/v1')
+        .get('/events/upcoming/list')
+        .reply 200,
+          data: [
+            {
+              links:
+                self: 'http://www.meetup.com/GLUGnet/events/223349762/'
+              attributes:
+                id: 'qkmgpkytlbbc'
+                name: 'Ruby Thing'
+                description: '<p>Topic and Speaker to be announced later</p> <p>Â </p>'
+                time:
+                  absolute: new Date().set-hours 23 59
+                  relative: '1 day'
+                capacity: null
+                rsvps:
+                  yes: 6
+                  maybe: 0
+                status: 'upcoming'
+              relationships:
+                venue:
+                  type: 'venues'
+                  id: 6643322
+                group:
+                  type: 'groups'
+                  id: 16552902
+            }, {
+              links:
+                self: 'http://www.meetup.com/GLUGnet/events/223349762/'
+              attributes:
+                id: 'qkmgpkytlbbc'
+                name: 'JavaScript Thing'
+                description: '<p>Topic and Speaker to be announced later</p> <p>Â </p>'
+                time:
+                  absolute: new Date().set-hours 23 59
+                  relative: '1 day'
+                capacity: null
+                rsvps:
+                  yes: 6
+                  maybe: 0
+                status: 'upcoming'
+              relationships:
+                venue:
+                  type: 'venues'
+                  id: 6643322
+                group:
+                  type: 'groups'
+                  id: 42938479
+            }
+          ]
+          included:
+            venues:
+              '6643322':
+                attributes:
+                  name: 'TechSmith Corporation'
+                  address: '2405 Woodlake Drive, Okemos, MI'
+                  latitude: 42.680878
+                  longitude: -84.437927
+                  directions: null
+            groups:
+              '16552902':
+                attributes:
+                  name: 'Lansing Ruby Meetup Group'
+                  focus: 'Ruby'
+                  slug: 'GLUGnet'
+                  members: 'Developers'
+              '42938479':
+                attributes:
+                  name: 'Lansing Javascript Meetup'
+                  focus: 'JavaScript'
+                  slug: 'GLUGnet'
+                  members: 'Developers'
+
+    she 'sends emails to the appropriate organizers' (done) !->
+
+      unless process.env.CIRCLECI?
+
+        message-count = 0
+        first-organizer-notified = undefined
+
+        robot.adapter.on 'send', (envelope, strings) !->
+          message-count += 1
+          if message-count is 4
+            expect <[ atomaka leo ]> .to-contain envelope.room
+            first-organizer-notified := envelope.room
+          if message-count is 5
+            if first-organizer-notified is 'atomaka'
+              expect envelope.room .to-equal 'leo'
+            else
+              expect envelope.room .to-equal 'atomaka'
+            done!
+
+        require('../../../lib/scheduled-tasks/check-for-upcoming-events') robot

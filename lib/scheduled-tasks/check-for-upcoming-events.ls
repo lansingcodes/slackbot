@@ -44,7 +44,8 @@ module.exports = (robot) !->
         # Send a welcome template to the organizer if one exists
         organizer = organizer-for event.relationships.group.attributes
         if organizer?
-          welcome-email event, (short-url) !->
+          welcome-email event, (short-url, event) !->
+            organizer = organizer-for event.relationships.group.attributes
             robot.message-room organizer, "One of your meetups is today! Time to send out a friendly email. But guess what? I like you. So here's a link that will fill out almost everything for you.\n#{short-url}\nYou're welcome. And I love you. Ugh, that was too strong, wasn't it? Just... you're welcome."
       else unless events-cacher.already-notified-regarding event
         # Remember that there was at least one new meetup found
