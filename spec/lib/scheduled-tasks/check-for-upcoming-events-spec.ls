@@ -199,7 +199,7 @@ describe 'check-for-upcoming-events' !->
 
     she 'sends emails to the appropriate organizers' (done) !->
 
-      unless process.env.CIRCLECI?
+      done! if process.env.CIRCLECI?
 
         message-count = 0
         first-organizer-notified = undefined
