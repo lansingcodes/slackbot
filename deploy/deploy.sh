@@ -9,7 +9,7 @@ fi
 
 cd $HOME/lubot
 git fetch origin
-get reset --hard origin/master
+git reset --hard origin/master
 
 sudo docker build -t lansingcodes/lubot .
 
