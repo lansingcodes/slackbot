@@ -1,1 +1,1 @@
-lubot ALL=(ALL) NOPASSWD: /usr/bin/docker run * lansingcodes/lubot, /usr/bin/docker rm -f lubot, /usr/bin/docker build -t lansingcodes/lubot .
+lubot ALL=(ALL) NOPASSWD: /usr/bin/docker run * lansingcodes/lubot, /usr/bin/docker rm -f lubot, /usr/bin/docker build -t lansingcodes/lubot ., /usr/bin/docker logs lubot, /usr/bin/docker/restart lubot
