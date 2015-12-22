@@ -1,5 +1,5 @@
 require! {
-  'moment'
+  moment
   '../helpers/shorten-url'
   '../helpers/organizer-for'
   '../helpers/member-alias-for'
