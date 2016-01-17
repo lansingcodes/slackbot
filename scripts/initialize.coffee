@@ -7,6 +7,10 @@ path = require 'path'
 
 module.exports = (robot) ->
 
+  robot.error (error, message) ->
+    robot.logger.error "#{error}\n#{error.stack}"
+    process.exit 1
+
   initializersFolder = path.join __dirname, '../lib/initializers'
 
   for file in fs.readdirSync(initializersFolder)
