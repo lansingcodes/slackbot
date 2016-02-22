@@ -1,8 +1,7 @@
 require! {
   moment
-  '../helpers/organizer-for'
   '../helpers/choose-beverage'
-  '../templates/welcome-email'
+  '../helpers/generate-welcome-email-for'
   '../fetchers/upcoming-events-fetcher': UpcomingEventsFetcher
   '../cachers/events-cacher': EventsCacher
 }
@@ -42,11 +41,7 @@ module.exports = (robot) !->
         # Announce today's event
         robot.message-room announcement-room, "WAHH! Meetup today! It's \"#{event.attributes.name}\" at #{format-time-only event.attributes.time.absolute}. Join #{event.rsvps?yes or 'some'} others and RSVP at #{event.links.self}"
         # Send a welcome template to the organizer if one exists
-        organizer = organizer-for event.relationships.group.attributes
-        if organizer?
-          welcome-email event, (short-url, event) !->
-            organizer = organizer-for event.relationships.group.attributes
-            robot.message-room organizer, "One of your meetups is today! Time to send out a friendly email. But guess what? I like you. So here's a link that will fill out almost everything for you.\n#{short-url}\nYou're welcome. And I love you. Ugh, that was too strong, wasn't it? Just... you're welcome."
+        generate-welcome-email-for event, robot
       else unless events-cacher.already-notified-regarding event
         # Remember that there was at least one new meetup found
         events-were-announced = true
