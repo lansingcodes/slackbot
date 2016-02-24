@@ -2,32 +2,33 @@ describe 'watch-for-disconnected' !->
   include-hubot!
 
   before-each !->
-    require('../../../lib/initializers/mentioned-rooms-referencer') robot
+    console.log '\n<HUBOT-STDOUT>'
+    require('../../../lib/initializers/watch-for-disconnected') robot
+    @wait-time = parse-int process.env.LUBOT_DISCONNECT_WAIT_TIME
     jasmine.clock!.install!
 
   after-each !->
+    console.log '</HUBOT-STDOUT>'
     jasmine.clock!.uninstall!
 
-  she 'should not start a timer without a match', (done) !->
-    (expect (->
+  she 'does NOT start a timer without a match' !->
+
+    expect !~>
       robot.logger.info 'Some message that we should not trigger on'
-      jasmine.clock!.tick 60 * 1000 + 1 * 1000)).not.toThrow!
+      jasmine.clock!.tick @wait-time + 1
+    .not.to-throw!
 
-    done!
+  she 'starts a timer when a disconnect is detected' !->
 
-  she 'should start a timer when a disconnect is detected', (done) !->
-
-    (expect (->
+    expect !~>
       robot.logger.info 'Slack client closed, waiting for reconnect'
-      jasmine.clock!.tick 60 * 1000 + 1 * 1000)).toThrow new Error 'Force restarting due to disconnect'
+      jasmine.clock!.tick @wait-time + 1
+    .to-throw new Error 'Force restarting due to disconnect'
 
-    done!
+  she 'cancels a timer that has been started if the client reconnects' !->
 
-  she 'should cancel a timer that has been started if the client reconnects', (done) !->
-
-    (expect (->
+    expect !~>
       robot.logger.info 'Slack client closed, waiting for reconnect'
       robot.logger.info 'Slack client now connected'
-      jasmine.clock!.tick 60 * 1000 + 1 * 1000)).not.toThrow!
-
-    done!
+      jasmine.clock!.tick @wait-time + 1
+    .not.to-throw!

@@ -1,15 +1,21 @@
 intercept = require 'intercept-stdout'
 
+const wait-time = 20_000
+process.env.LUBOT_DISCONNECT_WAIT_TIME = wait-time
+
 module.exports = (robot) !->
   timer = null
 
-  unhook_intercept = intercept (txt) !->
+  intercept (text) !->
 
-    if txt.match //slack client closed, waiting for reconnect//i
+    if /slack client closed, waiting for reconnect/i.test text
 
-      clearTimeout timer
-      timer := setTimeout (-> throw new Error 'Force restarting due to disconnect'), 60 * 1000
+      timer := set-timeout do
+        !-> throw new Error 'Force restarting due to disconnect'
+        wait-time
+      return
 
-    else if txt.match //slack client now connected//i
+    if /slack client now connected/i.test text
 
-      clearTimeout timer
+      clear-timeout timer
+      return
