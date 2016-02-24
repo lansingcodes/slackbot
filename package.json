@@ -24,6 +24,7 @@
     "hubot-shipit": "^0.2.0",
     "hubot-slack": "^3.4.2",
     "hubot-thank-you": "0.0.3",
+    "intercept-stdout": "^0.1.2",
     "livescript": "^1.4.0",
     "moment": "^2.10.6",
     "prelude-ls": "^1.1.2",
