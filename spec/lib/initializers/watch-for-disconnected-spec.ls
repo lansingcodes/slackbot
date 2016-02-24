@@ -8,7 +8,14 @@ describe 'watch-for-disconnected' !->
   after-each !->
     jasmine.clock!.uninstall!
 
-  she 'starts a timer when a disconnect is detected', (done) !->
+  she 'should not start a timer without a match', (done) !->
+    (expect (->
+      robot.logger.info 'Some message that we should not trigger on'
+      jasmine.clock!.tick 60 * 1000 + 1 * 1000)).not.toThrow!
+
+    done!
+
+  she 'should start a timer when a disconnect is detected', (done) !->
 
     (expect (->
       robot.logger.info 'Slack client closed, waiting for reconnect'
@@ -16,7 +23,7 @@ describe 'watch-for-disconnected' !->
 
     done!
 
-  she 'cancels a timer that has been started if the client reconnects', (done) !->
+  she 'should cancel a timer that has been started if the client reconnects', (done) !->
 
     (expect (->
       robot.logger.info 'Slack client closed, waiting for reconnect'
