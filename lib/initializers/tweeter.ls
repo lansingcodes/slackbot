@@ -3,7 +3,13 @@ require! {
   '../helpers/get-denied-gif'
 }
 
-const approved-tweeters = <[ chrisvfritz davin leo ]>
+const approved-tweeters = <[
+  chrisvfritz
+  davin
+  leo
+  erik.gillespie
+  katiemfritz
+]>
 
 module.exports = (robot) !->
 
