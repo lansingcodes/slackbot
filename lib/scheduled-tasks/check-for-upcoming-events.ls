@@ -18,6 +18,7 @@ const announcement-room-for = (event) ->
     'Mid-Michigan Agile Group': 'agile'
     'GLASS: Greater Lansing Area for SQL Server': 'devops'
     'Greater Lansing Infrastructure Meetup': 'devops'
+    'Coders Club at Coders Farm': 'java'
   }[event-name]
 
 const is-today = (event) ->
