@@ -28,6 +28,7 @@
     "livescript": "^1.4.0",
     "moment": "^2.10.6",
     "prelude-ls": "^1.1.2",
+    "tinyurl": "^1.1.0",
     "twitter-node-client": "0.0.6"
   },
   "scripts": {
