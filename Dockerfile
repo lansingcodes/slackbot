@@ -1,4 +1,4 @@
-FROM smebberson/alpine-nodejs
+FROM smebberson/alpine-nodejs:3.0.1
 
 ENV NODE_VERSION v5.0.0
 ENV NPM_VERSION 3.3.9
