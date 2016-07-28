@@ -1,9 +1,16 @@
 machine:
   timezone: America/Detroit
+  services:
+    - docker
+dependencies:
+  pre:
+    - pip install awscli
 
 deployment:
   production:
     branch: master
     commands:
-      - scp deploy/deploy.sh lubot@app.atomaka.com:/home/lubot
-      - ssh lubot@app.atomaka.com "bash /home/lubot/deploy.sh"
+      - $(aws ecr get-login --region us-east-1)
+      - docker tag lubot:latest $DOCKER_REPOSITORY:latest
+      - docker push $DOCKER_REPOSITORY:latest
+      - ssh lubot@aws-docker-1.atomaka.com "bash /home/lubot/deploy.sh"

@@ -1,0 +1,6 @@
+version: '2'
+services:
+  lubot:
+    image: 904999972394.dkr.ecr.us-east-1.amazonaws.com/lubot
+    env_file: lubotrc
+    restart: always

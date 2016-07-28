@@ -1,0 +1,4 @@
+deploy/*
+circle.yml
+README.md
+.git/*
