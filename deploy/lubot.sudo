@@ -1,1 +1,1 @@
-lubot ALL=(ALL) NOPASSWD: docker-compose *, /usr/bin/docker login *
+lubot ALL=(ALL) NOPASSWD: /usr/local/bin/docker-compose *, /usr/bin/docker login *
