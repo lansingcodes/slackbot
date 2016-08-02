@@ -4,3 +4,18 @@ services:
     image: 904999972394.dkr.ecr.us-east-1.amazonaws.com/lubot
     env_file: lubotrc
     restart: always
+  slackin:
+    image: chk1/slackin
+    env_file: slackinrc
+    environment:
+      LETSENCRYPT_HOST: lcslack.atomaka.com,slack.lansing.codes
+      LETSENCRYPT_EMAIL: me@atomaka.com
+      VIRTUAL_HOST: lcslack.atomaka.com,slack.lansing.codes
+    networks:
+      - proxy-tier
+    restart: always
+
+networks:
+  proxy-tier:
+    external:
+      name: nginx-proxy
