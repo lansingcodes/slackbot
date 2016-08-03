@@ -6,7 +6,7 @@ describe 'check-for-upcoming-events' !->
     require! nock
 
     before-each !->
-      nock('http://api.lansing.codes/v1')
+      nock('https://api.lansing.codes/v1')
         .get('/events/upcoming/list')
         .reply 200,
           data: [{
@@ -99,7 +99,7 @@ describe 'check-for-upcoming-events' !->
     require! nock
 
     before-each !->
-      nock('http://api.lansing.codes/v1')
+      nock('https://api.lansing.codes/v1')
         .get('/events/upcoming/list')
         .reply 200,
           data: []
@@ -124,7 +124,7 @@ describe 'check-for-upcoming-events' !->
     require! nock
 
     before-each !->
-      nock('http://api.lansing.codes/v1')
+      nock('https://api.lansing.codes/v1')
         .get('/events/upcoming/list')
         .reply 200,
           data: [
