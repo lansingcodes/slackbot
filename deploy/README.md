@@ -21,6 +21,10 @@ Additionally, there is setup on AWS
 2. Create an IAM user with `policy.json` as a policy for that user
 3. Add AWS credentials to CircleCI
 
+Finally, we need to setup the slack inviter
+
+1. Add the `slackinrc.sample` file as `slackinrc` to the lubot home directory and update as necessary.
+
 ## Debugging
 
 Several commands are useful for debugging lubot server side.  This requires the

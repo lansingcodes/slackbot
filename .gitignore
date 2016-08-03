@@ -3,3 +3,4 @@ node_modules
 .hubot_history
 *.log
 deploy/lubotrc
+deploy/slackinrc
