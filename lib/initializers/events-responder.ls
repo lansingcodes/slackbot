@@ -18,7 +18,7 @@ module.exports = (robot) !->
         message.send "I couldn't find any upcoming events about _#{meetup-type}_. If you think this is a mistake, tell @chrisvfritz."
       else
         event = events.0
-        message.send "\"#{event.attributes.name}\" on #{format-time event.attributes.time.absolute}. Learn more and RSVP at #{event.links.self}"
+        message.send "<#{event.links.self}|#{event.attributes.name}> on #{format-time event.attributes.time.absolute}. Follow the link to learn more and RSVP."
 
   # When you heare someone talking/asking about upcoming events...
   robot.hear /(?:next|upcoming) (?:meetups|events)/i, (message) !->

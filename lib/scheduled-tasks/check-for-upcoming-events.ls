@@ -60,15 +60,15 @@ module.exports = (robot) !->
         if is-in-two-days event
           robot.message-room do
             local-announcement-room
-            "Yo humans. Just two days until \"#{event.attributes.name}\" at #{format-time-only event.attributes.time.absolute}. Join #{event.rsvps?yes or 'some'} others and RSVP at #{event.links.self}"
+            "Yo humans. Just two days until <#{event.links.self}|#{event.attributes.name}> at #{format-time-only event.attributes.time.absolute}. Follow the link to learn more and RSVP."
         if is-in-a-week event
           robot.message-room do
             local-announcement-room
-            "It's coming. We're one week from \"#{event.attributes.name}\" at #{format-time-only event.attributes.time.absolute}. Join #{event.rsvps?yes or 'some'} others and RSVP at #{event.links.self} :simple_smile:"
+            "It's coming. We're one week from <#{event.links.self}|#{event.attributes.name}> at #{format-time-only event.attributes.time.absolute}. Follow the link to learn more and RSVP. :simple_smile:"
         if is-today event
           robot.message-room do
             local-announcement-room
-            "WAHH! Meetup today! It's \"#{event.attributes.name}\" at #{format-time-only event.attributes.time.absolute}. Join #{event.rsvps?yes or 'some'} others and RSVP at #{event.links.self}"
+            "WAHH! *Meetup today!* :tada: It's <#{event.links.self}|#{event.attributes.name}> at #{format-time-only event.attributes.time.absolute}. Follow the link to learn more and RSVP."
       # If we've already notified people about this event...
       if is-today event
         # Remember that there was at least one new meetup found
@@ -76,7 +76,7 @@ module.exports = (robot) !->
         # Cache that we announced the event
         events-cacher.cache event
         # Announce today's event
-        robot.message-room announcement-room, "WAHH! Meetup today! It's \"#{event.attributes.name}\" at #{format-time-only event.attributes.time.absolute}. Join #{event.rsvps?yes or 'some'} others and RSVP at #{event.links.self}"
+        robot.message-room announcement-room, "WAHH! Meetup today! It's <#{event.links.self}|#{event.attributes.name}> at #{format-time-only event.attributes.time.absolute}. Follow the link to learn more and RSVP."
         # Send a welcome template to the organizer if one exists
         generate-welcome-email-for event, robot
       else unless events-cacher.already-notified-regarding event
@@ -85,7 +85,7 @@ module.exports = (robot) !->
         # Cache that we announced the event
         events-cacher.cache event
         # Announce the new event
-        robot.message-room announcement-room, "There's a new event scheduled for #{event.relationships.group.attributes.name}: \"#{event.attributes.name}\". Find more details at #{event.links.self}"
+        robot.message-room announcement-room, "There's a new event scheduled for #{event.relationships.group.attributes.name}: <#{event.links.self}|#{event.attributes.name}>. Follow the link to learn more and RSVP."
     # Unless we told people about new meetups...
     unless events-were-announced
       # Tell people we didn't find any meetups.

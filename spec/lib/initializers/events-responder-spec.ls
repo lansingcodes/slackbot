@@ -52,7 +52,7 @@ describe 'events-responder' !->
                 members: 'Developers'
 
     robot.adapter.on 'send', (envelope, strings) !->
-      expect strings.0 .to-match /".+" on .+. Learn more and RSVP at http:\/\/www\.meetup\.com\/.+/
+      expect strings.0 .to-equal '<http://www.meetup.com/GLUGnet/events/234548009/|What\'s New in SQL Server 2016> on Thursday, October 20th at 6:00pm. Follow the link to learn more and RSVP.'
       done!
 
     hubot-helpers.receive-message 'next glugnet meetup'

@@ -70,7 +70,7 @@ describe 'check-for-upcoming-events' !->
         message-count += 1
         if message-count is 2
           expect envelope.room .to-equal 'general'
-          expect strings.0 .to-equal "There's a new event scheduled for GLUGnet User Group for .NET, Web, Mobile, Database: \"GLUGnet Monthly Meeting\". Find more details at http://www.meetup.com/GLUGnet/events/223349762/"
+          expect strings.0 .to-equal "There's a new event scheduled for GLUGnet User Group for .NET, Web, Mobile, Database: <http://www.meetup.com/GLUGnet/events/223349762/|GLUGnet Monthly Meeting>. Follow the link to learn more and RSVP."
           done!
 
       require('../../../lib/scheduled-tasks/check-for-upcoming-events') robot
