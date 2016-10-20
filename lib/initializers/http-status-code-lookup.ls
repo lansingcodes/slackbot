@@ -7,6 +7,8 @@ module.exports = (robot) !->
 
   robot.hear /(?:http|status code) ?(?:status)? (\d+)/i, (message) !->
 
+    console.log JSON.stringify(message.envelope.user.room)
+
     http-code = message.match.1
 
     robot

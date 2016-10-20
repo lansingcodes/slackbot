@@ -22,7 +22,7 @@
     "hubot-rules": "^0.1.1",
     "hubot-scripts": "^2.16.2",
     "hubot-shipit": "^0.2.0",
-    "hubot-slack": "^4.2.1",
+    "hubot-slack": "git://github.com/chrisvfritz/hubot-slack.git",
     "hubot-thank-you": "0.0.3",
     "intercept-stdout": "^0.1.2",
     "livescript": "^1.4.0",

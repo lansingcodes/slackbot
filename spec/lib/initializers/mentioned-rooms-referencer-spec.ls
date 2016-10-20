@@ -1,4 +1,4 @@
-describe 'mentioned-rooms-referencer' !->
+xdescribe 'mentioned-rooms-referencer' !->
   include-hubot!
 
   before-each !->

@@ -191,7 +191,7 @@ chalk@^1.0.0, chalk@^1.1.1:
     strip-ansi "^3.0.0"
     supports-color "^2.0.0"
 
-cheerio:
+cheerio@^0.22.0:
   version "0.22.0"
   resolved "https://registry.yarnpkg.com/cheerio/-/cheerio-0.22.0.tgz#a9baa860a3f9b595a6b81b1a86873121ed3a269e"
   dependencies:
@@ -742,7 +742,7 @@ hubot-google-translate@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/hubot-google-translate/-/hubot-google-translate-0.2.0.tgz#1b11e7d5e154f457bbead93dd3bd73f959284e7e"
 
-hubot-help:
+hubot-help@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/hubot-help/-/hubot-help-0.2.0.tgz#375b0fd7a1eafb2a71cf2e548bcb226bf7e66642"
 
@@ -787,9 +787,9 @@ hubot-shipit@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/hubot-shipit/-/hubot-shipit-0.2.0.tgz#1957c7757cccce64a7c51f7eed4b4bd54e4a52ae"
 
-hubot-slack:
+"hubot-slack@git://github.com/chrisvfritz/hubot-slack.git":
   version "4.2.1"
-  resolved "https://registry.yarnpkg.com/hubot-slack/-/hubot-slack-4.2.1.tgz#5354a333b959560c59ba494b185e70fbba24ea10"
+  resolved "git://github.com/chrisvfritz/hubot-slack.git#c7d33ca7679610a4a0f26e6992e47c8b099bc93a"
   dependencies:
     "@slack/client" "^3.4.0"
     lodash "^3.10.1"
@@ -1133,7 +1133,7 @@ negotiator@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
 
-nock:
+nock@^8.1.0:
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/nock/-/nock-8.1.0.tgz#21a91a1293d4f23058ba3eeff80a08c53d76bb60"
   dependencies:
