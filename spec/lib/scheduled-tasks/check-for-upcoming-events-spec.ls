@@ -130,7 +130,7 @@ describe 'check-for-upcoming-events' !->
           data: [
             {
               links:
-                self: 'http://www.meetup.com/GLUGnet/events/223349762/'
+                self: 'http://www.meetup.com/Ruby/events/223349762/'
               attributes:
                 id: 'qkmgpkytlbbc'
                 name: 'Ruby Thing'
@@ -152,7 +152,7 @@ describe 'check-for-upcoming-events' !->
                   id: 16552902
             }, {
               links:
-                self: 'http://www.meetup.com/GLUGnet/events/223349762/'
+                self: 'http://www.meetup.com/JavaScript/events/223349762/'
               attributes:
                 id: 'qkmgpkytlbbc'
                 name: 'JavaScript Thing'
@@ -199,21 +199,23 @@ describe 'check-for-upcoming-events' !->
 
     she 'sends emails to the appropriate organizers' (done) !->
 
-      done! if process.env.CIRCLECI?
+      if process.env.CIRCLECI?
+        done!
+        return
 
-        message-count = 0
-        first-organizer-notified = undefined
+      message-count = 0
+      first-organizer-notified = undefined
 
-        robot.adapter.on 'send', (envelope, strings) !->
-          message-count += 1
-          if message-count is 4
-            expect <[ atomaka leo ]> .to-contain envelope.room
-            first-organizer-notified := envelope.room
-          if message-count is 5
-            if first-organizer-notified is 'atomaka'
-              expect envelope.room .to-equal 'leo'
-            else
-              expect envelope.room .to-equal 'atomaka'
-            done!
+      robot.adapter.on 'send', (envelope, strings) !->
+        message-count += 1
+        if message-count is 6
+          expect <[ @atomaka @leo ]> .to-contain envelope.room
+          first-organizer-notified := envelope.room
+        if message-count is 7
+          if first-organizer-notified is '@atomaka'
+            expect envelope.room .to-equal '@leo'
+          else
+            expect envelope.room .to-equal '@atomaka'
+          done!
 
-        require('../../../lib/scheduled-tasks/check-for-upcoming-events') robot
+      require('../../../lib/scheduled-tasks/check-for-upcoming-events') robot

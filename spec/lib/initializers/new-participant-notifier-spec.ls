@@ -11,7 +11,7 @@ describe 'new-participant-notifier' !->
       room: 'general'
 
     robot.adapter.on 'send', (envelope, strings) !->
-      expect envelope.room .to-equal 'chrisvfritz'
+      expect envelope.room .to-equal '@chrisvfritz'
       expect strings.0 .to-equal 'new-user just joined general - just giving you a heads up so they can receive a warm welcome :-)'
       done!
 

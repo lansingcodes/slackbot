@@ -16,4 +16,4 @@ module.exports = (robot) !->
     welcomer = welcomer-for room
 
     if welcomer?
-      robot.message-room welcomer, "#{user} just joined #{room} - just giving you a heads up so they can receive a warm welcome :-)"
+      robot.message-room '@' + welcomer, "#{user} just joined #{room} - just giving you a heads up so they can receive a warm welcome :-)"
