@@ -11,7 +11,7 @@ describe 'upcoming-events-fetcher' !->
     describe 'when there is 1 upcoming event' !->
 
       before-each !->
-        nock('http://api.lansing.codes/v1')
+        nock('https://api.lansing.codes/v1')
           .get('/events/upcoming/list')
           .reply 200,
             data: [{
@@ -65,7 +65,7 @@ describe 'upcoming-events-fetcher' !->
     describe 'when there is a matching upcoming event' !->
 
       before-each !->
-        nock('http://api.lansing.codes/v1')
+        nock('https://api.lansing.codes/v1')
           .get('/events/upcoming/search/glugnet')
           .reply 200,
             data: [{

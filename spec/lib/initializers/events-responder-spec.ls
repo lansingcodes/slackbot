@@ -8,7 +8,7 @@ describe 'events-responder' !->
 
   she 'returns the next glugnet meetup when asked for "next glugnet meetup"' (done) !->
 
-    nock('http://api.lansing.codes/v1')
+    nock('https://api.lansing.codes/v1')
       .get('/events/upcoming/search/glugnet')
       .reply 200,
         data: [{
@@ -52,14 +52,14 @@ describe 'events-responder' !->
                 members: 'Developers'
 
     robot.adapter.on 'send', (envelope, strings) !->
-      expect strings.0 .to-equal '<http://www.meetup.com/GLUGnet/events/234548009/|What\'s New in SQL Server 2016> on Thursday, October 20th at 6:00pm. Follow the link to learn more and RSVP.'
+      expect strings.0 .to-equal '<http://www.meetup.com/GLUGnet/events/223349762/|GLUGnet Monthly Meeting> on Thursday, August 20th at 6:00pm. Follow the link to learn more and RSVP.'
       done!
 
     hubot-helpers.receive-message 'next glugnet meetup'
 
   she 'returns a table of upcoming meetups when asked for "upcoming events"' (done) !->
 
-    nock('http://api.lansing.codes/v1')
+    nock('https://api.lansing.codes/v1')
       .get('/events/upcoming/list')
       .reply 200,
         data: [{

@@ -46,7 +46,7 @@ module.exports = (event, callback) ->
     <p>#{first-name-for organizer}</p>
   """ |> (.replace />\s+</g, '><') |> encode-URI-component
 
-  welcome-template-link = "http://www.meetup.com/#{event.relationships.group.attributes.slug}/messages/send/?who=oneevent&eventId=#{event.attributes.id}&boards=1&subject=#{email-subject}&body=#{email-body}"
+  welcome-template-link = "https://www.meetup.com/#{event.relationships.group.attributes.slug}/messages/send/?who=oneevent&eventId=#{event.attributes.id}&boards=1&subject=#{email-subject}&body=#{email-body}"
 
   shorten-url welcome-template-link, (short-url) !->
     callback short-url, event
