@@ -7,7 +7,7 @@ module.exports = (robot) !->
     new CronJob cron-time, run-module, null, true, 'America/Detroit'
 
   if process.env.DEBUG?
-    # schedule '*/10 * * * * *', \check-for-upcoming-events
+    schedule '*/10 * * * * *', \check-for-upcoming-events
     # schedule '*/10 * * * * *', \prompt-standup
     # schedule '*/13 * * * * *', \remind-about-standup
   else
