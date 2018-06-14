@@ -1,8 +1,11 @@
 module.exports = (group) ->
   {
-    'Lansing DevOps Meetup': 'davin'
-    'Lansing Ruby Meetup Group': 'atomaka'
+    'Lansing CocoaHeads': 'leo'
+    'Lansing DevOps Meetup': 'brendon'
+    'Lansing Experience Design': 'elisha'
     'Lansing Javascript Meetup': 'leo'
-    'Mobile Monday Lansing': 'leo'
-    'Mid-Michigan Agile Group': 'katiemfritz'
+    'Lansing Marketing Hackers': 'leo'
+    'Lansing Tech Demo Night': 'erik.gillespie'
+    'Lansing Web Meetup': 'jheezy'
+    'Mid-Michigan Agile Group': 'jhershey'
   }[group.name]
