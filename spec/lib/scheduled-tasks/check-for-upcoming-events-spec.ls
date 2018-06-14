@@ -130,10 +130,10 @@ describe 'check-for-upcoming-events' !->
           data: [
             {
               links:
-                self: 'http://www.meetup.com/Ruby/events/223349762/'
+                self: 'https://www.meetup.com/lansing-tech-demos/events/qkzjlpyxjbqb/'
               attributes:
                 id: 'qkmgpkytlbbc'
-                name: 'Ruby Thing'
+                name: 'Demo Night Thing'
                 description: '<p>Topic and Speaker to be announced later</p> <p>Â </p>'
                 time:
                   absolute: new Date().set-hours 23 59
@@ -186,15 +186,15 @@ describe 'check-for-upcoming-events' !->
             groups:
               '16552902':
                 attributes:
-                  name: 'Lansing Ruby Meetup Group'
-                  focus: 'Ruby'
-                  slug: 'GLUGnet'
+                  name: 'Lansing Tech Demo Night'
+                  focus: 'Demo Night'
+                  slug: 'demo-night'
                   members: 'Developers'
               '42938479':
                 attributes:
                   name: 'Lansing Javascript Meetup'
                   focus: 'JavaScript'
-                  slug: 'GLUGnet'
+                  slug: 'javascript'
                   members: 'Developers'
 
     she 'sends emails to the appropriate organizers' (done) !->
@@ -209,13 +209,13 @@ describe 'check-for-upcoming-events' !->
       robot.adapter.on 'send', (envelope, strings) !->
         message-count += 1
         if message-count is 6
-          expect <[ @atomaka @leo ]> .to-contain envelope.room
+          expect <[ @erik.gillespie @leo ]> .to-contain envelope.room
           first-organizer-notified := envelope.room
         if message-count is 7
-          if first-organizer-notified is '@atomaka'
+          if first-organizer-notified is '@erik.gillespie'
             expect envelope.room .to-equal '@leo'
           else
-            expect envelope.room .to-equal '@atomaka'
+            expect envelope.room .to-equal '@erik.gillespie'
           done!
 
       require('../../../lib/scheduled-tasks/check-for-upcoming-events') robot

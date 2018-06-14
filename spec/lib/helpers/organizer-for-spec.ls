@@ -1,10 +1,10 @@
 require! '../../../lib/helpers/organizer-for'
 
 const supported-groups = [
-  { name: 'Lansing DevOps Meetup'     }
-  { name: 'Lansing Ruby Meetup Group' }
+  { name: 'Lansing DevOps Meetup' }
+  { name: 'Lansing Tech Demo Night' }
   { name: 'Lansing Javascript Meetup' }
-  { name: 'Mobile Monday Lansing'     }
+  { name: 'Lansing Experience Design' }
 ]
 
 describe 'organizer-for' !->
