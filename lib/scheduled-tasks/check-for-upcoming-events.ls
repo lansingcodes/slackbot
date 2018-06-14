@@ -11,13 +11,15 @@ const announcement-room = \general
 const announcement-room-for = (event) ->
   const event-name = event.relationships.group.attributes.name
   {
-    'Lansing DevOps Meetup': 'devops'
-    'Lansing Ruby Meetup Group': 'ruby'
-    'Lansing Javascript Meetup': 'javascript'
-    'Mobile Monday Lansing': 'mobile'
-    'Mid-Michigan Agile Group': 'agile'
     'GLASS: Greater Lansing Area for SQL Server': 'devops'
-    'Greater Lansing Infrastructure Meetup': 'devops'
+    'Lansing CocoaHeads': 'cocoaheads'
+    'Lansing DevOps Meetup': 'devops'
+    'Lansing Experience Design': 'user-experience'
+    'Lansing Javascript Meetup': 'javascript'
+    'Lansing Marketing Hackers': 'marketing'
+    'Lansing Tech Demo Night': 'demo-night'
+    'Lansing Web Meetup': 'web-design'
+    'Mid-Michigan Agile Group': 'agile'
   }[event-name]
 
 const is-today = (event) ->
