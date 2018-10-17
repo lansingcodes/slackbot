@@ -1,0 +1,45 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:8.12.0
+    working_directory: ~/lansingcodes/lubot
+    environment:
+      TZ: America/Detroit
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dep-{{ .Branch }}-
+            - v1-dep-master-
+            - v1-dep-
+      - run:
+          command: |
+            npm install
+            npm test
+      - save_cache:
+          key: v1-dep-{{ .Branch }}-{{ epoch }}
+          paths:
+            - ./node_modules
+  deploy:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          command: |
+            pip install --upgrade awscli
+            $(aws ecr get-login --region us-east-1 --no-include-email)
+            docker build -t lubot .
+            docker tag lubot:latest $DOCKER_REPOSITORY:latest
+            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
+              docker push $DOCKER_REPOSITORY:latest
+              ssh lubot@aws-docker-1.atomaka.com "bash /home/lubot/deploy.sh"
+            fi
+workflows:
+  version: 2
+  test-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
