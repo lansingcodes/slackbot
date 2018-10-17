@@ -1,6 +1,6 @@
 // Allow LiveScript and CoffeeScript in specs
 require('livescript');
-require('coffee-script/register');
+require('coffeescript/register');
 
 // Globalize the prelude standard library
 var prelude = require('prelude-ls');
