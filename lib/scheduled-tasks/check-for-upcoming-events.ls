@@ -50,7 +50,7 @@ module.exports = (robot) !->
   events-were-announced = false
   # Say goodmorning
   [beverage-choice, beverage-reaction] = choose-beverage!
-  robot.message-room announcement-room, "Good morning everyone! Yawn... I'm gonna grab some #{beverage-choice} and check for newly scheduled meetups."
+  robot.message-room announcement-room, "Good morning everyone! Yawn... I'm gonna grab #{beverage-choice.article} #{beverage-choice.name} and check for newly scheduled meetups."
   # Fetch the latest upcoming event for each group that Lansing Codes is
   # following on meetup.com
   new UpcomingEventsFetcher(robot).all (events) !->
