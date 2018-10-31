@@ -34,11 +34,10 @@ jobs:
       - checkout
       - run:
           command: |
-            pip install --upgrade awscli
-            $(aws ecr get-login --region us-east-1 --no-include-email)
             docker build -t lubot .
-            docker tag lubot:latest $DOCKER_REPOSITORY:latest
-            docker push $DOCKER_REPOSITORY:latest
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker tag lubot:latest lansingcodes/lubot:latest
+            docker push lansingcodes/lubot:latest
             ssh lubot@aws-docker-1.atomaka.com "bash /home/lubot/deploy.sh"
 workflows:
   version: 2
