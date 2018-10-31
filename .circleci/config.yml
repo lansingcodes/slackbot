@@ -25,18 +25,30 @@ jobs:
     machine: true
     steps:
       - checkout
+      - setup_remote_docker
       - run:
           command: |
             docker build -t lubot .
+            docker save -o /caches/app.tar lubot
+      - save_cache:
+          key: v1-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /caches/app.tar
   deploy:
     machine: true
     steps:
       - checkout
+      - setup_remote_docker
+      - restore_cache:
+          keys:
+            - v1-{{ .Branch }}
+          paths:
+            - /caches/app.tar
       - run:
           command: |
             pip install --upgrade awscli
             $(aws ecr get-login --region us-east-1 --no-include-email)
-            docker build -t lubot .
+            docker load < /caches/app.tar
             docker tag lubot:latest $DOCKER_REPOSITORY:latest
             docker push $DOCKER_REPOSITORY:latest
             ssh lubot@aws-docker-1.atomaka.com "bash /home/lubot/deploy.sh"
