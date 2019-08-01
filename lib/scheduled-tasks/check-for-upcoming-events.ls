@@ -20,6 +20,7 @@ const announcement-room-for = (event) ->
     'Lansing Tech Demo Night': 'demo-night'
     'Lansing Web Meetup': 'web-design'
     'Mid-Michigan Agile Group': 'agile'
+    'Lansing JVM User Group': 'java'
   }[event-name]
 
 const is-today = (event) ->

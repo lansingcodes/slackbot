@@ -8,4 +8,5 @@ module.exports = (group) ->
     'Lansing Tech Demo Night': 'erik.gillespie'
     'Lansing Web Meetup': 'jheezy'
     'Mid-Michigan Agile Group': 'jhershey'
+    'Lansing JVM User Group': 'lucidmachine'
   }[group.name]

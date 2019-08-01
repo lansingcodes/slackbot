@@ -5,6 +5,7 @@ welcomer-for = (room) ->
     'ruby': \atomaka
     'javascript': \leo
     'mobile': \leo
+    'java': \lucidmachine
   }[room]
 
 module.exports = (robot) !->
