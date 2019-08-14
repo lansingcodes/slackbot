@@ -34,6 +34,9 @@
   "scripts": {
     "test": "node ./node_modules/jasmine/bin/jasmine.js"
   },
+  "engines": {
+    "node": ">=10.x"
+  },
   "devDependencies": {
     "coffee-script": "^1.12.7",
     "expand-url": "^0.1.3",
