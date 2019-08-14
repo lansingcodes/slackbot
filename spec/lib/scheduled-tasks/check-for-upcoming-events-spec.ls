@@ -57,7 +57,7 @@ describe 'check-for-upcoming-events' !->
         message-count += 1
         if message-count is 1
           expect envelope.room .to-equal 'general'
-          expect strings.0 .to-match /Good morning everyone! Yawn\.\.\. I'm gonna grab some .+ and check for newly scheduled meetups\./
+          expect strings.0 .to-match /Good morning everyone! Yawn\.\.\. I'm gonna grab .+ and check for newly scheduled meetups\./
           done!
 
       require('../../../lib/scheduled-tasks/check-for-upcoming-events') robot
