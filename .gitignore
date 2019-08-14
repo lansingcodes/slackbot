@@ -4,3 +4,4 @@ node_modules
 *.log
 deploy/lubotrc
 deploy/slackinrc
+yarn.lock
