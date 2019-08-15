@@ -5,6 +5,8 @@
   "author": "Chris Fritz <chrisvfritz@gmail.com>",
   "description": "Lansing Code's helpful, neighborhood robot",
   "dependencies": {
+    "@firebase/app": "^0.4.14",
+    "@firebase/firestore": "^1.4.9",
     "cheerio": "^0.22.0",
     "cron": "^1.7.1",
     "google-url": "0.0.4",
