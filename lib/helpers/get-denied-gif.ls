@@ -1,5 +1,4 @@
-sample = (array) ->
-  array[ Math.floor( Math.random() * array.length ) ]
+sample = require './sample'
 
 module.exports = ->
   [
