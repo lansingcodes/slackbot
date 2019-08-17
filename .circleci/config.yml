@@ -1,4 +1,6 @@
-version: 2
+version: 2.1
+orbs:
+  heroku: circleci/heroku@1.0.0
 jobs:
   build:
     docker:
@@ -11,7 +13,6 @@ jobs:
       - restore_cache:
           keys:
             - v1-dep-{{ .Branch }}-{{ checksum "package-lock.json" }}
-            - v1-dep-master-
             - v1-dep-
       - run:
           command: |
@@ -21,37 +22,13 @@ jobs:
           key: v1-dep-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
             - ./node_modules
-  dockerbuild:
-    machine: true
-    steps:
-      - checkout
-      - run:
-          command: |
-            docker build -t lubot .
-  deploy:
-    machine: true
-    steps:
-      - checkout
-      - run:
-          command: |
-            pip install --upgrade awscli
-            $(aws ecr get-login --region us-east-1 --no-include-email)
-            docker build -t lubot .
-            docker tag lubot:latest $DOCKER_REPOSITORY:latest
-            docker push $DOCKER_REPOSITORY:latest
-            ssh lubot@aws-docker-1.atomaka.com "bash /home/lubot/deploy.sh"
 workflows:
-  version: 2
   test-and-deploy:
     jobs:
       - build
-      - dockerbuild:
-          filters:
-            branches:
-              ignore: master
-      - deploy:
+      - heroku/deploy-via-git:
           requires:
             - build
           filters:
             branches:
-              only: master
+              only: firebase
