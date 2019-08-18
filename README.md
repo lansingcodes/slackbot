@@ -1,6 +1,6 @@
 # Lansing Codes Slackbot
 
-[![Circle CI](https://circleci.com/gh/lansingcodes/lubot.svg?style=svg)](https://circleci.com/gh/lansingcodes/lubot) [!
+[![Circle CI](https://circleci.com/gh/lansingcodes/lubot.svg?style=svg)](https://circleci.com/gh/lansingcodes/lubot)
 
 You've found Lansing Codes's helpful, neighborhood robot! It runs as a member of
 [our Slack](https://slack.lansing.codes/) and does a lot of cool stuff, like
