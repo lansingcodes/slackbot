@@ -11,8 +11,8 @@ describe('events-fetcher', () => {
         const getEventsFetcher =
           proxyquire('../../../lib/fetchers/events-fetcher', {
             './init-firestore': () => mockFirestore([{
+              id: 'meetup@1',
               data: () => ({
-                id: 'meetup@1',
                 name: 'Today\'s new JavaScript framework',
                 group: 'javascript',
                 description: 'tbd',
@@ -29,6 +29,7 @@ describe('events-fetcher', () => {
           .then(events => {
             expect(Array.isArray(events)).toBe(true)
             expect(events.length).toEqual(1)
+            expect(events[0].id).toEqual('meetup@1')
             expect(events[0].group).toEqual('javascript')
             done()
           })
