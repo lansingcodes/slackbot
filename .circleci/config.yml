@@ -31,4 +31,4 @@ workflows:
             - build
           filters:
             branches:
-              only: firebase
+              only: master
