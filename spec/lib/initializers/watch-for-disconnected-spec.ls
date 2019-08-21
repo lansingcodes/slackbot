@@ -4,7 +4,7 @@ describe 'watch-for-disconnected' !->
   before-each !->
     console.log '\n<HUBOT-STDOUT>'
     require('../../../lib/initializers/watch-for-disconnected') robot
-    @wait-time = parse-int process.env.LUBOT_DISCONNECT_WAIT_TIME
+    @wait-time = parse-int process.env.SLACKBOT_DISCONNECT_WAIT_TIME
     jasmine.clock!.install!
 
   after-each !->

@@ -5,7 +5,7 @@ jobs:
   build:
     docker:
       - image: circleci/node:lts
-    working_directory: ~/lansingcodes/lubot
+    working_directory: ~/lansingcodes/slackbot
     environment:
       TZ: America/Detroit
     steps:

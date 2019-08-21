@@ -1,7 +1,7 @@
 intercept = require 'intercept-stdout'
 
 const wait-time = 20_000
-process.env.LUBOT_DISCONNECT_WAIT_TIME = wait-time
+process.env.SLACKBOT_DISCONNECT_WAIT_TIME = wait-time
 
 module.exports = (robot) !->
   timer = null

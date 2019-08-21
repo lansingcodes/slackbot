@@ -1,9 +1,12 @@
 {
-  "name": "lubot",
-  "version": "0.0.0",
+  "name": "slackbot",
+  "version": "1.0.0",
   "private": true,
   "author": "Chris Fritz <chrisvfritz@gmail.com>",
-  "description": "Lansing Code's helpful, neighborhood robot",
+  "contributors": [
+    "Erik Gillespie <erik.gillespie@gmail.com>"
+  ],
+  "description": "Lansing Code's helpful, neighborhood Slack robot",
   "dependencies": {
     "@firebase/app": "^0.4.14",
     "@firebase/firestore": "^1.4.9",

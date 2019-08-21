@@ -1,14 +1,14 @@
 # Lansing Codes Slackbot
 
-[![Circle CI](https://circleci.com/gh/lansingcodes/lubot.svg?style=svg)](https://circleci.com/gh/lansingcodes/lubot)
+[![Circle CI](https://circleci.com/gh/lansingcodes/slackbot.svg?style=svg)](https://circleci.com/gh/lansingcodes/slackbot)
 
 You've found Lansing Codes's helpful, neighborhood robot! It runs as a member of
 [our Slack](https://slack.lansing.codes/) and does a lot of cool stuff, like
 notifying us of upcoming events and helping organizers do their work faster.
 
-## Running lubot Locally
+## Running slackbot Locally
 
-You can start lubot locally by running:
+You can start slackbot locally by running:
 
 ``` sh
 DEBUG=true ./bin/hubot
@@ -18,10 +18,10 @@ You'll see some start up output and a prompt:
 
 ```
 [Sat Feb 28 2015 12:38:27 GMT+0000 (GMT)] INFO Using default redis on localhost:6379
-lubot>
+slackbot>
 ```
 
-Then you can interact with lubot by typing `lubot help`.
+Then you can interact with slackbot by typing `slackbot help`.
 
 ```
 lubot> lubot help

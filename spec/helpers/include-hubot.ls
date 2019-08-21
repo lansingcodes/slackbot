@@ -8,7 +8,7 @@ module.exports = !->
 
   before-each (done) !->
     # Create new robot, without http, using the mock adapter
-    global.robot = new Robot null, 'mock-adapter', false, 'lubot'
+    global.robot = new Robot null, 'mock-adapter', false, 'slackbot'
     # When the robot is connected
     robot.adapter.on 'connected', !->
       # Create a user

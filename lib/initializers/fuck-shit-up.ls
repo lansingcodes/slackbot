@@ -11,7 +11,7 @@ module.exports = (robot) !->
     if message.envelope.user.name in approved-fuckers
 
       message.send "Shit fucked up!"
-      throw new Error('Manually throwing an error so that lubot restarts.')
+      throw new Error('Manually throwing an error so that the slackbot restarts.')
 
     else
 
