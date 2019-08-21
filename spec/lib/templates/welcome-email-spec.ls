@@ -2,13 +2,20 @@ if process.env.GOOGLE_API_KEY and not process.env.CIRCLECI
 
   require! {
     'expand-url': url-expander
-    '../../factories/event-factory'
   }
 
   describe 'welcome-email' !->
 
     before-each (done) !->
-      event = event-factory!
+      event = {
+        name: 'Today\'s new JavaScript framework',
+        group: 'javascript',
+        description: 'tbd',
+        url: 'meetup.com',
+        venue: 'the moon',
+        address: '1 solar system way',
+        startTime: Date.now()
+      }
       require('../../../lib/templates/welcome-email') event, (short-url) !~>
         @email-url = short-url
         done!
