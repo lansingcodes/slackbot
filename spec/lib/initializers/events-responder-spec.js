@@ -33,6 +33,25 @@ describe('events-responder', () => {
     hubotHelpers.receiveMessage('next javascript meetup')
   })
 
+  it('returns an apologetic message when it cannot find the next group event', done => {
+    const mockEventsFetcher = require('../../helpers/mock-events-fetcher')
+    const eventsResponder =
+      proxyquire('../../../lib/initializers/events-responder', {
+        '../fetchers/events-fetcher': mockEventsFetcher([])
+      })
+
+    eventsResponder(robot)
+
+    robot.adapter.on('send', (envelope, strings) => {
+      expect(strings[0]).toEqual(
+        'I couldn\'t find any upcoming events about _javascript_.'
+      )
+      done()
+    })
+
+    hubotHelpers.receiveMessage('next javascript meetup')
+  })
+
   it('returns a table of events when asked for "upcoming events"', done => {
     const mockEventsFetcher = require('../../helpers/mock-events-fetcher')
     const eventsResponder =
