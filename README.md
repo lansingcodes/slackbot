@@ -24,9 +24,9 @@ slackbot>
 Then you can interact with slackbot by typing `slackbot help`.
 
 ```
-lubot> lubot help
-lubot animate me <query> - The same thing as `image me`, except adds [snip]
-lubot help - Displays all of the help commands that lubot knows about.
+slackbot> slackbot help
+slackbot animate me <query> - The same thing as `image me`, except adds [snip]
+slackbot help - Displays all of the help commands that slackbot knows about.
 ...
 ```
 
