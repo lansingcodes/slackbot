@@ -2,9 +2,16 @@
   "name": "slackbot",
   "version": "1.0.0",
   "private": true,
-  "author": "Chris Fritz <chrisvfritz@gmail.com>",
+  "author": "Humanity Codes, LLC",
   "contributors": [
-    "Erik Gillespie <erik.gillespie@gmail.com>"
+    "Amanda Kitson",
+    "Andrew Tomaka",
+    "Bret Self",
+    "Chris Fritz",
+    "Erik Gillespie <erik.gillespie@gmail.com>",
+    "James Green",
+    "Joe Ryan",
+    "Patrick Hawkins"
   ],
   "description": "Lansing Code's helpful, neighborhood Slack robot",
   "dependencies": {
