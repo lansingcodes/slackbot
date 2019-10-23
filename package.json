@@ -17,7 +17,6 @@
   "dependencies": {
     "@firebase/app": "^0.4.14",
     "@firebase/firestore": "^1.4.9",
-    "cheerio": "^0.22.0",
     "coffee-script": "^1.12.7",
     "cron": "^1.7.1",
     "google-url": "0.0.4",
