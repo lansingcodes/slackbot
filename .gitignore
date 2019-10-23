@@ -5,3 +5,4 @@ node_modules
 deploy/slackbotrc
 deploy/slackinrc
 yarn.lock
+TAGS
