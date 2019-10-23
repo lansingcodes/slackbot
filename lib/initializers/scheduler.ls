@@ -1,3 +1,22 @@
+# Description:
+#   Schedules recurring execution of scripts.
+#
+# Dependencies:
+#   "cron"
+#
+# Configuration:
+#   N/A
+#
+# Commands:
+#   N/A
+#
+# Notes:
+#   N/A
+#
+# Author:
+#   chrisvfritz
+#   egillespie
+
 CronJob = require('cron').CronJob
 
 module.exports = (robot) !->
