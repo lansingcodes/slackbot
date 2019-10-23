@@ -1,3 +1,21 @@
+# Description:
+#   Notifies relevant channels when they've been mentioned in a different channel.
+#
+# Dependencies:
+#   N/A
+#
+# Configuration:
+#   N/A
+#
+# Commands:
+#   #<channel-name> - Notifies the given channel that it's been referenced in a different channel.
+#
+# Notes:
+#   N/A
+#
+# Author:
+#   chrisvfritz
+
 module.exports = (robot) !->
 
   robot.hear /#([\w\-]+)/, (message) !->
