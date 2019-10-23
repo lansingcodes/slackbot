@@ -11,7 +11,8 @@
     "Erik Gillespie <erik.gillespie@gmail.com>",
     "James Green",
     "Joe Ryan",
-    "Patrick Hawkins"
+    "Patrick Hawkins",
+    "Eric Slenk <lucid.machine@gmail.com>"
   ],
   "description": "Lansing Code's helpful, neighborhood Slack robot",
   "dependencies": {
