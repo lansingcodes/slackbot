@@ -1,3 +1,25 @@
+# Description:
+#   Load all initializer scripts.
+#
+# Dependencies:
+#   "fs"
+#   "livescript"
+#   "path"
+#   "prelude-ls"
+#
+# Configuration:
+#   N/A
+#
+# Commands:
+#   N/A
+#
+# Notes:
+#   Assumes all initializers live in '../lib/initializers', and that all files in
+#   '../lib/initializers' are initializers.
+#
+# Author:
+#   chrisvfritz
+
 require 'livescript'
 for key, value of require('prelude-ls')
   global[key] = value
