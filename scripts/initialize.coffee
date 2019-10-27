@@ -3,9 +3,7 @@
 #
 # Dependencies:
 #   "fs"
-#   "livescript"
 #   "path"
-#   "prelude-ls"
 #
 # Configuration:
 #   N/A
@@ -19,10 +17,6 @@
 #
 # Author:
 #   chrisvfritz
-
-require 'livescript'
-for key, value of require('prelude-ls')
-  global[key] = value
 
 fs   = require 'fs'
 path = require 'path'
