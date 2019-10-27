@@ -80,7 +80,6 @@ here's a quick list of the tools you'll need to run this project:
 - [Visual Studio Code](https://code.visualstudio.com/) with these extensions:
   - Bracket Pair Colorizer by CoenraadS
   - EditorConfig for VS Code by EditorConfig
-  - LiveScript Language Support by Paul Selibas
   - Node.js Extension Pack by Wade Anderson
   - npm by egamma
   - npm Intellisense by Christian Kohler
@@ -165,7 +164,6 @@ experience of looking at and editing this project _super nice_.
 
 - Bracket Pair Colorizer by CoenraadS
 - EditorConfig for VS Code by EditorConfig
-- LiveScript Language Support by Paul Selibas
 - Node.js Extension Pack by Wade Anderson
 - npm by egamma
 - npm Intellisense by Christian Kohler
@@ -321,12 +319,7 @@ organized in a `lib` directory, which itself is organized into sub-directories:
 - General helper functions are `helpers`.
 
 This structure allows scripts to be written in any language that can transpile
-to JavaScript and currently you will find a mix of CoffeeScript, LiveScript,
-and JavaScript.
-
-We are trying to migrate everything to JavaScript to make our bot as simple as
-possible so if you want to make improvements, one way is to convert a script to
-JavaScript. 😉
+to JavaScript.
 
 ## External scripts
 
