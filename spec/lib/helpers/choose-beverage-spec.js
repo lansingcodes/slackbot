@@ -1,23 +1,23 @@
-const chooseBeverage = require('../../../lib/helpers/choose-beverage');
+const chooseBeverage = require('../../../lib/helpers/choose-beverage')
 
 describe('choose-beverage', () => {
-  let beverageChoice;
-  let beverageReaction;
+  let beverageChoice
+  let beverageReaction
 
   beforeEach(() => {
-    [beverageChoice, beverageReaction] = chooseBeverage();
-  });
+    [beverageChoice, beverageReaction] = chooseBeverage()
+  })
 
   afterEach(() => {
-    beverageChoice = undefined;
-    beverageReaction = undefined;
-  });
+    beverageChoice = undefined
+    beverageReaction = undefined
+  })
 
   it('should return a defined beverage choice', () => {
-    expect(beverageChoice).toBeDefined();
-  });
+    expect(beverageChoice).toBeDefined()
+  })
 
   it('should return a defined beverage reaction', () => {
-    expect(beverageReaction).toBeDefined();
-  });
-});
+    expect(beverageReaction).toBeDefined()
+  })
+})

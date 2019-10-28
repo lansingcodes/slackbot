@@ -1,1 +1,1 @@
-global.includeHubot = require('./include-hubot');
+global.includeHubot = require('./include-hubot')
