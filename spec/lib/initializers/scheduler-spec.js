@@ -1,9 +1,9 @@
 describe('scheduler', () => {
-  includeHubot();
+  includeHubot()
 
   it('runs without errors', () => {
     expect(() => {
-      require('../../../lib/initializers/scheduler')(robot);
-    }).not.toThrow();
-  });
-});
+      require('../../../lib/initializers/scheduler')(robot)
+    }).not.toThrow()
+  })
+})
