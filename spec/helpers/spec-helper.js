@@ -1,14 +1,14 @@
 // Allow LiveScript and CoffeeScript in specs
-require('livescript');
-require('coffee-script/register');
+require('livescript')
+require('coffee-script/register')
 
 // Globalize the prelude standard library
-var prelude = require('prelude-ls');
-Object.keys(prelude).forEach(function(key){
-  global[key] = prelude[key];
-});
+var prelude = require('prelude-ls')
+Object.keys(prelude).forEach(function (key) {
+  global[key] = prelude[key]
+})
 
 // Alias she for it, to bypass it being semi-reserved in LiveScript
-she = it;
+she = it
 
-includeHubot = require('./include-hubot');
+includeHubot = require('./include-hubot')
