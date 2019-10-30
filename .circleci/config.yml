@@ -17,6 +17,7 @@ jobs:
       - run:
           command: |
             npm install
+            npm rebuild
             npm test
       - save_cache:
           key: v1-dep-{{ .Branch }}-{{ checksum "package-lock.json" }}
