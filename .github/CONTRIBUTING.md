@@ -79,7 +79,7 @@ here's a quick list of the tools you'll need to run this project:
   [nvm](https://github.com/nvm-sh/nvm) is recommended for non-Windows users
 - [Visual Studio Code](https://code.visualstudio.com/) with these extensions:
   - Bracket Pair Colorizer by CoenraadS
-  - EditorConfig for VS Code by EditorConfig
+  - [StandardJS](https://marketplace.visualstudio.com/items?itemName=chenxsan.vscode-standardjs) by Sam Chen
   - Node.js Extension Pack by Wade Anderson
   - npm by egamma
   - npm Intellisense by Christian Kohler
@@ -163,7 +163,7 @@ Use the search box to find and install all of these extensions. They make the
 experience of looking at and editing this project _super nice_.
 
 - Bracket Pair Colorizer by CoenraadS
-- EditorConfig for VS Code by EditorConfig
+- [StandardJS](https://marketplace.visualstudio.com/items?itemName=chenxsan.vscode-standardjs) by Sam Chen
 - Node.js Extension Pack by Wade Anderson
 - npm by egamma
 - npm Intellisense by Christian Kohler
@@ -175,9 +175,13 @@ You should probably restart VS Code after installing all of these extensions.
 
 ### Making changes
 
-That's it for required software! You should now be able to run `npm run dev` in
-a terminal to build and run a server to see the website running from your
-computer.
+That's it for required software! You should now be able to run `bin/hubot` or
+`bin/hubot.cmd` in a terminal to build and run the bot on the command line.
+Try chatting a bit, or `slackbot help` to see what scripts are available.
+
+Code style is [JavaScript Standard Style](https://standardjs.com/index.html).
+Please check your code with `npm run lint` as you develop. You can run
+`npm run fix` to attempt to automatically fix style issues that are detected.
 
 If you're making changes to the code and want to send a pull request to the
 `lansingcodes` organization on GitHub, the easiest way is to make all of your
@@ -351,7 +355,7 @@ project. All scripts can be found in `package.json`.
 
 To install dependencies, run:
 
-``` sh
+```sh
 npm install
 ```
 
@@ -359,8 +363,23 @@ To run unit tests, use the script below. When making changes, please make sure
 to add tests for your own code as well as making sure to fix or update existing
 tests!
 
-```
+```sh
 npm run test
+```
+
+To detect code style issues, run:
+```sh
+npm run lint
+```
+
+To attempt to automatically fix those code style issues where possible, run:
+```sh
+npm run fix
+```
+
+To check that everything's styled correctly and passes tests before committing, run:
+```sh
+npm run precommit
 ```
 
 ## Deployments
