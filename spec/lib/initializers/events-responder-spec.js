@@ -1,6 +1,5 @@
 const includeHubot = require('../../helpers/include-hubot')
 const proxyquire = require('proxyquire').noCallThru()
-let hubotHelpers
 
 describe('events-responder', () => {
   includeHubot()

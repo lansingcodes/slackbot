@@ -42,8 +42,8 @@
     "twitter-node-client": "0.0.6"
   },
   "scripts": {
-    "fix": "standard --env jasmine --global robot --fix",
-    "lint": "standard --env jasmine --global robot",
+    "fix": "standard --env jasmine --global robot --global hubotHelpers --fix",
+    "lint": "standard --env jasmine --global robot --global hubotHelpers",
     "precommit": "run-s lint test",
     "test": "jasmine"
   },
