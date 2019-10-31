@@ -44,7 +44,7 @@
   "scripts": {
     "fix": "standard --env jasmine --global robot --fix",
     "lint": "standard --env jasmine --global robot",
-    "precommit": "run-s lint && test",
+    "precommit": "run-s lint test",
     "test": "jasmine"
   },
   "devDependencies": {
