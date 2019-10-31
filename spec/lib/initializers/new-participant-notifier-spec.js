@@ -1,5 +1,4 @@
 const includeHubot = require('../../helpers/include-hubot')
-let hubotHelpers
 
 describe('new-participant-notifier', () => {
   includeHubot()
