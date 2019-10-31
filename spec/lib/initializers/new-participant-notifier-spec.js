@@ -1,3 +1,6 @@
+const includeHubot = require('../../helpers/include-hubot')
+let hubotHelpers
+
 describe('new-participant-notifier', () => {
   includeHubot()
 
@@ -5,7 +8,7 @@ describe('new-participant-notifier', () => {
     require('../../../lib/initializers/new-participant-notifier')(robot)
   })
 
-  it('notifies "chrisvfritz" when a new user enters the "general" room', (done) => {
+  it('notifies "chrisvfritz" when a new user enters the "general" room', done => {
     const newUser = robot.brain.userForId('2', {
       name: 'new-user',
       room: 'general'
@@ -13,7 +16,9 @@ describe('new-participant-notifier', () => {
 
     robot.adapter.on('send', (envelope, strings) => {
       expect(envelope.room).toEqual('@chrisvfritz')
-      expect(strings[0]).toEqual('new-user just joined general - just giving you a heads up so they can receive a warm welcome :-)')
+      expect(strings[0]).toEqual(
+        'new-user just joined general - just giving you a heads up so they can receive a warm welcome :-)'
+      )
       done()
     })
 

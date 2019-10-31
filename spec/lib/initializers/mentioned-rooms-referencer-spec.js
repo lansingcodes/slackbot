@@ -1,3 +1,4 @@
+const includeHubot = require('../../helpers/include-hubot')
 const TextMessage = require('hubot/src/message').TextMessage
 
 describe('mentioned-rooms-referencer', () => {
@@ -32,24 +33,31 @@ describe('mentioned-rooms-referencer', () => {
     }
 
     // Pretend Slack says the current and mentioned channels are different
-    spyOn(robot.adapter.client.rtm.dataStore,
-      'getChannelByName').and.returnValue(mentionedChannel)
-    spyOn(robot.adapter.client.rtm.dataStore,
-      'getChannelById').and.returnValue(currentChannel)
+    spyOn(
+      robot.adapter.client.rtm.dataStore,
+      'getChannelByName'
+    ).and.returnValue(mentionedChannel)
+    spyOn(robot.adapter.client.rtm.dataStore, 'getChannelById').and.returnValue(
+      currentChannel
+    )
 
     // Expect a cross-reference message when the current channel is mentioned
     robot.adapter.on('send', (envelope, strings) => {
       expect(envelope.room).toEqual('C024BE91L')
       expect(strings[0]).toEqual(
-        'This channel was just referenced at: https://lansingcodes.slack.com/archives/C124BE91L/p1571842414003900')
+        'This channel was just referenced at: https://lansingcodes.slack.com/archives/C124BE91L/p1571842414003900'
+      )
       done()
     })
 
     // Mention a the current channel
-    robot.adapter.receive(new TextMessage(
-      { name: 'jasmine', room: 'jasmine' },
-      'This is a reference to the #jasmine room.',
-      '1571842414003900'))
+    robot.adapter.receive(
+      new TextMessage(
+        { name: 'jasmine', room: 'jasmine' },
+        'This is a reference to the #jasmine room.',
+        '1571842414003900'
+      )
+    )
   })
 
   it('does NOT send a notification when the current room is mentioned', () => {
@@ -62,10 +70,13 @@ describe('mentioned-rooms-referencer', () => {
     }
 
     // Pretend Slack says the current and mentioned channels are the same
-    spyOn(robot.adapter.client.rtm.dataStore,
-      'getChannelByName').and.returnValue(currentChannel)
-    spyOn(robot.adapter.client.rtm.dataStore,
-      'getChannelById').and.returnValue(currentChannel)
+    spyOn(
+      robot.adapter.client.rtm.dataStore,
+      'getChannelByName'
+    ).and.returnValue(currentChannel)
+    spyOn(robot.adapter.client.rtm.dataStore, 'getChannelById').and.returnValue(
+      currentChannel
+    )
 
     // Expect to fail if the bot makes a cross-reference
     jasmine.clock().install()
@@ -75,10 +86,13 @@ describe('mentioned-rooms-referencer', () => {
     })
 
     // Mention the current channel
-    robot.adapter.receive(new TextMessage(
-      { name: 'jasmine', room: 'jasmine' },
-      'This is a reference to the #jasmine room.',
-      '1571842414003900'))
+    robot.adapter.receive(
+      new TextMessage(
+        { name: 'jasmine', room: 'jasmine' },
+        'This is a reference to the #jasmine room.',
+        '1571842414003900'
+      )
+    )
 
     // Wait to verify that nothing explodes
     jasmine.clock().tick(1000)

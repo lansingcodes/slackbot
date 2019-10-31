@@ -1,3 +1,5 @@
+const includeHubot = require('../../helpers/include-hubot')
+
 describe('watch-for-disconnected', () => {
   let waitTime
   includeHubot()
