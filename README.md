@@ -29,7 +29,7 @@ You are welcome and encouraged to make changes to this website by submitting
 pull requests or forking our code to make your own community website!
 
 Before you get ahead of yourself, though, please read our
-[Contributing Guide](https://github.com/lansingcodes/slackbot/blob/master/.github/CONTRIBUTING.md).
+[Contributing Guide](https://github.com/lansingcodes/slackbot/blob/main/.github/CONTRIBUTING.md).
 
 ## License
 

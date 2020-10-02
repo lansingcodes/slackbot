@@ -29,11 +29,11 @@ through these guidelines.
 
 ## Pull Request Guidelines
 
-- The `master` branch is a snapshot of the latest production release. All
+- The `main` branch is a snapshot of the latest production release. All
   development should be done in dedicated branches.
 
-- Checkout a development branch from the `master` branch. Similarly submit pull
-  requests back to the `master` branch.
+- Checkout a development branch from the `main` branch. Similarly submit pull
+  requests back to the `main` branch.
 
 - Add your name (and optional email and website) to the `contributors` property
   in `package.json`. We want people to know you're helping out!
@@ -192,7 +192,7 @@ name of your feature:
 
 ``` sh
 git fetch origin
-git checkout -b new-branch origin/master
+git checkout -b new-branch origin/main
 ```
 
 After you've made and tested your changes, these commands are helpful for
@@ -384,7 +384,7 @@ npm run precommit
 
 ## Deployments
 
-After a pull request is reviewed and merged to `master`, the changes will be
+After a pull request is reviewed and merged to `main`, the changes will be
 built and verified on [CircleCI](https://circleci.com/gh/lansingcodes/slackbot)
 automatically before being deployed to Heroku.
 
