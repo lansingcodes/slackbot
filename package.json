@@ -1,7 +1,7 @@
 {
   "name": "slackbot",
   "version": "1.0.0",
-  "license": "MIT - Hippocratic",
+  "license": "Hippocratic-2.1",
   "private": true,
   "author": "Humanity Codes, LLC",
   "contributors": [
