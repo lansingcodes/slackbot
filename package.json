@@ -17,7 +17,7 @@
   ],
   "description": "Lansing Code's helpful, neighborhood Slack robot",
   "dependencies": {
-    "@firebase/app": "^0.6.11",
+    "@firebase/app": "^0.7.21",
     "@firebase/firestore": "^1.18.0",
     "coffee-script": "^1.12.7",
     "cron": "^1.7.1",
