@@ -35,12 +35,21 @@ describe('bot startup', () => {
     let hasStarted = false
     let shutdownTimer = null
     let safetyTimeout = null
+    let testCompleted = false
+
+    // Helper to complete the test only once
+    const completeTest = () => {
+      if (!testCompleted) {
+        testCompleted = true
+        done()
+      }
+    }
 
     // Safety timeout - if the bot doesn't start within 20 seconds, fail the test
     safetyTimeout = setTimeout(() => {
       bot.kill('SIGTERM')
       fail('Bot did not start within the timeout period')
-      done()
+      completeTest()
     }, 20000)
 
     // Collect stdout
@@ -96,7 +105,7 @@ describe('bot startup', () => {
       // SIGTERM can result in null or 0 depending on the process
       expect(code === 0 || code === null).toBe(true)
 
-      done()
+      completeTest()
     })
 
     // Handle errors spawning the process
@@ -108,7 +117,7 @@ describe('bot startup', () => {
         clearTimeout(safetyTimeout)
       }
       fail(`Failed to start bot: ${err.message}`)
-      done()
+      completeTest()
     })
   })
 })
