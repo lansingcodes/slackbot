@@ -41,6 +41,13 @@ describe('bot startup', () => {
     const completeTest = () => {
       if (!testCompleted) {
         testCompleted = true
+        // Clear all timers to ensure proper cleanup
+        if (shutdownTimer) {
+          clearTimeout(shutdownTimer)
+        }
+        if (safetyTimeout) {
+          clearTimeout(safetyTimeout)
+        }
         done()
       }
     }
@@ -83,13 +90,6 @@ describe('bot startup', () => {
 
     // Handle bot exit
     bot.on('close', (code) => {
-      if (shutdownTimer) {
-        clearTimeout(shutdownTimer)
-      }
-      if (safetyTimeout) {
-        clearTimeout(safetyTimeout)
-      }
-
       // Check that the bot started successfully before exiting
       expect(hasStarted).toBe(true)
 
@@ -110,12 +110,6 @@ describe('bot startup', () => {
 
     // Handle errors spawning the process
     bot.on('error', (err) => {
-      if (shutdownTimer) {
-        clearTimeout(shutdownTimer)
-      }
-      if (safetyTimeout) {
-        clearTimeout(safetyTimeout)
-      }
       fail(`Failed to start bot: ${err.message}`)
       completeTest()
     })
