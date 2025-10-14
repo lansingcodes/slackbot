@@ -54,14 +54,14 @@ The following vulnerabilities have been addressed:
   - @slack/client is deprecated and depends on the deprecated request package
   - There is no updated version of hubot-slack that addresses this
   - Downgrading hubot-slack would introduce more vulnerabilities
-- **Mitigation**: This vulnerability requires an attacker to predict the form boundary, which is difficult in practice.
+- **Risk Assessment**: This is a critical vulnerability that should be monitored closely. The attack requires intercepting multipart form data and predicting boundaries. Consider this a known risk that requires a long-term solution (see Recommendations below).
 
 #### 3. tough-cookie (Moderate Severity)  
 - **Package**: tough-cookie
 - **Affected Dependency**: hubot-slack@4.10.0 → @slack/client@3.16.1 → request (deprecated)
 - **Issue**: Prototype pollution vulnerability
 - **Why Not Fixed**: Same dependency chain as form-data above
-- **Mitigation**: The prototype pollution attack vector is limited in this context.
+- **Risk Assessment**: Prototype pollution can lead to security issues if user-controlled data is processed. This is a known risk that should be addressed as part of the long-term migration strategy.
 
 ## Recommendations
 
