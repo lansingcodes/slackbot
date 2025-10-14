@@ -34,6 +34,13 @@ describe('bot startup', () => {
     let stderr = ''
     let hasStarted = false
     let shutdownTimer = null
+    let safetyTimeout = null
+
+    // Safety timeout - if the bot doesn't start within 20 seconds, fail the test
+    safetyTimeout = setTimeout(() => {
+      bot.kill('SIGTERM')
+      fail('Bot did not start within the timeout period')
+    }, 20000)
 
     // Collect stdout
     bot.stdout.on('data', (data) => {
@@ -42,8 +49,8 @@ describe('bot startup', () => {
 
       // Check for critical errors in stdout (some logging frameworks output to stdout)
       if (!hasStarted && (output.includes('Unable to load') || output.includes('is not valid JSON'))) {
-        // Bot has a critical error, kill it
-        bot.kill('SIGKILL')
+        // Bot has a critical error, terminate it gracefully
+        bot.kill('SIGTERM')
       }
     })
 
@@ -69,6 +76,9 @@ describe('bot startup', () => {
       if (shutdownTimer) {
         clearTimeout(shutdownTimer)
       }
+      if (safetyTimeout) {
+        clearTimeout(safetyTimeout)
+      }
 
       // Check that the bot started successfully before exiting
       expect(hasStarted).toBe(true)
@@ -93,19 +103,10 @@ describe('bot startup', () => {
       if (shutdownTimer) {
         clearTimeout(shutdownTimer)
       }
+      if (safetyTimeout) {
+        clearTimeout(safetyTimeout)
+      }
       fail(`Failed to start bot: ${err.message}`)
-      done()
-    })
-
-    // Safety timeout - if the bot doesn't start within 20 seconds, fail the test
-    const safetyTimeout = setTimeout(() => {
-      bot.kill('SIGKILL')
-      fail('Bot did not start within the timeout period')
-      done()
-    }, 20000)
-
-    bot.on('close', () => {
-      clearTimeout(safetyTimeout)
     })
   })
 })
