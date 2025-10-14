@@ -40,6 +40,7 @@ describe('bot startup', () => {
     safetyTimeout = setTimeout(() => {
       bot.kill('SIGTERM')
       fail('Bot did not start within the timeout period')
+      done()
     }, 20000)
 
     // Collect stdout
@@ -107,6 +108,7 @@ describe('bot startup', () => {
         clearTimeout(safetyTimeout)
       }
       fail(`Failed to start bot: ${err.message}`)
+      done()
     })
   })
 })
