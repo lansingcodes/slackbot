@@ -13,7 +13,8 @@
     "James Green",
     "Joe Ryan",
     "Patrick Hawkins",
-    "Eric Slenk <lucid.machine@gmail.com>"
+    "Eric Slenk <lucid.machine@gmail.com>",
+    "Ryan Lode <rlode24@gmail.com>"
   ],
   "description": "Lansing Code's helpful, neighborhood Slack robot",
   "dependencies": {
