@@ -20,7 +20,7 @@
   "dependencies": {
     "coffeescript": "^1.12.7",
     "cron": "^1.7.1",
-    "firebase": "^9.6.11",
+    "firebase": "^10.9.0",
     "google-url": "0.0.4",
     "hubot": "^3.3.2",
     "hubot-appearin": "^1.0.2",
