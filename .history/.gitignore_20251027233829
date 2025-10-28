@@ -1,0 +1,9 @@
+node_modules
+.DS_Store*
+.hubot_history
+*.log
+deploy/slackbotrc
+deploy/slackinrc
+yarn.lock
+TAGS
+.history/
