@@ -78,10 +78,7 @@ here's a quick list of the tools you'll need to run this project:
 - [node and npm](https://nodejs.org/), although
   [nvm](https://github.com/nvm-sh/nvm) is recommended for non-Windows users
 - [Visual Studio Code](https://code.visualstudio.com/) with these extensions:
-  - Bracket Pair Colorizer by CoenraadS
-  - [StandardJS](https://marketplace.visualstudio.com/items?itemName=chenxsan.vscode-standardjs) by Sam Chen
-  - Node.js Extension Pack by Wade Anderson
-  - npm by egamma
+  - [StandardJS](https://marketplace.visualstudio.com/items?itemName=standard.vscode-standard) by Standard
   - npm Intellisense by Christian Kohler
   - Path Autocomplete by Mihai Vilcu
   - Path Intellisense by Christian Kohler
