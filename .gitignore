@@ -6,3 +6,4 @@ deploy/slackbotrc
 deploy/slackinrc
 yarn.lock
 TAGS
+.history/

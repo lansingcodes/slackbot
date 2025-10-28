@@ -1,6 +1,6 @@
 const includeHubot = require('../../helpers/include-hubot')
 const proxyquire = require('proxyquire').noCallThru()
-const TextMessage = require('hubot/src/message').TextMessage
+const { TextMessage } = require('hubot')
 
 describe('tweeter', () => {
   includeHubot()

@@ -1,13 +1,5 @@
 [
-  "hubot-heroku-keepalive",
   "hubot-diagnostics",
   "hubot-help",
-  "hubot-maps",
-  "hubot-rules",
-  "hubot-shipit",
-  "hubot-darts",
-  "hubot-thank-you",
-  "hubot-appearin",
-  "hubot-bikeshed",
-  "hubot-principles"
+  "hubot-rules"
 ]

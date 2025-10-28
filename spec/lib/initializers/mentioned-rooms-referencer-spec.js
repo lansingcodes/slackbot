@@ -1,102 +1,110 @@
 const includeHubot = require('../../helpers/include-hubot')
-const TextMessage = require('hubot/src/message').TextMessage
+const { TextMessage } = require('hubot')
 
 describe('mentioned-rooms-referencer', () => {
+  let hubotRobot
+  let webClient
   includeHubot()
 
-  beforeEach(() => {
-    require('../../../lib/initializers/mentioned-rooms-referencer')(robot)
-
-    // A fake Slack RTM client for mocking
-    robot.adapter.client = {
-      rtm: {
-        dataStore: {
-          getChannelByName: () => null,
-          getChannelById: () => null
-        }
-      }
+  const buildWebClient = ({
+    channels = [],
+    currentChannel,
+    permalink
+  }) => ({
+    conversations: {
+      list: jasmine.createSpy('conversations.list').and.callFake(async ({ cursor }) => ({
+        channels,
+        response_metadata: cursor ? { next_cursor: '' } : {}
+      })),
+      info: jasmine.createSpy('conversations.info').and.callFake(async () => ({
+        channel: currentChannel
+      }))
+    },
+    chat: {
+      getPermalink: jasmine.createSpy('chat.getPermalink').and.callFake(async () => ({
+        permalink
+      }))
     }
+  })
+
+  beforeEach(() => {
+    hubotRobot = global.robot
+    const modulePath = require.resolve('../../../lib/initializers/mentioned-rooms-referencer')
+    delete require.cache[modulePath]
   })
 
   it('sends a notification to a room when it is mentioned elsewhere', done => {
     const mentionedChannel = {
       id: 'C024BE91L',
-      name: 'test',
-      created: 1360782804,
-      creator: 'U024BE7LH'
+      name: 'test'
     }
     const currentChannel = {
       id: 'C124BE91L',
-      name: 'jasmine',
-      created: 1360782805,
-      creator: 'U124BE7LH'
+      name: 'jasmine'
     }
+    const permalink = 'https://lansingcodes.slack.com/archives/C124BE91L/p1571842414003900'
 
-    // Pretend Slack says the current and mentioned channels are different
-    spyOn(
-      robot.adapter.client.rtm.dataStore,
-      'getChannelByName'
-    ).and.returnValue(mentionedChannel)
-    spyOn(robot.adapter.client.rtm.dataStore, 'getChannelById').and.returnValue(
-      currentChannel
-    )
+    webClient = buildWebClient({
+      channels: [mentionedChannel],
+      currentChannel,
+      permalink
+    })
 
-    // Expect a cross-reference message when the current channel is mentioned
-    robot.adapter.on('send', (envelope, strings) => {
-      expect(envelope.room).toEqual('C024BE91L')
+    hubotRobot.adapter.client = { web: webClient }
+
+    require('../../../lib/initializers/mentioned-rooms-referencer')(hubotRobot)
+
+    hubotRobot.adapter.on('send', (envelope, strings) => {
+      expect(envelope.room).toEqual(mentionedChannel.id)
       expect(strings[0]).toEqual(
-        'This channel was just referenced at: https://lansingcodes.slack.com/archives/C124BE91L/p1571842414003900'
+        `This channel was just referenced at: ${permalink}`
       )
       done()
     })
 
-    // Mention a the current channel
-    robot.adapter.receive(
+    hubotRobot.adapter.receive(
       new TextMessage(
-        { name: 'jasmine', room: 'jasmine' },
-        'This is a reference to the #jasmine room.',
-        '1571842414003900'
+        { name: 'jasmine', room: currentChannel.id },
+        'This is a reference to the #test room.',
+        '1571842414.003900'
       )
     )
   })
 
-  it('does NOT send a notification when the current room is mentioned', () => {
-    let messageWasSent = false
+  it('does NOT send a notification when the current room is mentioned', done => {
     const currentChannel = {
       id: 'C124BE91L',
-      name: 'jasmine',
-      created: 1360782805,
-      creator: 'U124BE7LH'
+      name: 'jasmine'
     }
 
-    // Pretend Slack says the current and mentioned channels are the same
-    spyOn(
-      robot.adapter.client.rtm.dataStore,
-      'getChannelByName'
-    ).and.returnValue(currentChannel)
-    spyOn(robot.adapter.client.rtm.dataStore, 'getChannelById').and.returnValue(
-      currentChannel
-    )
-
-    // Expect to fail if the bot makes a cross-reference
-    jasmine.clock().install()
-    robot.adapter.on('send', (envelope, strings) => {
-      messageWasSent = true
-      fail('We should not cross-reference the same channel.')
+    webClient = buildWebClient({
+      channels: [currentChannel],
+      currentChannel,
+      permalink: 'https://example.test'
     })
 
-    // Mention the current channel
-    robot.adapter.receive(
+    hubotRobot.adapter.client = { web: webClient }
+
+    require('../../../lib/initializers/mentioned-rooms-referencer')(hubotRobot)
+
+    let messageWasSent = false
+
+    hubotRobot.adapter.on('send', () => {
+      messageWasSent = true
+      done.fail('We should not cross-reference the same channel.')
+    })
+
+    hubotRobot.adapter.receive(
       new TextMessage(
-        { name: 'jasmine', room: 'jasmine' },
+        { name: 'jasmine', room: currentChannel.id },
         'This is a reference to the #jasmine room.',
-        '1571842414003900'
+        '1571842414.003900'
       )
     )
 
-    // Wait to verify that nothing explodes
-    jasmine.clock().tick(1000)
-    expect(messageWasSent).toBe(false)
-    jasmine.clock().uninstall()
+    setTimeout(() => {
+      expect(messageWasSent).toBe(false)
+      done()
+    }, 0)
   })
 })
