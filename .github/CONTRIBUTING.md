@@ -241,6 +241,15 @@ slackbot help - Displays all of the help commands that slackbot knows about.
 ...
 ```
 
+### Helper scripts for live Slack validation
+
+To exercise the bot against a real Slack workspace while keeping credentials out of source control, use the helper scripts in the `scripts` folder. Both scripts prompt for sensitive values at runtime and clean them up when they exit.
+
+- **Windows (PowerShell):** `pwsh scripts/run-slackbot-live.ps1`
+- **macOS/Linux (Bash):** `bash scripts/run-slackbot-live.sh`
+
+Before running either script, create a Slack app with the Hubot adapter enabled, collect the `HUBOT_SLACK_TOKEN`, and have any other required environment variables (such as `FIREBASE_WEB_CONFIG`) ready to paste when prompted.
+
 ## Configuration
 
 A few scripts (including some installed by default) require environment
