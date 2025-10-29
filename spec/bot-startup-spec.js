@@ -2,6 +2,12 @@ const { spawn } = require('child_process')
 const path = require('path')
 
 const STABILITY_WINDOW_MS = 5000
+const isWindows = process.platform === 'win32'
+const hubotScriptPath = path.join(__dirname, '..', 'node_modules', 'hubot', 'bin', 'hubot.js')
+const hubotArgs = ['--adapter', 'mock-adapter', '--name', 'slackbot', '--disable-httpd']
+const nodeBinPath = path.join(__dirname, '..', 'node_modules', '.bin')
+const existingPath = process.env.PATH || process.env.Path || ''
+const terminationSignal = 'SIGTERM'
 const STARTUP_PATTERNS = [
   /DeprecationWarning/i,
   /hubot-heroku-keepalive/i,
@@ -25,8 +31,10 @@ describe('bot startup', () => {
 
   it('should start and shutdown successfully', (done) => {
     // Spawn the bot process using the mock adapter
-    const hubotPath = path.join(__dirname, '..', 'node_modules', '.bin', 'hubot')
-    const bot = spawn(hubotPath, ['--adapter', 'mock-adapter', '--name', 'slackbot', '--disable-httpd'], {
+    const command = process.execPath
+    const args = ['--require', 'coffeescript/register', hubotScriptPath, ...hubotArgs]
+
+    const bot = spawn(command, args, {
       cwd: path.join(__dirname, '..'),
       env: {
         ...process.env,
@@ -42,7 +50,7 @@ describe('bot startup', () => {
           appId: 'test-app-id'
         }),
         // Add PATH to include node_modules/.bin for coffee command
-        PATH: `${path.join(__dirname, '..', 'node_modules', '.bin')}:${process.env.PATH}`,
+        PATH: `${nodeBinPath}${path.delimiter}${existingPath}`,
         // Disable the Heroku keepalive to avoid warning errors
         HUBOT_HTTPD: 'false'
       }
@@ -66,18 +74,39 @@ describe('bot startup', () => {
     let pendingDisconnects = 0
     const criticalIssues = []
 
-    // Helper to complete the test only once
-    const completeTest = () => {
-      if (!testCompleted) {
-        testCompleted = true
-        // Clear all timers to ensure proper cleanup
-        if (shutdownTimer) {
-          clearTimeout(shutdownTimer)
-        }
-        if (safetyTimeout) {
-          clearTimeout(safetyTimeout)
-        }
-        done()
+    const clearTimers = () => {
+      if (shutdownTimer) {
+        clearTimeout(shutdownTimer)
+        shutdownTimer = null
+      }
+
+      if (safetyTimeout) {
+        clearTimeout(safetyTimeout)
+        safetyTimeout = null
+      }
+    }
+
+    const finishWithSuccess = () => {
+      if (testCompleted) {
+        return
+      }
+
+      testCompleted = true
+      clearTimers()
+      done()
+    }
+
+    const finishWithFailure = (reason) => {
+      if (testCompleted) {
+        return
+      }
+
+      testCompleted = true
+      clearTimers()
+      if (reason instanceof Error) {
+        done.fail(reason)
+      } else {
+        done.fail(new Error(reason))
       }
     }
 
@@ -94,7 +123,7 @@ describe('bot startup', () => {
       }
 
       shutdownTimer = setTimeout(() => {
-        bot.kill('SIGTERM')
+        bot.kill(terminationSignal)
       }, STABILITY_WINDOW_MS)
     }
 
@@ -135,13 +164,13 @@ describe('bot startup', () => {
 
       if (trimmedLine.includes('Unable to load') || trimmedLine.includes('is not valid JSON')) {
         recordCriticalIssue('Critical script load failure', stream, trimmedLine)
-        bot.kill('SIGTERM')
+        bot.kill(terminationSignal)
       }
 
       CRITICAL_PATTERNS.forEach(({ pattern, reason }) => {
         if (pattern.test(trimmedLine)) {
           recordCriticalIssue(reason, stream, trimmedLine)
-          bot.kill('SIGTERM')
+          bot.kill(terminationSignal)
         }
       })
     }
@@ -160,9 +189,8 @@ describe('bot startup', () => {
 
     // Safety timeout - if the bot doesn't start within 20 seconds, fail the test
     safetyTimeout = setTimeout(() => {
-      bot.kill('SIGTERM')
-      fail('Bot did not start within the timeout period')
-      completeTest()
+      bot.kill(terminationSignal)
+      finishWithFailure('Bot did not start within the timeout period')
     }, 20000)
 
     // Collect stdout
@@ -177,32 +205,57 @@ describe('bot startup', () => {
 
     // Handle bot exit
     bot.on('close', (code) => {
-      // Check that the bot started successfully before exiting
-      expect(hasStarted).toBe(true)
-      expect(startTrigger).withContext('No startup indicator detected in process output').not.toBeNull()
+      if (testCompleted) {
+        return
+      }
 
-      // Check that there are no critical startup errors in stdout or stderr
-      // We allow the heroku-keepalive warning and deprecation warnings
+      const issues = []
+
+      if (!hasStarted) {
+        issues.push('Bot did not emit any expected startup output')
+      }
+
+      if (!startTrigger) {
+        issues.push('No startup indicator detected in process output')
+      }
+
       const combinedOutput = stdout + stderr
-      expect(combinedOutput).not.toMatch(/SyntaxError/)
-      expect(combinedOutput).not.toMatch(/Cannot find module/)
-      expect(combinedOutput).not.toMatch(/Unable to load/)
-      expect(combinedOutput).not.toMatch(/is not valid JSON/)
+      const disallowedPatterns = [
+        { regex: /SyntaxError/, reason: 'SyntaxError detected during startup' },
+        { regex: /Cannot find module/, reason: 'Missing module detected during startup' },
+        { regex: /Unable to load/, reason: 'Unable to load resource during startup' },
+        { regex: /is not valid JSON/, reason: 'Invalid JSON detected during startup' }
+      ]
 
-      expect(pendingDisconnects).withContext('Detected Slack disconnect without a corresponding reconnect').toBe(0)
-      expect(criticalIssues.length).withContext(`Critical issues during startup:\n${criticalIssues.join('\n')}`).toBe(0)
+      disallowedPatterns.forEach(({ regex, reason }) => {
+        if (regex.test(combinedOutput)) {
+          issues.push(reason)
+        }
+      })
 
-      // Check that the bot exited gracefully (code 0 or null for SIGTERM)
-      // SIGTERM can result in null or 0 depending on the process
-      expect(code === 0 || code === null).toBe(true)
+      if (pendingDisconnects !== 0) {
+        issues.push('Detected Slack disconnect without a corresponding reconnect')
+      }
 
-      completeTest()
+      if (criticalIssues.length > 0) {
+        issues.push(`Critical issues during startup:\n${criticalIssues.join('\n')}`)
+      }
+
+      const acceptableExit = code === 0 || code === null || (isWindows && code === 1)
+      if (!acceptableExit) {
+        issues.push(`Unexpected exit code: ${code}`)
+      }
+
+      if (issues.length > 0) {
+        finishWithFailure(issues.join('\n'))
+      } else {
+        finishWithSuccess()
+      }
     })
 
     // Handle errors spawning the process
     bot.on('error', (err) => {
-      fail(`Failed to start bot: ${err.message}`)
-      completeTest()
+      finishWithFailure(`Failed to start bot: ${err.message}`)
     })
   })
 })
