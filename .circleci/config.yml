@@ -19,6 +19,7 @@ jobs:
             npm ci
             npm run lint
             npm test
+            npm run test:legacy
             npm audit --audit-level=low
       - save_cache:
           key: v1-dep-{{ .Branch }}-{{ checksum "package-lock.json" }}
