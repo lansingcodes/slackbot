@@ -78,10 +78,7 @@ here's a quick list of the tools you'll need to run this project:
 - [node and npm](https://nodejs.org/), although
   [nvm](https://github.com/nvm-sh/nvm) is recommended for non-Windows users
 - [Visual Studio Code](https://code.visualstudio.com/) with these extensions:
-  - Bracket Pair Colorizer by CoenraadS
-  - [StandardJS](https://marketplace.visualstudio.com/items?itemName=chenxsan.vscode-standardjs) by Sam Chen
-  - Node.js Extension Pack by Wade Anderson
-  - npm by egamma
+  - [StandardJS](https://marketplace.visualstudio.com/items?itemName=standard.vscode-standard) by Standard
   - npm Intellisense by Christian Kohler
   - Path Autocomplete by Mihai Vilcu
   - Path Intellisense by Christian Kohler
@@ -128,13 +125,13 @@ you can installed, you can run the following command to install the correct Node
 version:
 
 ``` sh
-nvm install lts/dubnium
+nvm install 16.20.2
 ```
 
 And then use that version of Node in your terminal by running:
 
 ``` sh
-nvm use lts/dubnium
+nvm use 16.20.2
 ```
 
 ### Installing dependencies
@@ -219,10 +216,15 @@ We hope you enjoy working with our code!
 
 ## Running slackbot locally
 
+A FIREBASE_WEB_CONFIG is required to start slackbot.  The staging configuration
+can be found in the [lansingcodes/api/README.md](https://github.com/lansingcodes/api?tab=readme-ov-file#staging) 
+This json can be [stringified](https://jsonformatter.org/json-stringify-online) and 
+added to the startup command for running locally.
+
 You can start slackbot locally by running:
 
 ``` sh
-DEBUG=true ./bin/hubot
+DEBUG=true FIREBASE_WEB_CONFIG="stringified-json-firebase-config" ./bin/hubot
 ```
 
 You'll see some start up output and a prompt:
