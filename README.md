@@ -35,6 +35,8 @@ Before you get ahead of yourself, though, please read our
 
 Install Node.js 24 (see `.nvmrc`) and run `npm ci`. Copy `.env.example` to an ignored `.env` file. Set `HUBOT_SLACK_APP_TOKEN` (Socket Mode app token), `HUBOT_SLACK_BOT_TOKEN`, and `FIREBASE_WEB_CONFIG` for the Firestore project written by `website`. Run `npm run start:local` to load `.env`, or `npm start` when the host provides environment variables. The Heroku web process uses `npm start`.
 
+Notification history is stored in Firestore collection `slackbot_notifications`, so scheduled announcements survive Heroku restarts. On Heroku, set `FIREBASE_SERVICE_ACCOUNT` to JSON for a dedicated service account with Firestore read/write access to that project, or set `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, and `FIREBASE_PRIVATE_KEY` separately. Do not set `NOTIFICATION_STORE=memory` on Heroku; that option is only for local development without an emulator. The local stack test uses the Firestore emulator and exercises a simulated restart. No website deployment change is required.
+
 Set `ORGANIZER_BY_GROUP`, `ORGANIZER_FIRST_NAME_BY_GROUP`, `WELCOMER_BY_CHANNEL`, `EVENT_ANNOUNCEMENT_CHANNEL_ID`, and `EVENT_GROUP_CHANNEL_IDS` for the deployed workspace. The old username and channel-name mappings remain as fallbacks. `APPROVED_TWEETER_IDS` restricts the optional X posting command to Slack user IDs; the four `TWITTER_*` variables supply the X app and user credentials. Keep all tokens outside the repository.
 
 Run `npm test`, `npm run lint`, `npm run test:legacy`, and `npm audit --audit-level=low` before a PR. The unit and legacy smoke suites need no Slack or X credentials. The unit suite includes a full Hubot configuration check.

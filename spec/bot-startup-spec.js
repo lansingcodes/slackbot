@@ -14,7 +14,8 @@ describe('bot startup', () => {
         HUBOT_SLACK_BOT_TOKEN: 'xoxb-test',
         FIREBASE_WEB_CONFIG: JSON.stringify({ apiKey: 'test', projectId: 'demo-lansingcodes', appId: 'test' }),
         HUBOT_HEROKU_KEEPALIVE_URL: 'https://example.invalid/',
-        HUBOT_HEROKU_KEEPALIVE_INTERVAL: '0'
+        HUBOT_HEROKU_KEEPALIVE_INTERVAL: '0',
+        NOTIFICATION_STORE: 'memory'
       }
     })
 

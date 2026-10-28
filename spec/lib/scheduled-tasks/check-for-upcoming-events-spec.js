@@ -18,7 +18,7 @@ describe('check-for-upcoming-events', () => {
       }
       const run = proxyquire('../../../lib/scheduled-tasks/check-for-upcoming-events', {
         '../helpers/choose-beverage': () => [{ article: 'a', name: 'coffee' }, ':coffee:'],
-        '../cachers/events-cacher': () => ({ alreadyNotifiedRegarding: item => item.id === event.id, cache: () => {} }),
+        '../cachers/events-cacher': () => ({ load: async () => {}, alreadyNotifiedRegarding: item => item.id === event.id, cache: () => {} }),
         '../fetchers/events-fetcher': async () => ({ upcoming: async () => [event] }),
         '../helpers/is-today': () => false,
         '../helpers/generate-welcome-email-for': () => {}
@@ -49,7 +49,7 @@ describe('check-for-upcoming-events', () => {
     }
     const run = proxyquire('../../../lib/scheduled-tasks/check-for-upcoming-events', {
       '../helpers/choose-beverage': () => [{ article: 'a', name: 'coffee' }, ':coffee:'],
-      '../cachers/events-cacher': () => ({ alreadyNotifiedRegarding: item => item.id === event.id, cache: () => {} }),
+      '../cachers/events-cacher': () => ({ load: async () => {}, alreadyNotifiedRegarding: item => item.id === event.id, cache: () => {} }),
       '../fetchers/events-fetcher': async () => ({ upcoming: async () => [event] }),
       '../helpers/is-today': () => false,
       '../helpers/generate-welcome-email-for': () => {}
@@ -73,6 +73,7 @@ describe('check-for-upcoming-events', () => {
     const run = proxyquire('../../../lib/scheduled-tasks/check-for-upcoming-events', {
       '../helpers/choose-beverage': () => [{ article: 'a', name: 'coffee' }, ':coffee:'],
       '../cachers/events-cacher': () => ({
+        load: async () => {},
         alreadyNotifiedRegarding: item => notified.has(item.id),
         cache: item => notified.add(item.id)
       }),

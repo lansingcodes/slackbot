@@ -108,6 +108,16 @@ async function main () {
     await announcement
     console.log('PASS: scheduled task announces Firestore events to the configured channel')
 
+    const afterRestart = []
+    const restartedRobot = {
+      brain: { get: () => undefined, set: () => {} },
+      messageRoom: (...args) => afterRestart.push(args),
+      logger: { error: error => { throw new Error(error) } }
+    }
+    await require('../lib/scheduled-tasks/check-for-upcoming-events')(restartedRobot)
+    assert.equal(afterRestart.filter(([, text]) => text.includes('new event scheduled:')).length, 0)
+    console.log('PASS: a fresh bot does not repeat an announcement after restart')
+
     const reference = await sendText(robot, user, 'Please ask #devops', (room, lines) =>
       room.room === 'CDEVOPS' && lines.join(' ').includes('/archives/CGENERAL/p1234567890000001'))
     assert.match(reference.text, /This channel was just referenced/)
@@ -133,6 +143,7 @@ async function main () {
     console.log('PASS: an approved user reaches the simulated X client')
   } finally {
     robot.shutdown()
+    await (await require('../lib/cachers/events-cacher')(robot).load()).clearAll()
     await terminate(await require('../lib/fetchers/init-firestore')())
     await eventDoc.delete()
     await deleteApp(adminApp)
