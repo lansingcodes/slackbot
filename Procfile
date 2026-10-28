@@ -1,1 +1,1 @@
-web: bin/hubot
+web: npm start

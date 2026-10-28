@@ -4,7 +4,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: cimg/node:lts
+      - image: cimg/node:24.21.0
     working_directory: ~/lansingcodes/slackbot
     environment:
       TZ: America/Detroit
@@ -16,10 +16,10 @@ jobs:
             - v1-dep-
       - run:
           command: |
-            npm install
-            npm rebuild
+            npm ci
             npm run lint
             npm test
+            npm audit --audit-level=low
       - save_cache:
           key: v1-dep-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:

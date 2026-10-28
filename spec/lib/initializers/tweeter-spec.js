@@ -1,14 +1,11 @@
 const includeHubot = require('../../helpers/include-hubot')
 const proxyquire = require('proxyquire').noCallThru()
-const { TextMessage } = require('hubot')
+let TextMessage
 
 describe('tweeter', () => {
   includeHubot()
-  let robot
 
-  beforeEach(() => {
-    robot = global.robot
-  })
+  beforeAll(async () => { ({ TextMessage } = await import('hubot')) })
 
   describe('when the user is authorized', () => {
     describe('and the tweet is sent successfully', () => {
@@ -108,5 +105,24 @@ describe('tweeter', () => {
         )
       )
     })
+  })
+
+  it('uses Slack user IDs when an approval list is configured', async () => {
+    process.env.APPROVED_TWEETER_IDS = 'U123'
+    const tweet = jasmine.createSpy('tweet').and.callFake((_text, _error, success) => success())
+    const registerTweeter = proxyquire('../../../lib/initializers/tweeter', {
+      '../helpers/tweet': tweet,
+      '../helpers/get-denied-gif': () => 'foo'
+    })
+    registerTweeter(robot)
+    try {
+      await robot.adapter.receive(new TextMessage(
+        { id: 'U123', name: 'renamed-user', room: 'test' },
+        'slackbot tweet hello world'
+      ))
+      expect(tweet).toHaveBeenCalled()
+    } finally {
+      delete process.env.APPROVED_TWEETER_IDS
+    }
   })
 })

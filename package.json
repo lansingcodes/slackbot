@@ -18,37 +18,46 @@
   ],
   "description": "Lansing Code's helpful, neighborhood Slack robot",
   "dependencies": {
-    "@hubot-friends/hubot-slack": "^3.7.2",
+    "@hubot-friends/hubot-slack": "^3.8.0",
     "coffeescript": "^1.12.7",
     "cron": "^1.7.1",
-    "firebase": "^12.4.0",
-    "hubot": "^13.1.4",
+    "firebase": "^13.1.0",
+    "hubot": "^14.1.1",
+    "hubot-bikeshed": "^1.3.0",
+    "hubot-darts": "^1.0.2",
     "hubot-diagnostics": "^2.1.3",
     "hubot-help": "^2.1.5",
+    "hubot-principles": "^1.0.0",
     "hubot-rules": "^2.1.1",
+    "hubot-thank-you": "0.0.3",
     "moment": "^2.29.4",
-    "tinyurl": "^1.1.4",
-    "twitter-node-client": "0.0.6"
+    "twitter-api-v2": "^1.31.0"
   },
   "scripts": {
+    "start": "bin/hubot --adapter @hubot-friends/hubot-slack",
+    "start:local": "node --env-file=.env ./node_modules/hubot/bin/hubot --name slackbot --adapter @hubot-friends/hubot-slack",
     "fix": "standard --env jasmine --global robot --global hubotHelpers --fix",
     "lint": "standard --env jasmine --global robot --global hubotHelpers",
     "precommit": "run-s lint test",
-    "test": "jasmine"
+    "test": "jasmine",
+    "test:legacy": "node dev-tools/legacy-script-smoke.js",
+    "test:stack": "bash scripts/run-local-stack-smoke.sh"
   },
   "devDependencies": {
-    "hubot-mock-adapter": "^1.0.0",
     "jasmine": "^3.6.2",
     "npm-run-all": "^4.1.5",
     "proxyquire": "^2.1.3",
-    "standard": "^17.1.0"
+    "standard": "^17.1.2"
   },
   "engines": {
-    "node": ">=18"
+    "node": "24.x"
   },
   "standard": {
     "env": [
       "jasmine"
     ]
+  },
+  "overrides": {
+    "@grpc/grpc-js": "^1.14.6"
   }
 }

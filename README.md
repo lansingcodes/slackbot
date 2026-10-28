@@ -33,12 +33,13 @@ Before you get ahead of yourself, though, please read our
 
 ## Running the bot locally
 
-- Install Node.js 18 or newer.
-- Copy `.env.example` to `.env` (create the file if it does not exist) and populate:
-	- `HUBOT_SLACK_APP_TOKEN` – Slack App-Level token with `connections:write`.
-	- `HUBOT_SLACK_BOT_TOKEN` – Bot token with the scopes listed below.
-- (Optional) set `PORT` to expose Hubot's HTTP listener if needed.
-- Start the bot with `npm install` followed by `npm start` or `bin/hubot`.
+Install Node.js 24 (see `.nvmrc`) and run `npm ci`. Copy `.env.example` to an ignored `.env` file. Set `HUBOT_SLACK_APP_TOKEN` (Socket Mode app token), `HUBOT_SLACK_BOT_TOKEN`, and `FIREBASE_WEB_CONFIG` for the Firestore project written by `website`. Run `npm run start:local` to load `.env`, or `npm start` when the host provides environment variables. The Heroku web process uses `npm start`.
+
+Set `ORGANIZER_BY_GROUP`, `ORGANIZER_FIRST_NAME_BY_GROUP`, `WELCOMER_BY_CHANNEL`, `EVENT_ANNOUNCEMENT_CHANNEL_ID`, and `EVENT_GROUP_CHANNEL_IDS` for the deployed workspace. The old username and channel-name mappings remain as fallbacks. `APPROVED_TWEETER_IDS` restricts the optional X posting command to Slack user IDs; the four `TWITTER_*` variables supply the X app and user credentials. Keep all tokens outside the repository.
+
+Run `npm test`, `npm run lint`, `npm run test:legacy`, and `npm audit --audit-level=low` before a PR. The unit and legacy smoke suites need no Slack or X credentials. The unit suite includes a full Hubot configuration check.
+
+To rehearse the bot with the production website's Firestore SDK, check out `lansingcodes/website` beside this repository and run `npm ci` there. Install the Firebase CLI, then run `npm run test:stack`. Set `STACK_WEBSITE_PACKAGE` to the website's `package.json` if it is elsewhere, and `FIREBASE_BIN` if the CLI is not on `PATH`. The test uses only a local Firestore emulator and demo data. For end-to-end acceptance, test the bot in a separate Slack workspace with representative Firestore events before deploying to Heroku.
 
 ### Required Slack scopes and events
 

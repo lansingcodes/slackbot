@@ -1,51 +1,35 @@
+const EventEmitter = require('events')
 const includeHubot = require('../../helpers/include-hubot')
 
 describe('watch-for-disconnected', () => {
-  let waitTime
-  let hubotRobot
   includeHubot()
 
   beforeEach(() => {
-    hubotRobot = global.robot
-
-    // Load our module under test
-    require('../../../lib/initializers/watch-for-disconnected')(hubotRobot)
-
-    // Control the clock for unit testing
-    waitTime = parseInt(process.env.SLACKBOT_DISCONNECT_WAIT_TIME)
+    robot.adapter.client = { socket: new EventEmitter() }
+    require('../../../lib/initializers/watch-for-disconnected')(robot)
+    spyOn(process, 'exit')
     jasmine.clock().install()
   })
 
-  afterEach(() => {
-    jasmine.clock().uninstall()
+  afterEach(() => jasmine.clock().uninstall())
+
+  it('exits after a lost connection is not restored', () => {
+    robot.adapter.client.socket.emit('close')
+    jasmine.clock().tick(20001)
+    expect(process.exit).toHaveBeenCalledOnceWith(1)
   })
 
-  it('does NOT start a timer without a match', () => {
-    expect(() => {
-      hubotRobot.logger.info('Some message that we should not trigger on')
-      jasmine.clock().tick(waitTime + 1)
-    }).not.toThrow()
+  it('does not exit when the connection returns', () => {
+    robot.adapter.client.socket.emit('close')
+    robot.adapter.client.socket.emit('open')
+    jasmine.clock().tick(20001)
+    expect(process.exit).not.toHaveBeenCalled()
   })
 
-  it('starts a timer when the adapter disconnects', () => {
-    expect(() => {
-      hubotRobot.adapter.emit('disconnected')
-      jasmine.clock().tick(waitTime + 1)
-    }).toThrow(new Error('Force restarting due to disconnect'))
-  })
-
-  it('also responds to log messages for backwards compatibility', () => {
-    expect(() => {
-      hubotRobot.logger.info('Slack client closed, waiting for reconnect')
-      jasmine.clock().tick(waitTime + 1)
-    }).toThrow(new Error('Force restarting due to disconnect'))
-  })
-
-  it('cancels a timer that has been started if the client reconnects', () => {
-    expect(() => {
-      hubotRobot.adapter.emit('disconnected')
-      hubotRobot.adapter.emit('connected')
-      jasmine.clock().tick(waitTime + 1)
-    }).not.toThrow()
+  it('does not exit during normal shutdown', () => {
+    robot.adapter.client.socket.shuttingDown = true
+    robot.adapter.client.socket.emit('close')
+    jasmine.clock().tick(20001)
+    expect(process.exit).not.toHaveBeenCalled()
   })
 })

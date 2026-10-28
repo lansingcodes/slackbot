@@ -1,22 +1,32 @@
-const TinyURL = require('tinyurl')
 const shortenUrl = require('../../../lib/helpers/shorten-url')
 
 describe('shorten-url', () => {
-  beforeEach(() => {
-    spyOn(TinyURL, 'shorten').and.callFake((longUrl, cb) => {
-      const encoded = Buffer.from(longUrl)
-        .toString('base64')
-        .replace(/[+/=]/g, '')
-        .slice(0, 8)
-      const shortened = `https://tinyurl.com/${encoded}`
-      cb(shortened)
-    })
+  const longUrl = 'https://www.meetup.com/example/event/123'
+
+  it('returns a secure TinyURL link', async () => {
+    spyOn(global, 'fetch').and.resolveTo({ ok: true, text: async () => 'https://tinyurl.com/example\n' })
+    const callback = jasmine.createSpy('callback')
+
+    await shortenUrl(longUrl, callback)
+
+    expect(callback).toHaveBeenCalledOnceWith('https://tinyurl.com/example')
   })
 
-  it('produces a URL beginning with "https://tinyurl.com/"', (done) => {
-    shortenUrl('http://www.google.com', (shortUrl) => {
-      expect(shortUrl.startsWith('https://tinyurl.com/')).toBeTrue()
-      done()
-    })
+  it('uses the original link when TinyURL is unavailable', async () => {
+    spyOn(global, 'fetch').and.rejectWith(new Error('offline'))
+    const callback = jasmine.createSpy('callback')
+
+    await shortenUrl(longUrl, callback)
+
+    expect(callback).toHaveBeenCalledOnceWith(longUrl)
+  })
+
+  it('rejects an invalid response from TinyURL', async () => {
+    spyOn(global, 'fetch').and.resolveTo({ ok: true, text: async () => 'Error' })
+    const callback = jasmine.createSpy('callback')
+
+    await shortenUrl(longUrl, callback)
+
+    expect(callback).toHaveBeenCalledOnceWith(longUrl)
   })
 })

@@ -1,51 +1,45 @@
-const proxyquire = require('proxyquire').noCallThru()
+const proxyquire = require('proxyquire')
 
 describe('welcome-email', () => {
-  let shortenUrlSpy
-  let welcomeEmail
   const event = {
-    id: '222664930',
-    name: "Today's new JavaScript framework",
-    group: {
-      id: 'javascript',
-      name: 'Lansing Javascript Meetup',
-      meetupUrlName: 'Lansing-Javascript-Meetup'
-    },
-    description: 'tbd',
-    url: 'https://www.meetup.com/Lansing-Javascript-Meetup/events/222664930/',
-    venue: 'the moon',
-    address: '1 solar system way',
+    id: 'calendar-uid',
+    group: 'catech',
+    name: 'Community gathering',
+    url: 'https://www.meetup.com/catech/events/305626180/',
     startTime: Date.now()
   }
+  let templateUrl
+  let welcomeEmail
 
   beforeEach(() => {
-    shortenUrlSpy = jasmine.createSpy('shortenUrl').and.callFake((url, callback) => {
-      /* eslint-disable n/no-callback-literal */
-      callback('https://short.test/welcome-email')
-      /* eslint-enable n/no-callback-literal */
-    })
-
+    process.env.ORGANIZER_BY_GROUP = '{"catech":"U123"}'
+    process.env.ORGANIZER_FIRST_NAME_BY_GROUP = '{"catech":"Alex"}'
     welcomeEmail = proxyquire('../../../lib/templates/welcome-email', {
-      '../helpers/shorten-url': shortenUrlSpy
+      '../helpers/shorten-url': (url, onShortUrl) => {
+        templateUrl = url
+        onShortUrl(url)
+      }
     })
   })
 
-  it('invokes the shortener with the meetup message URL and returns the shortened value', done => {
-    welcomeEmail(event, shortUrl => {
-      expect(shortenUrlSpy).toHaveBeenCalledTimes(1)
-      expect(shortenUrlSpy.calls.argsFor(0)[0]).toContain(event.group.meetupUrlName)
-      expect(shortUrl).toEqual('https://short.test/welcome-email')
-      done()
-    })
+  afterEach(() => {
+    delete process.env.ORGANIZER_BY_GROUP
+    delete process.env.ORGANIZER_FIRST_NAME_BY_GROUP
   })
 
-  it('URL encodes the email subject and body', done => {
-    welcomeEmail(event, () => {
-      const generatedUrl = shortenUrlSpy.calls.argsFor(0)[0]
-      const expectedSubject = encodeURIComponent(`${event.name} Today!`)
-      expect(generatedUrl).toContain(`subject=${expectedSubject}`)
-      expect(generatedUrl).toContain('body=%3Cp%3EFellow')
-      done()
-    })
+  it('uses the Meetup slug and event ID from the event URL', () => {
+    welcomeEmail(event, () => {})
+
+    expect(templateUrl).toContain('/catech/messages/send/')
+    expect(templateUrl).toContain('eventId=305626180')
+    expect(templateUrl).not.toContain('eventId=calendar-uid')
+  })
+
+  it('includes the configured organizer name in the template', () => {
+    welcomeEmail(event, () => {})
+    const body = new URL(templateUrl).searchParams.get('body')
+
+    expect(body).toContain('<p>Alex</p>')
+    expect(body).not.toContain('<p>U123</p>')
   })
 })

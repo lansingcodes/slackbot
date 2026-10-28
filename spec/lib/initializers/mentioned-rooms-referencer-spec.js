@@ -1,110 +1,75 @@
 const includeHubot = require('../../helpers/include-hubot')
-const { TextMessage } = require('hubot')
+let TextMessage
 
 describe('mentioned-rooms-referencer', () => {
-  let hubotRobot
-  let webClient
   includeHubot()
 
-  const buildWebClient = ({
-    channels = [],
-    currentChannel,
-    permalink
-  }) => ({
-    conversations: {
-      list: jasmine.createSpy('conversations.list').and.callFake(async ({ cursor }) => ({
-        channels,
-        response_metadata: !cursor ? { next_cursor: '' } : {}
-      })),
-      info: jasmine.createSpy('conversations.info').and.callFake(async () => ({
-        channel: currentChannel
-      }))
-    },
-    chat: {
-      getPermalink: jasmine.createSpy('chat.getPermalink').and.callFake(async () => ({
-        permalink
-      }))
-    }
-  })
+  beforeAll(async () => { ({ TextMessage } = await import('hubot')) })
 
   beforeEach(() => {
-    hubotRobot = global.robot
-    const modulePath = require.resolve('../../../lib/initializers/mentioned-rooms-referencer')
-    delete require.cache[modulePath]
+    require('../../../lib/initializers/mentioned-rooms-referencer')(robot)
+    robot.adapter.self = { url: 'https://lansingcodessystem.slack.com/' }
+    robot.adapter.client = {
+      web: {
+        conversations: {
+          list: jasmine.createSpy('list').and.resolveTo({
+            channels: [{ id: 'C024BE91L', name: 'test' }],
+            response_metadata: { next_cursor: '' }
+          })
+        }
+      }
+    }
   })
 
-  it('sends a notification to a room when it is mentioned elsewhere', done => {
-    const mentionedChannel = {
-      id: 'C024BE91L',
-      name: 'test'
-    }
-    const currentChannel = {
-      id: 'C124BE91L',
-      name: 'jasmine'
-    }
-    const permalink = 'https://lansingcodes.slack.com/archives/C124BE91L/p1571842414003900'
+  const messageFrom = (room, text, rawText) => {
+    const message = new TextMessage({ name: 'jasmine', room }, text, '1571842414.003900')
+    message.rawText = rawText
+    return message
+  }
 
-    webClient = buildWebClient({
-      channels: [mentionedChannel],
-      currentChannel,
-      permalink
-    })
+  it('notifies a channel mentioned by name', async () => {
+    const sent = jasmine.createSpy('sent')
+    robot.adapter.on('send', sent)
 
-    hubotRobot.adapter.client = { web: webClient }
+    await robot.adapter.receive(messageFrom('C124BE91L', 'See #test for details.'))
 
-    require('../../../lib/initializers/mentioned-rooms-referencer')(hubotRobot)
-
-    hubotRobot.adapter.on('send', (envelope, strings) => {
-      expect(envelope.room).toEqual(mentionedChannel.id)
-      expect(strings[0]).toEqual(
-        `This channel was just referenced at: ${permalink}`
-      )
-      done()
-    })
-
-    hubotRobot.adapter.receive(
-      new TextMessage(
-        { name: 'jasmine', room: currentChannel.id },
-        'This is a reference to the #test room.',
-        '1571842414.003900'
-      )
+    expect(sent).toHaveBeenCalled()
+    expect(sent.calls.mostRecent().args[0].room).toBe('C024BE91L')
+    expect(sent.calls.mostRecent().args[1][0]).toBe(
+      'This channel was just referenced at: https://lansingcodessystem.slack.com/archives/C124BE91L/p1571842414003900'
     )
   })
 
-  it('does NOT send a notification when the current room is mentioned', done => {
-    const currentChannel = {
-      id: 'C124BE91L',
-      name: 'jasmine'
-    }
+  it('uses the channel ID in a native Slack mention', async () => {
+    const sent = jasmine.createSpy('sent')
+    robot.adapter.on('send', sent)
 
-    webClient = buildWebClient({
-      channels: [currentChannel],
-      currentChannel,
-      permalink: 'https://example.test'
+    await robot.adapter.receive(messageFrom('C124BE91L', 'See #test.', 'See <#C024BE91L|test>.'))
+
+    expect(sent).toHaveBeenCalled()
+    expect(robot.adapter.client.web.conversations.list).not.toHaveBeenCalled()
+  })
+
+  it('does not notify the current channel', async () => {
+    const sent = jasmine.createSpy('sent')
+    robot.adapter.on('send', sent)
+    robot.adapter.client.web.conversations.list.and.resolveTo({
+      channels: [{ id: 'C124BE91L', name: 'test' }],
+      response_metadata: { next_cursor: '' }
     })
 
-    hubotRobot.adapter.client = { web: webClient }
+    await robot.adapter.receive(messageFrom('C124BE91L', 'See #test.'))
 
-    require('../../../lib/initializers/mentioned-rooms-referencer')(hubotRobot)
+    expect(sent).not.toHaveBeenCalled()
+  })
 
-    let messageWasSent = false
+  it('does not publish direct-message links into a channel', async () => {
+    const sent = jasmine.createSpy('sent')
+    robot.adapter.on('send', sent)
 
-    hubotRobot.adapter.on('send', () => {
-      messageWasSent = true
-      done.fail('We should not cross-reference the same channel.')
-    })
+    await robot.adapter.receive(messageFrom('D123', 'See #test.'))
 
-    hubotRobot.adapter.receive(
-      new TextMessage(
-        { name: 'jasmine', room: currentChannel.id },
-        'This is a reference to the #jasmine room.',
-        '1571842414.003900'
-      )
-    )
-
-    setTimeout(() => {
-      expect(messageWasSent).toBe(false)
-      done()
-    }, 0)
+    expect(sent).not.toHaveBeenCalled()
+    expect(robot.adapter.client.web.conversations.list).not.toHaveBeenCalled()
   })
 })

@@ -1,58 +1,35 @@
-# Security Upgrade Plan
+# Slackbot modernization and verification
 
-This document outlines the remediation steps needed to resolve the remaining npm vulnerabilities after PRs #85, #95, and #96.
+This PR upgrades the existing Hubot bot while keeping its event, onboarding, room-reference, help, and optional X posting behavior. It targets `main` and keeps Heroku as the bot host. The bot reads Firestore collections written by the production `website` repository; the retired `api` repository is not a deployment dependency.
 
-## 1. Replace Deprecated Slack Adapter
+## Runtime and dependencies
 
-- Swap `hubot-slack` for `@hubot-friends/hubot-slack`.
-- Upgrade Hubot core to `^13.1.4` and adjust startup commands (Procfile, README) to use `hubot -a @hubot-friends/hubot-slack`.
-- Require new env vars `HUBOT_SLACK_APP_TOKEN` and `HUBOT_SLACK_BOT_TOKEN`; document Socket Mode scopes/events.
-- Refactor Slack-specific initializers/tests to remove dependencies on the legacy RTM client (notably `mentioned-rooms-referencer` and `watch-for-disconnected`).
+- Node 24, Hubot 14, and `@hubot-friends/hubot-slack` Socket Mode replace the old RTM adapter.
+- Firebase 13 and patched dependencies replace vulnerable packages. The X command uses the X v2 Post API. The old TinyURL package is replaced by an HTTPS request with a fallback to the original URL.
+- `hubot-appearin`, `hubot-maps`, and `hubot-shipit` are replaced by local video-room, Google Maps URL, and HTTPS shipit commands. The remaining CoffeeScript packages load through a compatibility loader.
+- The deprecated external Heroku keepalive package is replaced by the internal initializer from this PR. Set `HUBOT_HEROKU_KEEPALIVE_URL` or `HEROKU_URL` to enable it; set `HUBOT_HEROKU_KEEPALIVE_INTERVAL=0` to disable it.
 
-## 2. Remove Vulnerable Legacy Helpers
+## Local checks
 
-- Drop unused `google-url` and `expand-url` dependencies to eliminate their transitively vulnerable `request`/`form-data` chain.
-- Update `lib/templates/welcome-email.js` and its specs to stub `shorten-url` instead of making live shortening calls.
+Use Node 24 and run:
 
-## 3. Upgrade Firebase SDK
+```sh
+npm ci
+npm run lint
+npm test
+npm run test:legacy
+npm run test:stack
+npm audit --audit-level=low
+```
 
-- Bump `firebase` to `^12.4.0` to pick up patched `@grpc/grpc-js`.
-- Verify Firestore usage (`events-fetcher`) against new APIs and adjust if necessary.
+The unit suite includes a process-level `--config-check` that fails on script-loading errors even when Hubot exits successfully. The legacy smoke suite exercises representative commands through a local Hubot adapter. Both suites run without Slack or X credentials.
 
-## 4. Modernize Tooling
+The optional stack test runs a local Firestore emulator with the sibling `website` checkout's Firebase Admin SDK. It verifies event lookup, group replies, scheduled announcements, channel references, join notices, and X authorization with demo data. The combined website, Slackbot, and newsletter integration was also checked separately with an emulator. Repeat these tests after changes to the Firestore schema.
 
-- Update `standard` to `^17` (and any transitive lint deps).
-- Add Node engine constraint `>=18`.
-- Update CircleCI workflow to run `npm run lint && npm test`.
+## Deployment acceptance
 
-## 5. Verification
-
-- Blow away lockfile and reinstall: `rm -rf node_modules package-lock.json && npm install`.
-- Run `npm run lint`, `npm test`, and `npm audit --omit=dev`.
-- ✅ `npm run lint`
-- ✅ `npm test`
-- ✅ `npm audit --omit=dev`
-- Perform manual smoke tests in Slack (help command, channel mention notification, reconnect behavior, tweeting).
-	- Partial: Hubot boots locally with the new adapter; startup now halts at Slack authentication because placeholder `SLACK_APP_TOKEN` / `SLACK_BOT_TOKEN` were used. Re-run with production Socket Mode tokens to complete verification.
-
-## 6. Follow-Up
-
-- Capture migration instructions in README.
-- Determine if any remaining vulnerabilities stem from third-party Hubot scripts and file follow-up issues if they cannot be patched immediately.
-
-## 7. Slack Token Preparation & Sandbox Testing
-
-1. Create (or reuse) a Slack workspace dedicated to testing at <https://slack.com/create>. The free plan is sufficient and avoids touching production data while verifying Socket Mode behavior.
-2. Build a Slack app for that workspace via <https://api.slack.com/apps>:
-   - Enable **Socket Mode**.
-   - Generate an **App-Level Token** with the `connections:write` scope (this becomes `SLACK_APP_TOKEN`).
-   - Under **OAuth & Permissions**, add the required bot scopes (`app_mentions:read`, `channels:history`, `chat:write`, `groups:history`, `im:history`, `mpim:history`, `reactions:read`, `reactions:write`, etc.) and reinstall the app to capture the refreshed Bot User OAuth token (`SLACK_BOT_TOKEN`).
-3. Store those tokens in a local `.env` (never commit them):
-
-   ```bash
-   SLACK_APP_TOKEN=xapp-...
-   SLACK_BOT_TOKEN=xoxb-...
-   ```
-
-4. Run a local smoke test with the sandbox tokens: `bash bin/hubot --adapter @hubot-friends/hubot-slack`. Confirm the adapter connects (look for "Connected to Slack" in the logs) and exercise key commands (help, channel mention notifications, reconnect behavior, tweeting).
-5. After approvals, repeat the token creation steps in the production workspace, update deployment secrets (e.g., Heroku config vars), and re-run the smoke test against production.
+1. In a non-production Slack workspace, confirm the app has the documented Socket Mode scopes and channel memberships. Check event replies, announcements, joins, references, reconnection, and every retained command.
+2. Restart the bot and check that reminders are not repeated. Configure persistent Hubot brain storage if the production host does not preserve it.
+3. Verify the production `website` Firestore schema and current organizer, welcomer, announcement-channel, and approved-tweeter IDs.
+4. Set Heroku config vars without committing tokens. Confirm the web process starts, reconnects, and recovers after restart. Keep the website's Netlify deploy separate from the bot's Heroku deploy.
+5. Obtain maintainer review before merging. Production credentials and deployment have not been exercised by this PR.
