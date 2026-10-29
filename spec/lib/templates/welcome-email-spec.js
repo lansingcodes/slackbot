@@ -42,4 +42,23 @@ describe('welcome-email', () => {
     expect(body).toContain('<p>Alex</p>')
     expect(body).not.toContain('<p>U123</p>')
   })
+
+  it('uses available event location and omits stale venue and phone claims', () => {
+    welcomeEmail({ ...event, venue: 'Community Hall', address: '123 Main St' }, () => {})
+    const body = new URL(templateUrl).searchParams.get('body')
+
+    expect(body).toContain('Community Hall — 123 Main St')
+    expect(body).toContain('event page')
+    expect(body).not.toContain('ORGANIZER_PHONE')
+    expect(body).not.toContain('MSU parking structure')
+    expect(body).not.toContain('Cottage Inn')
+  })
+
+  it('escapes event text before adding it to the HTML draft', () => {
+    welcomeEmail({ ...event, name: '<script>alert(1)</script>' }, () => {})
+    const body = new URL(templateUrl).searchParams.get('body')
+
+    expect(body).toContain('&lt;script&gt;alert(1)&lt;/script&gt;')
+    expect(body).not.toContain('<script>')
+  })
 })

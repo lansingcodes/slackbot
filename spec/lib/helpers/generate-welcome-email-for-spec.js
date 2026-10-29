@@ -13,6 +13,10 @@ describe('generate-welcome-email-for', () => {
 
     generate({ group: 'javascript' }, robot)
 
-    expect(messageRoom).toHaveBeenCalledOnceWith('U123', jasmine.stringMatching(/https:\/\/tinyurl.com\/test/))
+    expect(messageRoom).toHaveBeenCalledOnceWith('U123', jasmine.objectContaining({
+      text: jasmine.stringMatching(/<https:\/\/tinyurl.com\/test\|Open the Meetup draft>/),
+      unfurl_links: false,
+      unfurl_media: false
+    }))
   })
 })
