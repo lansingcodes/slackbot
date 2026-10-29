@@ -23,4 +23,4 @@ STACK_WEBSITE_PACKAGE="$website_package" "$firebase_bin" emulators:exec \
   --only firestore \
   --project demo-lansingcodes \
   --config firebase.json \
-  'node dev-tools/local-stack-smoke.js'
+  'node dev-tools/local-stack-smoke.js && node dev-tools/notification-restart-smoke.js'
