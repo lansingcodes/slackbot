@@ -29,7 +29,7 @@ const eventName = 'Local stack smoke event'
 const eventUrl = 'https://example.test/local-stack-smoke'
 
 class LocalAdapter extends Adapter {
-  async send (envelope, ...strings) { this.emit('send', envelope, strings) }
+  async send (envelope, ...strings) { this.emit('send', envelope, strings.map(value => typeof value === 'string' ? value : value.text)) }
   async reply (envelope, ...strings) { this.emit('reply', envelope, strings) }
   async run () { this.emit('connected') }
 }
@@ -94,7 +94,7 @@ async function main () {
 
     const upcoming = await sendText(robot, user, 'upcoming events', (room, lines) =>
       room.room === 'CGENERAL' && lines.join(' ').includes(eventName))
-    assert.match(upcoming.text, /Here are the upcoming events/)
+    assert.match(upcoming.text, /Upcoming events/)
     console.log('PASS: Firestore event appears in the upcoming events reply')
 
     const next = await sendText(robot, user, 'next smoketest event', (room, lines) =>
