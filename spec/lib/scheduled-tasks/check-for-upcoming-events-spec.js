@@ -1,6 +1,50 @@
 const proxyquire = require('proxyquire')
 
 describe('check-for-upcoming-events', () => {
+  it('does not cache a reminder that Slack failed to post', async () => {
+    const oldAnnouncement = process.env.EVENT_ANNOUNCEMENT_CHANNEL_ID
+    const oldGroups = process.env.EVENT_GROUP_CHANNEL_IDS
+    process.env.EVENT_ANNOUNCEMENT_CHANNEL_ID = 'CANNOUNCE'
+    process.env.EVENT_GROUP_CHANNEL_IDS = '{"javascript":"CJS"}'
+    try {
+      const eventDate = new Date()
+      eventDate.setDate(eventDate.getDate() + 7)
+      const event = {
+        id: 'event-id',
+        group: 'javascript',
+        name: 'JavaScript Meetup',
+        url: 'https://example.test/event',
+        startTime: eventDate.valueOf()
+      }
+      const cache = jasmine.createSpy('cache')
+      const run = proxyquire('../../../lib/scheduled-tasks/check-for-upcoming-events', {
+        '../helpers/choose-beverage': () => [{ article: 'a', name: 'coffee' }, ':coffee:'],
+        '../cachers/events-cacher': () => ({ load: async () => {}, alreadyNotifiedRegarding: item => item.id === event.id, cache }),
+        '../fetchers/events-fetcher': async () => ({ upcoming: async () => [event] }),
+        '../helpers/is-today': () => false
+      })
+      const postMessage = jasmine.createSpy('postMessage').and.callFake(async ({ channel }) => {
+        if (channel === 'CJS') throw new Error('Slack unavailable')
+        return { ok: true }
+      })
+      const robot = {
+        adapter: { client: { web: { chat: { postMessage } } } },
+        messageRoom: jasmine.createSpy('messageRoom'),
+        logger: { error: jasmine.createSpy('error') }
+      }
+
+      await run(robot)
+
+      expect(cache).not.toHaveBeenCalled()
+      expect(robot.logger.error).toHaveBeenCalledWith('Could not check upcoming events: Slack unavailable')
+    } finally {
+      if (oldAnnouncement === undefined) delete process.env.EVENT_ANNOUNCEMENT_CHANNEL_ID
+      else process.env.EVENT_ANNOUNCEMENT_CHANNEL_ID = oldAnnouncement
+      if (oldGroups === undefined) delete process.env.EVENT_GROUP_CHANNEL_IDS
+      else process.env.EVENT_GROUP_CHANNEL_IDS = oldGroups
+    }
+  })
+
   it('identifies a malformed channel mapping instead of blaming Firestore', async () => {
     const original = process.env.EVENT_GROUP_CHANNEL_IDS
     process.env.EVENT_GROUP_CHANNEL_IDS = "{devops:'C123'}"
