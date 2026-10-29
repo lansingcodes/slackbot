@@ -1,5 +1,18 @@
 const proxyquire = require('proxyquire')
 
+const makeCacher = (alreadyNotifiedRegarding, cache) => () => ({
+  load: async () => {},
+  alreadyNotifiedRegarding,
+  cache,
+  async deliverOnce (item, send, alsoCache = []) {
+    if (alreadyNotifiedRegarding(item)) return false
+    await send()
+    await cache(item)
+    for (const alias of alsoCache) await cache(alias)
+    return true
+  }
+})
+
 describe('check-for-upcoming-events', () => {
   it('does not cache a reminder that Slack failed to post', async () => {
     const oldAnnouncement = process.env.EVENT_ANNOUNCEMENT_CHANNEL_ID
@@ -19,7 +32,7 @@ describe('check-for-upcoming-events', () => {
       const cache = jasmine.createSpy('cache')
       const run = proxyquire('../../../lib/scheduled-tasks/check-for-upcoming-events', {
         '../helpers/choose-beverage': () => [{ article: 'a', name: 'coffee' }, ':coffee:'],
-        '../cachers/events-cacher': () => ({ load: async () => {}, alreadyNotifiedRegarding: item => item.id === event.id, cache }),
+        '../cachers/events-cacher': makeCacher(item => item.id === event.id, cache),
         '../fetchers/events-fetcher': async () => ({ upcoming: async () => [event] }),
         '../helpers/is-today': () => false
       })
@@ -51,7 +64,7 @@ describe('check-for-upcoming-events', () => {
     try {
       const run = proxyquire('../../../lib/scheduled-tasks/check-for-upcoming-events', {
         '../helpers/choose-beverage': () => [{ article: 'a', name: 'coffee' }, ':coffee:'],
-        '../cachers/events-cacher': () => ({ load: async () => {}, alreadyNotifiedRegarding: () => false, cache: () => {} }),
+        '../cachers/events-cacher': makeCacher(() => false, () => {}),
         '../fetchers/events-fetcher': async () => ({ upcoming: async () => [{ id: 'event-1', group: 'devops', startTime: Date.now() }] })
       })
       const robot = { messageRoom: jasmine.createSpy('messageRoom'), logger: { error: jasmine.createSpy('error') } }
@@ -84,7 +97,7 @@ describe('check-for-upcoming-events', () => {
       }
       const run = proxyquire('../../../lib/scheduled-tasks/check-for-upcoming-events', {
         '../helpers/choose-beverage': () => [{ article: 'a', name: 'coffee' }, ':coffee:'],
-        '../cachers/events-cacher': () => ({ load: async () => {}, alreadyNotifiedRegarding: item => item.id === event.id, cache: () => {} }),
+        '../cachers/events-cacher': makeCacher(item => item.id === event.id, () => {}),
         '../fetchers/events-fetcher': async () => ({ upcoming: async () => [event] }),
         '../helpers/is-today': () => false,
         '../helpers/generate-welcome-email-for': () => {}
@@ -115,7 +128,7 @@ describe('check-for-upcoming-events', () => {
     }
     const run = proxyquire('../../../lib/scheduled-tasks/check-for-upcoming-events', {
       '../helpers/choose-beverage': () => [{ article: 'a', name: 'coffee' }, ':coffee:'],
-      '../cachers/events-cacher': () => ({ load: async () => {}, alreadyNotifiedRegarding: item => item.id === event.id, cache: () => {} }),
+      '../cachers/events-cacher': makeCacher(item => item.id === event.id, () => {}),
       '../fetchers/events-fetcher': async () => ({ upcoming: async () => [event] }),
       '../helpers/is-today': () => false,
       '../helpers/generate-welcome-email-for': () => {}
@@ -138,11 +151,7 @@ describe('check-for-upcoming-events', () => {
     }
     const run = proxyquire('../../../lib/scheduled-tasks/check-for-upcoming-events', {
       '../helpers/choose-beverage': () => [{ article: 'a', name: 'coffee' }, ':coffee:'],
-      '../cachers/events-cacher': () => ({
-        load: async () => {},
-        alreadyNotifiedRegarding: item => notified.has(item.id),
-        cache: item => notified.add(item.id)
-      }),
+      '../cachers/events-cacher': makeCacher(item => notified.has(item.id), item => notified.add(item.id)),
       '../fetchers/events-fetcher': async () => ({ upcoming: async () => [event] }),
       '../helpers/is-today': () => true,
       '../helpers/generate-welcome-email-for': () => {}

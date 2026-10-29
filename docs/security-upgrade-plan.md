@@ -26,6 +26,12 @@ The unit suite includes a process-level `--config-check` that fails on script-lo
 
 The optional stack test runs a local Firestore emulator with the sibling `website` checkout's Firebase Admin SDK. It verifies event lookup, group replies, scheduled announcements, persistence across a simulated bot restart, channel references, join notices, and X authorization with demo data. The combined website, Slackbot, and newsletter integration was also checked separately with an emulator. Repeat these tests after changes to the Firestore schema.
 
+## Notification delivery recovery
+
+Each scheduled event message claims a document in `slackbot_notifications` before posting. A successful Slack response marks it `delivered`. An explicit Slack rejection releases the claim so the next scheduled run can retry. A network error or crash can leave a document `uncertain` or `pending`; the bot will skip that message and log a warning rather than risk a duplicate. Slack posting and Firestore recording cannot be one atomic operation.
+
+For a `pending` or `uncertain` document, an admin should inspect the target Slack channel for the event message before changing Firestore. If the message is present, mark the document `status: delivered` and add `recordedAt`. If it is definitely absent, delete that one notification document to allow a retry. Leave it unchanged and investigate if delivery cannot be determined. Do not clear the whole collection. The local stack smoke test checks concurrent bot processes, explicit rejection, and uncertain delivery against the emulator.
+
 ## Deployment acceptance
 
 1. In a non-production Slack workspace, confirm the app has the documented Socket Mode scopes and channel memberships. Check event replies, announcements, joins, references, reconnection, and every retained command.
