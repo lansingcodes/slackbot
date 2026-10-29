@@ -42,7 +42,8 @@
     "precommit": "run-s lint test",
     "test": "jasmine",
     "test:legacy": "node dev-tools/legacy-script-smoke.js",
-    "test:stack": "bash scripts/run-local-stack-smoke.sh"
+    "test:stack": "bash scripts/run-local-stack-smoke.sh",
+    "preflight": "node dev-tools/deployment-preflight.js"
   },
   "devDependencies": {
     "jasmine": "^3.6.2",
