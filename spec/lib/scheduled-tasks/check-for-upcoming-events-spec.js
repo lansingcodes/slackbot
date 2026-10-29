@@ -1,6 +1,28 @@
 const proxyquire = require('proxyquire')
 
 describe('check-for-upcoming-events', () => {
+  it('identifies a malformed channel mapping instead of blaming Firestore', async () => {
+    const original = process.env.EVENT_GROUP_CHANNEL_IDS
+    process.env.EVENT_GROUP_CHANNEL_IDS = "{devops:'C123'}"
+    try {
+      const run = proxyquire('../../../lib/scheduled-tasks/check-for-upcoming-events', {
+        '../helpers/choose-beverage': () => [{ article: 'a', name: 'coffee' }, ':coffee:'],
+        '../cachers/events-cacher': () => ({ load: async () => {}, alreadyNotifiedRegarding: () => false, cache: () => {} }),
+        '../fetchers/events-fetcher': async () => ({ upcoming: async () => [{ id: 'event-1', group: 'devops', startTime: Date.now() }] })
+      })
+      const robot = { messageRoom: jasmine.createSpy('messageRoom'), logger: { error: jasmine.createSpy('error') } }
+
+      await run(robot)
+
+      expect(robot.logger.error).toHaveBeenCalledWith(
+        'Could not check upcoming events: EVENT_GROUP_CHANNEL_IDS must be valid JSON with double-quoted property names and string values'
+      )
+    } finally {
+      if (original === undefined) delete process.env.EVENT_GROUP_CHANNEL_IDS
+      else process.env.EVENT_GROUP_CHANNEL_IDS = original
+    }
+  })
+
   it('uses configured Slack channel IDs for announcements and group reminders', async () => {
     const oldAnnouncement = process.env.EVENT_ANNOUNCEMENT_CHANNEL_ID
     const oldGroups = process.env.EVENT_GROUP_CHANNEL_IDS
