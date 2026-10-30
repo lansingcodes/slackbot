@@ -14,10 +14,7 @@
 
 const fs = require('fs')
 const path = require('path')
-const legacyScripts = require('../legacy-scripts.json')
-const loadLegacyScripts = require('../lib/load-legacy-scripts')
-
-require('coffeescript/register')
+const loadSupportedPackages = require('../lib/load-supported-hubot-packages')
 
 module.exports = async (robot) => {
   robot.error((error, message) => {
@@ -41,9 +38,9 @@ module.exports = async (robot) => {
   if (!robot.router) robot.setupNullRouter()
 
   try {
-    await loadLegacyScripts(robot, legacyScripts)
+    await loadSupportedPackages(robot)
   } catch (error) {
-    robot.logger.error(`Unable to load a legacy script: ${error.stack}`)
+    robot.logger.error(`Unable to load a Hubot package: ${error.stack}`)
     process.exit(1)
   }
 }

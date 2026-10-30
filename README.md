@@ -43,6 +43,12 @@ Set `ORGANIZER_BY_GROUP`, `ORGANIZER_FIRST_NAME_BY_GROUP`, `WELCOMER_BY_CHANNEL`
 
 Run `npm test`, `npm run lint`, `npm run test:legacy`, and `npm audit --audit-level=low` before a PR. The unit and legacy smoke suites need no Slack or X credentials. The unit suite includes a full Hubot configuration check.
 
+The legacy command smoke suite covers the retained diagnostics, help, and rules
+JavaScript packages plus the local JavaScript replacements for bikeshed, darts,
+principles, and thank-you. The old CoffeeScript runtime and compatibility loader
+are no longer required. Attribution and license notices for the local replacements
+are in [docs/legacy-command-attribution.md](docs/legacy-command-attribution.md).
+
 To rehearse the bot with the production website's Firestore SDK, check out `lansingcodes/website` beside this repository and run `npm ci` there. Install the Firebase CLI, then run `npm run test:stack`. Set `STACK_WEBSITE_PACKAGE` to the website's `package.json` if it is elsewhere, and `FIREBASE_BIN` if the CLI is not on `PATH`. The test uses only a local Firestore emulator and demo data. For end-to-end acceptance, test the bot in a separate Slack workspace with representative Firestore events before deploying to Heroku.
 
 ### Required Slack scopes and events
