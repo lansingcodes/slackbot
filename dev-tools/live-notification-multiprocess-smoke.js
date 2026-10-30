@@ -38,6 +38,8 @@ async function validateTarget () {
 }
 
 async function worker (role, key, text) {
+  assert(['first', 'second'].includes(role), 'Unknown worker role')
+  await validateTarget()
   const cacher = await getEventsCacher({ logger: console }).load()
   const delivered = await cacher.deliverOnce({ id: key }, async () => {
     if (role === 'first') {
