@@ -48,6 +48,8 @@ set `SLACKBOT_MODERATORS` to comma-separated Slack user IDs or usernames to
 include contacts in the reply. Without that setting, the reply points to the
 policy page, which has the current reporting contact.
 
+To move scheduled event announcements out of `#general` (issue #63), create or choose a dedicated `#events` channel, invite the bot, and set `EVENT_ANNOUNCEMENT_CHANNEL_ID` to that channel's Slack ID in the bot's Heroku config. This also moves the scheduler's morning and no-new-events messages. Set `EVENT_GROUP_CHANNEL_IDS` to a JSON object such as `{"devops":"C0123456789"}` for optional group reminders; each target channel must also contain the bot. Use channel IDs from the deployed workspace, not IDs from a test workspace. Test the routing there before enabling the production schedule.
+
 Run `npm test`, `npm run lint`, `npm run test:legacy`, and `npm audit --audit-level=low` before a PR. The unit and legacy smoke suites need no Slack or X credentials. The unit suite includes a full Hubot configuration check.
 
 To rehearse the bot with the production website's Firestore SDK, check out `lansingcodes/website` beside this repository and run `npm ci` there. Install the Firebase CLI, then run `npm run test:stack`. Set `STACK_WEBSITE_PACKAGE` to the website's `package.json` if it is elsewhere, and `FIREBASE_BIN` if the CLI is not on `PATH`. The test uses only a local Firestore emulator and demo data. For end-to-end acceptance, test the bot in a separate Slack workspace with representative Firestore events before deploying to Heroku.
