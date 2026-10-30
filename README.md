@@ -41,6 +41,13 @@ Before deploying, run `npm run preflight -- --expect-project YOUR_FIREBASE_PROJE
 
 Set `ORGANIZER_BY_GROUP`, `ORGANIZER_FIRST_NAME_BY_GROUP`, `WELCOMER_BY_CHANNEL`, `EVENT_ANNOUNCEMENT_CHANNEL_ID`, and `EVENT_GROUP_CHANNEL_IDS` for the deployed workspace. The old username and channel-name mappings remain as fallbacks. `APPROVED_TWEETER_IDS` restricts the optional X posting command to Slack user IDs; the four `TWITTER_*` variables supply the X app and user credentials. Keep all tokens outside the repository.
 
+The bot shares the [Code of Conduct](https://www.lansing.codes/code-of-conduct/)
+for `slackbot code of conduct` or a plain `code of conduct` question. Set
+`SLACKBOT_CODE_OF_CONDUCT_URL` to an HTTPS policy URL if it moves. Optionally
+set `SLACKBOT_MODERATORS` to comma-separated Slack user IDs or usernames to
+include contacts in the reply. Without that setting, the reply points to the
+policy page, which has the current reporting contact.
+
 Run `npm test`, `npm run lint`, `npm run test:legacy`, and `npm audit --audit-level=low` before a PR. The unit and legacy smoke suites need no Slack or X credentials. The unit suite includes a full Hubot configuration check.
 
 To rehearse the bot with the production website's Firestore SDK, check out `lansingcodes/website` beside this repository and run `npm ci` there. Install the Firebase CLI, then run `npm run test:stack`. Set `STACK_WEBSITE_PACKAGE` to the website's `package.json` if it is elsewhere, and `FIREBASE_BIN` if the CLI is not on `PATH`. The test uses only a local Firestore emulator and demo data. For end-to-end acceptance, test the bot in a separate Slack workspace with representative Firestore events before deploying to Heroku.
