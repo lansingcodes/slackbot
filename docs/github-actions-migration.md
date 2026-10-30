@@ -5,6 +5,11 @@ pull request. It uses Node 24, installs and rebuilds dependencies, and runs lint
 unit tests, legacy command checks, and the dependency audit. It needs no Slack,
 Firebase, X, or Heroku secret for those checks.
 
+`.circleci/config.yml` temporarily keeps the existing CircleCI **build** check
+because branch protection may require it. Its Heroku deploy job is removed so
+there is only one potential automatic deploy path. Retire the CircleCI check
+and delete this file in a follow-up after GitHub Actions is required.
+
 ## Administrator setup before enabling production deployment
 
 1. Review the PR's GitHub Actions build result and this repository's branch
@@ -18,12 +23,14 @@ Firebase, X, or Heroku secret for those checks.
 4. Confirm the Heroku app still has its production Slack, Firestore, and other
    config vars. The workflow only deploys code; it does not create or change
    those values or scale dynos.
-5. Stop CircleCI's old deploy path. Then set repository variable
-   `HEROKU_DEPLOY_ENABLED` to `true`. Until that exact value is set, pushes to
-   `main` run tests but skip deployment.
+5. Set repository variable `HEROKU_DEPLOY_ENABLED` to `true` only when ready to
+   use GitHub Actions for deployment. Until that exact value is set, pushes to
+   `main` run tests but skip deployment. The old CircleCI deploy job has
+   already been removed by this PR.
 6. Merge a small, reviewed `main` change and confirm the deploy job publishes
    that commit to the intended Heroku app. Check the release, process status,
-   logs, and Slack behavior before removing any remaining CircleCI integration.
+   logs, and Slack behavior. Then disable CircleCI integration and remove its
+   temporary build-only config in a follow-up.
 
 The deploy job requires a successful build, an exact `main` push in
 `lansingcodes/slackbot`, and the enable variable. PRs and fork events never get

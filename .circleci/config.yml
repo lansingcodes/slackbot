@@ -1,0 +1,29 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: cimg/node:24.21.0
+    working_directory: ~/lansingcodes/slackbot
+    environment:
+      TZ: America/Detroit
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dep-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - v1-dep-
+      - run:
+          command: |
+            npm ci
+            npm run lint
+            npm test
+            npm run test:legacy
+            npm audit --audit-level=low
+      - save_cache:
+          key: v1-dep-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+workflows:
+  transition-build:
+    jobs:
+      - build
