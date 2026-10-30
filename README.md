@@ -31,6 +31,16 @@ pull requests or forking our code to make your own community website!
 Before you get ahead of yourself, though, please read our
 [Contributing Guide](https://github.com/lansingcodes/slackbot/blob/main/.github/CONTRIBUTING.md).
 
+## Troubleshooting access
+
+Before deploying this change, an administrator must set `TROUBLESHOOTER_USER_IDS`
+to the comma-separated Slack user IDs allowed to inspect or change notification
+history (for example, `UADMIN123,UOTHER123`). The bot's `identify me` command
+returns the caller's Slack user ID. Display names are not used for authorization.
+If this setting is absent or contains no valid IDs, the privileged commands deny
+all callers. Check the allowlist in a test workspace before deploying so current
+troubleshooters keep their access.
+
 ## License
 
 [Hippocratic 2.1](https://firstdonoharm.dev)
