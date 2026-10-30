@@ -39,7 +39,7 @@ Notification history is stored in Firestore collection `slackbot_notifications`,
 
 Before deploying, run `npm run preflight -- --expect-project YOUR_FIREBASE_PROJECT_ID --expect-team YOUR_SLACK_TEAM_ID` with the deployment environment variables loaded. It checks the expected project IDs, Slack bot identity, upcoming event reads, and persistent notification reads without posting a message. Add `--write-check` to write, read, and remove a unique notification record in that named project. Run this against a staging project first. The command does not validate the Socket Mode app token; use a live bot connection for that check.
 
-Set `ORGANIZER_BY_GROUP`, `ORGANIZER_FIRST_NAME_BY_GROUP`, `WELCOMER_BY_CHANNEL`, `EVENT_ANNOUNCEMENT_CHANNEL_ID`, and `EVENT_GROUP_CHANNEL_IDS` for the deployed workspace. The old username and channel-name mappings remain as fallbacks. `APPROVED_TWEETER_IDS` restricts the optional X posting command to Slack user IDs; the four `TWITTER_*` variables supply the X app and user credentials. Keep all tokens outside the repository.
+Set `ORGANIZER_BY_GROUP`, `ORGANIZER_FIRST_NAME_BY_GROUP`, `WELCOMER_BY_CHANNEL`, `EVENT_ANNOUNCEMENT_CHANNEL_ID`, and `EVENT_GROUP_CHANNEL_IDS` for the deployed workspace. The old username and channel-name mappings remain as fallbacks. Set `MEMBER_GREETING_CHANNEL_ID` to the channel where newcomers should receive a one-time bot greeting; it defaults to `#general`. The bot must be in that channel and receive Slack's `member_joined_channel` event. The greeting includes the Code of Conduct and the `upcoming events` command. A separate notification to the configured human welcomer remains in place. `APPROVED_TWEETER_IDS` restricts the optional X posting command to Slack user IDs; the four `TWITTER_*` variables supply the X app and user credentials. Keep all tokens outside the repository.
 
 To move scheduled event announcements out of `#general` (issue #63), create or choose a dedicated `#events` channel, invite the bot, and set `EVENT_ANNOUNCEMENT_CHANNEL_ID` to that channel's Slack ID in the bot's Heroku config. This also moves the scheduler's morning and no-new-events messages. Set `EVENT_GROUP_CHANNEL_IDS` to a JSON object such as `{"devops":"C0123456789"}` for optional group reminders; each target channel must also contain the bot. Use channel IDs from the deployed workspace, not IDs from a test workspace. Test the routing there before enabling the production schedule.
 
@@ -53,7 +53,7 @@ Grant the Slack app the following bot scopes to match production:
 
 `app_mentions:read`, `channels:join`, `channels:history`, `channels:read`, `chat:write`, `im:write`, `im:history`, `im:read`, `users:read`, `groups:history`, `groups:write`, `groups:read`, `mpim:history`, `mpim:write`, `mpim:read`
 
-Enable these Socket Mode events: `app_mention`, `message.channels`, `message.im`, `message.groups`, `message.mpim`.
+Enable these Socket Mode events: `app_mention`, `message.channels`, `message.im`, `message.groups`, `message.mpim`, `member_joined_channel`.
 
 ## License
 
