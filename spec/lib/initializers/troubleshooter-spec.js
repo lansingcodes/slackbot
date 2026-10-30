@@ -28,10 +28,10 @@ describe('troubleshooter authorization', () => {
     })
   }
 
-  const run = (command, user) => {
+  const run = async (command, user) => {
     const handler = handlers.find(([pattern]) => pattern.test(command))[1]
     const send = jasmine.createSpy('send')
-    handler({ envelope: { user }, send })
+    await handler({ envelope: { user }, send })
     return send
   }
 
@@ -40,7 +40,7 @@ describe('troubleshooter authorization', () => {
     else process.env.TROUBLESHOOTER_USER_IDS = originalIds
   })
 
-  it('rejects a matching legacy name when the Slack ID is not authorized', () => {
+  it('rejects a matching legacy name when the Slack ID is not authorized', async () => {
     process.env.TROUBLESHOOTER_USER_IDS = 'UADMIN123'
     initialize()
     const user = { id: 'UUNTRUSTED', name: 'erik.gillespie' }
@@ -50,32 +50,32 @@ describe('troubleshooter authorization', () => {
       'inspect notifications cache',
       'clear notifications cache'
     ]) {
-      expect(run(command, user)).not.toHaveBeenCalled()
+      expect(await run(command, user)).not.toHaveBeenCalled()
     }
     expect(cleared).toBe(0)
     expect(fetched).toBe(0)
   })
 
-  it('allows a configured Slack ID regardless of display name', () => {
+  it('allows a configured Slack ID regardless of display name', async () => {
     process.env.TROUBLESHOOTER_USER_IDS = 'UOTHER123, UADMIN123'
     initialize()
-    expect(run('clear notifications cache', { id: 'UADMIN123', name: 'renamed' }))
+    expect(await run('clear notifications cache', { id: 'UADMIN123', name: 'renamed' }))
       .toHaveBeenCalledWith('Just cleared the notifications cache.')
     expect(cleared).toBe(1)
   })
 
-  it('fails closed when IDs are absent or malformed', () => {
+  it('fails closed when IDs are absent or malformed', async () => {
     process.env.TROUBLESHOOTER_USER_IDS = 'not-a-slack-id'
     initialize()
-    run('clear notifications cache', { id: 'not-a-slack-id', name: 'erik.gillespie' })
+    await run('clear notifications cache', { id: 'not-a-slack-id', name: 'erik.gillespie' })
     expect(cleared).toBe(0)
   })
 
-  it('returns only the caller ID for identify me', () => {
+  it('returns only the caller ID for identify me', async () => {
     delete process.env.TROUBLESHOOTER_USER_IDS
     initialize()
     const log = spyOn(console, 'log')
-    expect(run('identify me', { id: 'UADMIN123', email: 'private@example.org' }))
+    expect(await run('identify me', { id: 'UADMIN123', email: 'private@example.org' }))
       .toHaveBeenCalledWith('Your Slack user ID is UADMIN123.')
     expect(log).not.toHaveBeenCalled()
   })
