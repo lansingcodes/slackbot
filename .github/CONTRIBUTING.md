@@ -390,5 +390,5 @@ After a pull request is reviewed and merged to `main`, the changes will be
 built and verified on [CircleCI](https://circleci.com/gh/lansingcodes/slackbot)
 automatically before being deployed to Heroku.
 
-The primary Humanity Codes account has administrator access to both CircleCI
-and Heroku. Additional administrators can be added by invitation only.
+Ask an existing Lansing Codes administrator for access to the deployment
+services. Additional administrators can be added by invitation only.
