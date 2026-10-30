@@ -29,7 +29,10 @@ async function slackApi (method, body) {
 
 async function main () {
   const refreshment = process.argv[2]
-  assert([undefined, '--cupcake', '--latte'].includes(refreshment), 'Use --cupcake or --latte')
+  assert([undefined, '--cupcake', '--latte', '--pumpkin'].includes(refreshment), 'Use --cupcake, --latte, or --pumpkin')
+  if (refreshment === '--pumpkin') {
+    assert([8, 9, 10].includes(new Date().getUTCMonth()), 'Pumpkin spice latte is available September-November')
+  }
   assert.equal(process.env.FIRESTORE_EMULATOR_HOST, undefined, 'Use cloud Firestore')
   assert.notEqual(process.env.NOTIFICATION_STORE, 'memory', 'Use persistent notifications')
   const webConfig = JSON.parse(process.env.FIREBASE_WEB_CONFIG || '{}')
@@ -83,7 +86,9 @@ async function main () {
     const runWithRefreshment = async () => {
       const previousRandom = Math.random
       if (refreshment) {
-        const picks = refreshment === '--cupcake' ? [0.75, 0.99, 0.5] : [0.25, 0.12, 0]
+        const picks = refreshment === '--cupcake'
+          ? [0.75, 0.99, 0.5]
+          : refreshment === '--pumpkin' ? [0.25, 0.999, 0] : [0.25, 0.12, 0]
         let index = 0
         Math.random = () => picks[Math.min(index++, picks.length - 1)]
       }
@@ -105,7 +110,9 @@ async function main () {
     assert.equal(claim.get('status'), 'delivered')
     assert.equal(claim.get('key'), id)
     if (refreshment) {
-      const name = refreshment === '--cupcake' ? 'cupcake' : 'latte'
+      const name = refreshment === '--cupcake'
+        ? 'cupcake'
+        : refreshment === '--pumpkin' ? 'pumpkin spice latte' : 'latte'
       const mornings = posted.filter(message => message.text.startsWith('Good morning everyone!'))
       const noEvents = posted.filter(message => message.text.startsWith("I didn't find any new meetups."))
       assert.equal(mornings.length, 2)
