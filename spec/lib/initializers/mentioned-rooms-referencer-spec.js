@@ -1,102 +1,75 @@
 const includeHubot = require('../../helpers/include-hubot')
-const TextMessage = require('hubot/src/message').TextMessage
+let TextMessage
 
 describe('mentioned-rooms-referencer', () => {
   includeHubot()
 
+  beforeAll(async () => { ({ TextMessage } = await import('hubot')) })
+
   beforeEach(() => {
     require('../../../lib/initializers/mentioned-rooms-referencer')(robot)
-
-    // A fake Slack RTM client for mocking
+    robot.adapter.self = { url: 'https://lansingcodessystem.slack.com/' }
     robot.adapter.client = {
-      rtm: {
-        dataStore: {
-          getChannelByName: () => null,
-          getChannelById: () => null
+      web: {
+        conversations: {
+          list: jasmine.createSpy('list').and.resolveTo({
+            channels: [{ id: 'C024BE91L', name: 'test' }],
+            response_metadata: { next_cursor: '' }
+          })
         }
       }
     }
   })
 
-  it('sends a notification to a room when it is mentioned elsewhere', done => {
-    const mentionedChannel = {
-      id: 'C024BE91L',
-      name: 'test',
-      created: 1360782804,
-      creator: 'U024BE7LH'
-    }
-    const currentChannel = {
-      id: 'C124BE91L',
-      name: 'jasmine',
-      created: 1360782805,
-      creator: 'U124BE7LH'
-    }
+  const messageFrom = (room, text, rawText) => {
+    const message = new TextMessage({ name: 'jasmine', room }, text, '1571842414.003900')
+    message.rawText = rawText
+    return message
+  }
 
-    // Pretend Slack says the current and mentioned channels are different
-    spyOn(
-      robot.adapter.client.rtm.dataStore,
-      'getChannelByName'
-    ).and.returnValue(mentionedChannel)
-    spyOn(robot.adapter.client.rtm.dataStore, 'getChannelById').and.returnValue(
-      currentChannel
-    )
+  it('notifies a channel mentioned by name', async () => {
+    const sent = jasmine.createSpy('sent')
+    robot.adapter.on('send', sent)
 
-    // Expect a cross-reference message when the current channel is mentioned
-    robot.adapter.on('send', (envelope, strings) => {
-      expect(envelope.room).toEqual('C024BE91L')
-      expect(strings[0]).toEqual(
-        'This channel was just referenced at: https://lansingcodes.slack.com/archives/C124BE91L/p1571842414003900'
-      )
-      done()
-    })
+    await robot.adapter.receive(messageFrom('C124BE91L', 'See #test for details.'))
 
-    // Mention a the current channel
-    robot.adapter.receive(
-      new TextMessage(
-        { name: 'jasmine', room: 'jasmine' },
-        'This is a reference to the #jasmine room.',
-        '1571842414003900'
-      )
+    expect(sent).toHaveBeenCalled()
+    expect(sent.calls.mostRecent().args[0].room).toBe('C024BE91L')
+    expect(sent.calls.mostRecent().args[1][0]).toBe(
+      'This channel was just referenced at: https://lansingcodessystem.slack.com/archives/C124BE91L/p1571842414003900'
     )
   })
 
-  it('does NOT send a notification when the current room is mentioned', () => {
-    let messageWasSent = false
-    const currentChannel = {
-      id: 'C124BE91L',
-      name: 'jasmine',
-      created: 1360782805,
-      creator: 'U124BE7LH'
-    }
+  it('uses the channel ID in a native Slack mention', async () => {
+    const sent = jasmine.createSpy('sent')
+    robot.adapter.on('send', sent)
 
-    // Pretend Slack says the current and mentioned channels are the same
-    spyOn(
-      robot.adapter.client.rtm.dataStore,
-      'getChannelByName'
-    ).and.returnValue(currentChannel)
-    spyOn(robot.adapter.client.rtm.dataStore, 'getChannelById').and.returnValue(
-      currentChannel
-    )
+    await robot.adapter.receive(messageFrom('C124BE91L', 'See #test.', 'See <#C024BE91L|test>.'))
 
-    // Expect to fail if the bot makes a cross-reference
-    jasmine.clock().install()
-    robot.adapter.on('send', (envelope, strings) => {
-      messageWasSent = true
-      fail('We should not cross-reference the same channel.')
+    expect(sent).toHaveBeenCalled()
+    expect(robot.adapter.client.web.conversations.list).not.toHaveBeenCalled()
+  })
+
+  it('does not notify the current channel', async () => {
+    const sent = jasmine.createSpy('sent')
+    robot.adapter.on('send', sent)
+    robot.adapter.client.web.conversations.list.and.resolveTo({
+      channels: [{ id: 'C124BE91L', name: 'test' }],
+      response_metadata: { next_cursor: '' }
     })
 
-    // Mention the current channel
-    robot.adapter.receive(
-      new TextMessage(
-        { name: 'jasmine', room: 'jasmine' },
-        'This is a reference to the #jasmine room.',
-        '1571842414003900'
-      )
-    )
+    await robot.adapter.receive(messageFrom('C124BE91L', 'See #test.'))
 
-    // Wait to verify that nothing explodes
-    jasmine.clock().tick(1000)
-    expect(messageWasSent).toBe(false)
-    jasmine.clock().uninstall()
+    expect(sent).not.toHaveBeenCalled()
+  })
+
+  it('does not publish direct-message links into a channel', async () => {
+    const sent = jasmine.createSpy('sent')
+    robot.adapter.on('send', sent)
+
+    await robot.adapter.receive(messageFrom('D123', 'See #test.'))
+
+    expect(sent).not.toHaveBeenCalled()
+    expect(robot.adapter.client.web.conversations.list).not.toHaveBeenCalled()
   })
 })
