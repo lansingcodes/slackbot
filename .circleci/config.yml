@@ -16,7 +16,7 @@ jobs:
             - v1-dep-
       - run:
           command: |
-            npm ci
+            npm install
             npm rebuild
             npm test
       - save_cache:
