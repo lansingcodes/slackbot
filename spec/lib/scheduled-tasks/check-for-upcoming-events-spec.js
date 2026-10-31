@@ -14,6 +14,27 @@ const makeCacher = (alreadyNotifiedRegarding, cache) => () => ({
 })
 
 describe('check-for-upcoming-events', () => {
+  it('uses matching morning and no-event jokes for drinks and snacks', async () => {
+    for (const [index, name, reaction] of [
+      [0, 'latte', 'The latte is great.'],
+      [1, 'cupcake', 'Crumbs from a cupcake.']
+    ]) {
+      const run = proxyquire('../../../lib/scheduled-tasks/check-for-upcoming-events', {
+        '../helpers/sample': choices => choices[index],
+        '../helpers/choose-beverage': () => [{ article: 'a', name: 'latte' }, 'The latte is great.'],
+        '../helpers/choose-snack': () => [{ article: 'a', name: 'cupcake' }, 'Crumbs from a cupcake.'],
+        '../cachers/events-cacher': makeCacher(() => false, () => {}),
+        '../fetchers/events-fetcher': async () => ({ upcoming: async () => [] })
+      })
+      const robot = { messageRoom: jasmine.createSpy('messageRoom'), logger: { error: jasmine.createSpy('error') } }
+      await run(robot)
+      const messages = robot.messageRoom.calls.allArgs().map(args => args[1])
+      expect(messages[0]).toContain(`grab a ${name}`)
+      expect(messages[1]).toContain(reaction)
+      expect(robot.logger.error).not.toHaveBeenCalled()
+    }
+  })
+
   it('does not cache a reminder that Slack failed to post', async () => {
     const oldAnnouncement = process.env.EVENT_ANNOUNCEMENT_CHANNEL_ID
     const oldGroups = process.env.EVENT_GROUP_CHANNEL_IDS

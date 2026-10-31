@@ -28,6 +28,11 @@ async function slackApi (method, body) {
 }
 
 async function main () {
+  const refreshment = process.argv[2]
+  assert([undefined, '--cupcake', '--latte', '--pumpkin'].includes(refreshment), 'Use --cupcake, --latte, or --pumpkin')
+  if (refreshment === '--pumpkin') {
+    assert([8, 9, 10].includes(new Date().getUTCMonth()), 'Pumpkin spice latte is available September-November')
+  }
   assert.equal(process.env.FIRESTORE_EMULATOR_HOST, undefined, 'Use cloud Firestore')
   assert.notEqual(process.env.NOTIFICATION_STORE, 'memory', 'Use persistent notifications')
   const webConfig = JSON.parse(process.env.FIREBASE_WEB_CONFIG || '{}')
@@ -78,8 +83,25 @@ async function main () {
   try {
     await eventRef.create(event)
     const run = require('../lib/scheduled-tasks/check-for-upcoming-events')
-    await run(robot)
-    await run(robot)
+    const runWithRefreshment = async () => {
+      const previousRandom = Math.random
+      if (refreshment) {
+        const picks = refreshment === '--cupcake'
+          ? [0.75, 0.99, 0.5]
+          : refreshment === '--pumpkin' ? [0.25, 0.999, 0] : [0.25, 0.12, 0]
+        let index = 0
+        Math.random = () => picks[Math.min(index++, picks.length - 1)]
+      }
+      try {
+        const result = run(robot)
+        Math.random = previousRandom
+        await result
+      } finally {
+        Math.random = previousRandom
+      }
+    }
+    await runWithRefreshment()
+    await runWithRefreshment()
     assert.deepEqual(errors, [], 'Scheduler reported an error')
     const eventPosts = posted.filter(message => message.text.includes(url))
     assert.equal(eventPosts.length, 1, 'Event must be announced exactly once')
@@ -93,6 +115,18 @@ async function main () {
     const claim = await notificationRef.get()
     assert.equal(claim.get('status'), 'delivered')
     assert.equal(claim.get('key'), id)
+    if (refreshment) {
+      const name = refreshment === '--cupcake'
+        ? 'cupcake'
+        : refreshment === '--pumpkin' ? 'pumpkin spice latte' : 'latte'
+      const mornings = posted.filter(message => message.text.startsWith('Good morning everyone!'))
+      const noEvents = posted.filter(message => message.text.startsWith("I didn't find any new meetups."))
+      assert.equal(mornings.length, 2)
+      assert.equal(noEvents.length, 1)
+      assert(mornings.every(message => message.text.includes(`grab a ${name}`)))
+      assert(noEvents[0].text.includes(name))
+      if (name === 'cupcake') assert(!/drink|drank|sip|taste/i.test(noEvents[0].text))
+    }
     console.log(`PASS: scheduler messages stayed in #${info.channel.name}; event announced once at ${eventPosts[0].ts} and did not repeat`)
   } finally {
     await Promise.all([eventRef.delete(), notificationRef.delete()])
