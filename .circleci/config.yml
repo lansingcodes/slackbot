@@ -18,7 +18,12 @@ jobs:
           command: |
             npm install
             npm rebuild
-            npm test
+            if npm test > /tmp/slackbot-jasmine.log 2>&1; then
+              cat /tmp/slackbot-jasmine.log
+            else
+              cat /tmp/slackbot-jasmine.log
+              exit 1
+            fi
       - save_cache:
           key: v1-dep-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
