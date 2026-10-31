@@ -12,6 +12,16 @@ describe('format-event-response', () => {
     expect(text).not.toContain('```')
   })
 
+  it('shows Lansing time in the upcoming-events list across UTC midnight', () => {
+    const text = upcomingEvents([{
+      group: 'ai',
+      name: 'Evening meetup',
+      url: 'https://example.test/event',
+      startTime: Date.parse('2026-11-18T01:00:00Z')
+    }])
+    expect(text).toContain('• *Tue, Nov 17 at 8:00pm*')
+  })
+
   it('escapes event text and does not create unsafe links', () => {
     const text = nextEvent({ group: 'ai', name: '<@U123> & friends', url: 'javascript:alert(1)', startTime })
     expect(text).toContain('&lt;@U123&gt; &amp; friends')
