@@ -165,4 +165,48 @@ describe('check-for-upcoming-events', () => {
       .filter(args => args[1].includes('Meetup today!'))
     expect(todayAnnouncements.length).toBe(1)
   })
+
+  it('announces an evening Lansing event as today on a UTC host', async () => {
+    const oldAnnouncement = process.env.EVENT_ANNOUNCEMENT_CHANNEL_ID
+    const oldGroups = process.env.EVENT_GROUP_CHANNEL_IDS
+    process.env.EVENT_ANNOUNCEMENT_CHANNEL_ID = 'CGENERAL'
+    process.env.EVENT_GROUP_CHANNEL_IDS = '{"devops":"CDEVOPS"}'
+    jasmine.clock().install()
+    jasmine.clock().mockDate(new Date('2026-11-17T14:00:00Z'))
+    try {
+      const event = {
+        id: 'evening-event',
+        group: 'devops',
+        name: 'Evening workshop',
+        url: 'https://example.org/evening-workshop',
+        startTime: Date.parse('2026-11-18T01:00:00Z')
+      }
+      const run = proxyquire('../../../lib/scheduled-tasks/check-for-upcoming-events', {
+        '../helpers/choose-beverage': () => [{ article: 'a', name: 'coffee' }, ':coffee:'],
+        '../cachers/events-cacher': makeCacher(() => false, () => {}),
+        '../fetchers/events-fetcher': async () => ({ upcoming: async () => [event] }),
+        '../helpers/generate-welcome-email-for': () => {}
+      })
+      const robot = {
+        messageRoom: jasmine.createSpy('messageRoom'),
+        logger: { error: jasmine.createSpy('error') }
+      }
+
+      await run(robot)
+
+      expect(robot.logger.error).not.toHaveBeenCalled()
+      expect(robot.messageRoom).toHaveBeenCalledWith(
+        'CDEVOPS', jasmine.stringMatching(/Meetup today!.*8:00pm/)
+      )
+      expect(robot.messageRoom).toHaveBeenCalledWith(
+        'CGENERAL', jasmine.stringMatching(/Meetup today!.*8:00pm/)
+      )
+    } finally {
+      jasmine.clock().uninstall()
+      if (oldAnnouncement === undefined) delete process.env.EVENT_ANNOUNCEMENT_CHANNEL_ID
+      else process.env.EVENT_ANNOUNCEMENT_CHANNEL_ID = oldAnnouncement
+      if (oldGroups === undefined) delete process.env.EVENT_GROUP_CHANNEL_IDS
+      else process.env.EVENT_GROUP_CHANNEL_IDS = oldGroups
+    }
+  })
 })
