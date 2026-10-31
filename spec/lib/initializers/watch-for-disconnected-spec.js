@@ -2,17 +2,11 @@ const includeHubot = require('../../helpers/include-hubot')
 
 describe('watch-for-disconnected', () => {
   let waitTime
-  let stdoutWrite
-  let stderrWrite
   includeHubot()
 
   beforeEach(() => {
-    stdoutWrite = process.stdout.write
-    stderrWrite = process.stderr.write
-    // The initializer intercepts both streams. Keep its test logs in memory
-    // so a CI reporter never writes through an active interception hook.
-    process.stdout.write = () => true
-    process.stderr.write = () => true
+    // Signal test start
+    console.log('\n<HUBOT-STDOUT>')
 
     // Load our module under test
     require('../../../lib/initializers/watch-for-disconnected')(robot)
@@ -23,9 +17,9 @@ describe('watch-for-disconnected', () => {
   })
 
   afterEach(() => {
+    console.log('</HUBOT-STDOUT>')
+
     jasmine.clock().uninstall()
-    process.stdout.write = stdoutWrite
-    process.stderr.write = stderrWrite
   })
 
   it('does NOT start a timer without a match', () => {
