@@ -32,6 +32,7 @@
     "hubot-rules": "^2.1.1",
     "hubot-thank-you": "0.0.3",
     "moment": "^2.29.4",
+    "moment-timezone": "^0.6.6",
     "twitter-api-v2": "^1.31.0"
   },
   "scripts": {
