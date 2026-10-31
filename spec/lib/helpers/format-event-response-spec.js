@@ -17,4 +17,14 @@ describe('format-event-response', () => {
     expect(text).toContain('&lt;@U123&gt; &amp; friends')
     expect(text).not.toContain('<javascript:')
   })
+
+  it('shows Lansing time in the next-event reply when the host uses UTC', () => {
+    const text = nextEvent({
+      group: 'ai',
+      name: 'Evening meetup',
+      url: 'https://example.test/event',
+      startTime: Date.parse('2026-11-18T01:00:00Z')
+    })
+    expect(text).toContain(':clock3: Tuesday, November 17th at 8:00pm')
+  })
 })
