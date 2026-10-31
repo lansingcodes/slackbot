@@ -2,6 +2,7 @@ const includeHubot = require('../../helpers/include-hubot')
 
 describe('watch-for-disconnected', () => {
   let waitTime
+  let stopIntercepting
   includeHubot()
 
   beforeEach(() => {
@@ -9,7 +10,7 @@ describe('watch-for-disconnected', () => {
     console.log('\n<HUBOT-STDOUT>')
 
     // Load our module under test
-    require('../../../lib/initializers/watch-for-disconnected')(robot)
+    stopIntercepting = require('../../../lib/initializers/watch-for-disconnected')(robot)
 
     // Control the clock for unit testing
     waitTime = parseInt(process.env.SLACKBOT_DISCONNECT_WAIT_TIME)
@@ -20,6 +21,7 @@ describe('watch-for-disconnected', () => {
     console.log('</HUBOT-STDOUT>')
 
     jasmine.clock().uninstall()
+    stopIntercepting()
   })
 
   it('does NOT start a timer without a match', () => {
