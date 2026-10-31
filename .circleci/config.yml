@@ -18,7 +18,7 @@ jobs:
           command: |
             npm install
             npm rebuild
-            npm test
+            NODE_OPTIONS=--trace-exit npm test
       - save_cache:
           key: v1-dep-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
