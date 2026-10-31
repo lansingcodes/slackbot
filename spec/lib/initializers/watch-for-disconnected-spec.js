@@ -9,6 +9,10 @@ describe('watch-for-disconnected', () => {
   beforeEach(() => {
     stdoutWrite = process.stdout.write
     stderrWrite = process.stderr.write
+    // The initializer intercepts both streams. Keep its test logs in memory
+    // so a CI reporter never writes through an active interception hook.
+    process.stdout.write = () => true
+    process.stderr.write = () => true
 
     // Load our module under test
     require('../../../lib/initializers/watch-for-disconnected')(robot)
