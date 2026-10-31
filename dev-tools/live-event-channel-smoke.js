@@ -84,10 +84,16 @@ async function main () {
     const eventPosts = posted.filter(message => message.text.includes(url))
     assert.equal(eventPosts.length, 1, 'Event must be announced exactly once')
     assert.equal(eventPosts[0].channel, channel, 'Event must use the dedicated channel')
+    const morningPosts = posted.filter(message => message.text.startsWith('Good morning everyone!'))
+    const noNewEventsPosts = posted.filter(message => message.text.startsWith("I didn't find any new meetups."))
+    assert.equal(morningPosts.length, 2, 'Each scheduler run must post one morning message')
+    assert.equal(noNewEventsPosts.length, 1, 'The second run must report no new events')
+    assert(posted.every(message => message.channel === channel),
+      'Every scheduler message must use the dedicated channel')
     const claim = await notificationRef.get()
     assert.equal(claim.get('status'), 'delivered')
     assert.equal(claim.get('key'), id)
-    console.log(`PASS: event announced once in #${info.channel.name} at ${eventPosts[0].ts}; second scheduler run did not repeat it`)
+    console.log(`PASS: scheduler messages stayed in #${info.channel.name}; event announced once at ${eventPosts[0].ts} and did not repeat`)
   } finally {
     await Promise.all([eventRef.delete(), notificationRef.delete()])
     await Promise.all(getClientApps().map(async app => {
