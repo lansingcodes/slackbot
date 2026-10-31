@@ -78,7 +78,7 @@ here's a quick list of the tools you'll need to run this project:
 - [node and npm](https://nodejs.org/), although
   [nvm](https://github.com/nvm-sh/nvm) is recommended for non-Windows users
 - [Visual Studio Code](https://code.visualstudio.com/) with these extensions:
-  - [StandardJS](https://marketplace.visualstudio.com/items?itemName=standard.vscode-standard) by Standard
+  - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) by Microsoft
   - npm Intellisense by Christian Kohler
   - Path Autocomplete by Mihai Vilcu
   - Path Intellisense by Christian Kohler
@@ -160,7 +160,7 @@ Use the search box to find and install all of these extensions. They make the
 experience of looking at and editing this project _super nice_.
 
 - Bracket Pair Colorizer by CoenraadS
-- [StandardJS](https://marketplace.visualstudio.com/items?itemName=chenxsan.vscode-standardjs) by Sam Chen
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) by Microsoft
 - Node.js Extension Pack by Wade Anderson
 - npm by egamma
 - npm Intellisense by Christian Kohler
@@ -176,7 +176,8 @@ That's it for required software! You should now be able to run `bin/hubot` or
 `bin/hubot.cmd` in a terminal to build and run the bot on the command line.
 Try chatting a bit, or `slackbot help` to see what scripts are available.
 
-Code style is [JavaScript Standard Style](https://standardjs.com/index.html).
+Code style follows [neostandard](https://github.com/neostandard/neostandard),
+the maintained Standard Style ESLint configuration.
 Please check your code with `npm run lint` as you develop. You can run
 `npm run fix` to attempt to automatically fix style issues that are detected.
 
