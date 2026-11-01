@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-  heroku: circleci/heroku@0.0.8
 jobs:
   build:
     docker:
@@ -26,13 +24,6 @@ jobs:
           paths:
             - ./node_modules
 workflows:
-  test-and-deploy:
+  transition-build:
     jobs:
       - build
-      - heroku/deploy-via-git:
-          requires:
-            - build
-          filters:
-            branches:
-              only: main
-
