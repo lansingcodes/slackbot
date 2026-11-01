@@ -21,6 +21,21 @@ describe('shorten-url', () => {
     expect(callback).toHaveBeenCalledOnceWith(longUrl)
   })
 
+  it('keeps the original URL when TinyURL rejects the legacy test input with HTTP 422', async () => {
+    const rejectedUrl = 'http://www.google.com'
+    const fetchSpy = spyOn(global, 'fetch').and.resolveTo({
+      ok: false,
+      status: 422,
+      text: async () => 'Error'
+    })
+    const callback = jasmine.createSpy('callback')
+
+    await shortenUrl(rejectedUrl, callback)
+
+    expect(fetchSpy.calls.mostRecent().args[0].searchParams.get('url')).toBe(rejectedUrl)
+    expect(callback).toHaveBeenCalledOnceWith(rejectedUrl)
+  })
+
   it('rejects an invalid response from TinyURL', async () => {
     spyOn(global, 'fetch').and.resolveTo({ ok: true, text: async () => 'Error' })
     const callback = jasmine.createSpy('callback')
