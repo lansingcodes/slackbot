@@ -37,29 +37,27 @@
   "scripts": {
     "start": "bin/hubot --adapter @hubot-friends/hubot-slack",
     "start:local": "node --env-file=.env ./node_modules/hubot/bin/hubot --name slackbot --adapter @hubot-friends/hubot-slack",
-    "fix": "standard --env jasmine --global robot --global hubotHelpers --fix",
-    "lint": "standard --env jasmine --global robot --global hubotHelpers",
-    "precommit": "run-s lint test",
+    "fix": "eslint . --fix",
+    "lint": "eslint .",
+    "precommit": "npm run lint && npm test",
     "test": "jasmine",
     "test:legacy": "node dev-tools/legacy-script-smoke.js",
     "test:stack": "bash scripts/run-local-stack-smoke.sh",
     "preflight": "node dev-tools/deployment-preflight.js"
   },
   "devDependencies": {
-    "jasmine": "^3.6.2",
-    "npm-run-all": "^4.1.5",
-    "proxyquire": "^2.1.3",
-    "standard": "^17.1.2"
+    "eslint": "^10.14.0",
+    "jasmine": "^7.0.0",
+    "neostandard": "^0.14.1",
+    "proxyquire": "^2.1.3"
   },
   "engines": {
     "node": "24.x"
   },
-  "standard": {
-    "env": [
-      "jasmine"
-    ]
-  },
   "overrides": {
-    "@grpc/grpc-js": "^1.14.6"
+    "@grpc/grpc-js": "^1.14.6",
+    "@google-cloud/firestore-api": "^0.7.1",
+    "minimatch": "^11.0.3",
+    "glob": "^14.0.3"
   }
 }
