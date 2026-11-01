@@ -387,9 +387,12 @@ npm run precommit
 
 ## Deployments
 
-After a pull request is reviewed and merged to `main`, the changes will be
-built and verified on [CircleCI](https://circleci.com/gh/lansingcodes/slackbot)
-automatically before being deployed to Heroku.
+After a pull request is reviewed and merged to `main`, GitHub Actions runs
+the build and tests. Production deployment to Heroku is gated by the
+`production` environment and `HEROKU_DEPLOY_ENABLED`; see the
+[GitHub Actions migration guide](../docs/github-actions-migration.md) for the
+administrator setup and verification steps. CircleCI temporarily provides a
+build check while branch protection is updated.
 
-The primary Humanity Codes account has administrator access to both CircleCI
-and Heroku. Additional administrators can be added by invitation only.
+Ask a Lansing Codes administrator for access to the deployment services.
+Additional administrators can be added by invitation only.
