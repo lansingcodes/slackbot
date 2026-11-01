@@ -4,18 +4,29 @@ describe('troubleshooter authorization', () => {
   const originalIds = process.env.TROUBLESHOOTER_USER_IDS
   let handlers
   let cleared
+  let loaded
+  let cached
   let fetched
   let onEnter
+  const privilegedCommands = [
+    'silently update notifications cache',
+    'inspect upcoming events',
+    'inspect notifications cache',
+    'clear notifications cache'
+  ]
 
   const initialize = () => {
     handlers = []
     cleared = 0
+    loaded = 0
+    cached = 0
     fetched = 0
     const init = proxyquire('../../../lib/initializers/troubleshooter', {
       '../cachers/events-cacher': () => ({
         clearAll: () => { cleared++ },
+        load: () => { loaded++; return Promise.resolve() },
         getAll: () => [],
-        cache: () => {}
+        cache: () => { cached++ }
       }),
       '../fetchers/events-fetcher': () => {
         fetched++
@@ -44,17 +55,33 @@ describe('troubleshooter authorization', () => {
     process.env.TROUBLESHOOTER_USER_IDS = 'UADMIN123'
     initialize()
     const user = { id: 'UUNTRUSTED', name: 'erik.gillespie' }
-    for (const command of [
-      'silently update notifications cache',
-      'inspect upcoming events',
-      'inspect notifications cache',
-      'clear notifications cache'
-    ]) {
+    for (const command of privilegedCommands) {
       expect(await run(command, user)).not.toHaveBeenCalled()
     }
     expect(cleared).toBe(0)
+    expect(loaded).toBe(0)
+    expect(cached).toBe(0)
     expect(fetched).toBe(0)
   })
+
+  for (const [label, ids, user] of [
+    ['unset allowlist', undefined, { id: 'UADMIN123' }],
+    ['empty allowlist', '', { id: 'UADMIN123' }],
+    ['missing caller ID', 'UADMIN123', { name: 'renamed' }]
+  ]) {
+    it(`denies every privileged command with ${label}`, async () => {
+      if (ids === undefined) delete process.env.TROUBLESHOOTER_USER_IDS
+      else process.env.TROUBLESHOOTER_USER_IDS = ids
+      initialize()
+      for (const command of privilegedCommands) {
+        expect(await run(command, user)).not.toHaveBeenCalled()
+      }
+      expect(cleared).toBe(0)
+      expect(loaded).toBe(0)
+      expect(cached).toBe(0)
+      expect(fetched).toBe(0)
+    })
+  }
 
   it('allows a configured Slack ID regardless of display name', async () => {
     process.env.TROUBLESHOOTER_USER_IDS = 'UOTHER123, UADMIN123'
