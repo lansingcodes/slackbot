@@ -20,6 +20,7 @@ process.env.FIREBASE_WEB_CONFIG = JSON.stringify({
   projectId
 })
 process.env.WELCOMER_BY_CHANNEL = JSON.stringify({ CGENERAL: 'UWELCOME' })
+process.env.MEMBER_GREETING_CHANNEL_ID = 'CGENERAL'
 process.env.APPROVED_TWEETER_IDS = 'UAPPROVED'
 process.env.EVENT_ANNOUNCEMENT_CHANNEL_ID = 'CGENERAL'
 process.env.EVENT_GROUP_CHANNEL_IDS = JSON.stringify({ smoketest: 'CDEVOPS' })
@@ -62,7 +63,7 @@ async function main () {
   await eventDoc.set({ group: 'smoketest', name: eventName, url: eventUrl, startTime })
   const robot = new Robot('local-adapter', false, 'slackbot')
   robot.adapter = new LocalAdapter(robot)
-  robot.adapter.self = { url: 'https://example.slack.com/' }
+  robot.adapter.self = { url: 'https://example.slack.com/', user_id: 'UBOT', team_id: 'TDEMO' }
   robot.adapter.client = {
     fetchConversation: async () => ({ name: 'general' }),
     web: {
@@ -81,6 +82,7 @@ async function main () {
   }
   require('../lib/initializers/events-responder')(robot)
   require('../lib/initializers/mentioned-rooms-referencer')(robot)
+  require('../lib/initializers/new-member-greeter')(robot)
   require('../lib/initializers/new-participant-notifier')(robot)
   proxyquire('../lib/initializers/tweeter', {
     '../helpers/tweet': localTweet,
@@ -126,9 +128,12 @@ async function main () {
     const joined = robot.brain.userForId('UNEW', { name: 'newcomer', room: 'CGENERAL' })
     const joinNotice = waitForSend(robot.adapter, (room, lines) =>
       room.room === 'UWELCOME' && lines.join(' ').includes('newcomer just joined general'))
+    const greeting = waitForSend(robot.adapter, (room, lines) =>
+      room.room === 'CGENERAL' && lines.join(' ').includes('<@UNEW> welcome to Lansing Codes!'))
     await robot.adapter.receive(new EnterMessage(joined))
-    await joinNotice
+    await Promise.all([joinNotice, greeting])
     console.log('PASS: a join event notifies the configured welcomer')
+    console.log('PASS: a join event greets the member in the configured channel')
 
     const denied = await sendText(robot, user, 'slackbot tweet blocked', (room, lines) =>
       room.room === 'CGENERAL' && lines.join(' ').includes('No tweet for you!'))

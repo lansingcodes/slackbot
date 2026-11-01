@@ -16,4 +16,20 @@ describe('post-room-message', () => {
     })
     expect(robot.messageRoom).not.toHaveBeenCalled()
   })
+
+  it('classifies an explicit SDK platform rejection but leaves network failures uncertain', async () => {
+    const postMessage = jasmine.createSpy('postMessage')
+    const robot = { adapter: { client: { web: { chat: { postMessage } } } } }
+    const rejected = Object.assign(new Error('not_in_channel'), {
+      code: 'slack_webapi_platform_error', data: { ok: false, error: 'not_in_channel' }
+    })
+    postMessage.and.rejectWith(rejected)
+    await expectAsync(postRoomMessage(robot, 'C123', 'Greeting')).toBeRejectedWithError(
+      postRoomMessage.SlackPostRejectedError, /not_in_channel/
+    )
+
+    const network = new Error('connection reset')
+    postMessage.and.rejectWith(network)
+    await expectAsync(postRoomMessage(robot, 'C123', 'Greeting')).toBeRejectedWith(network)
+  })
 })

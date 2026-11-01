@@ -3,7 +3,7 @@ const { spawn, spawnSync } = require('node:child_process')
 const { initializeApp, deleteApp } = require('firebase-admin/app')
 const { getFirestore } = require('firebase-admin/firestore')
 const getEventsCacher = require('../lib/cachers/events-cacher')
-const { SlackPostRejectedError } = require('../lib/helpers/post-room-message')
+const postRoomMessage = require('../lib/helpers/post-room-message')
 
 const host = process.env.FIRESTORE_EMULATOR_HOST
 assert.match(host || '', /^(127\.0\.0\.1|localhost):8085$/, 'Run against the local Firestore emulator on port 8085')
@@ -137,9 +137,14 @@ async function main () {
     assert(warnings.some(message => message.includes(uncertain.id)))
 
     const rejected = { id: 'notification-rejected-smoke' }
-    await assert.rejects(cacher.deliverOnce(rejected, async () => {
-      throw new SlackPostRejectedError('Slack explicitly rejected the message')
-    }), /explicitly rejected/)
+    const rejectPost = async () => {
+      throw Object.assign(new Error('not_in_channel'), {
+        code: 'slack_webapi_platform_error', data: { ok: false, error: 'not_in_channel' }
+      })
+    }
+    const rejectedRobot = { adapter: { client: { web: { chat: { postMessage: rejectPost } } } } }
+    await assert.rejects(cacher.deliverOnce(rejected, () =>
+      postRoomMessage(rejectedRobot, 'CLOCAL', 'Greeting')), /not_in_channel/)
     assert.equal(await cacher.deliverOnce(rejected, async () => {}), true)
     console.log('Notification failure smoke passed: uncertain sends require review; definite rejections can retry')
   } finally {
