@@ -31,7 +31,7 @@ describe('code-of-conduct', () => {
 
   it('uses a configured policy and moderator IDs', async () => {
     process.env.SLACKBOT_CODE_OF_CONDUCT_URL = 'https://example.org/policy'
-    process.env.SLACKBOT_MODERATORS = 'U0123456789, @organizer'
+    process.env.SLACKBOT_MODERATORS = 'U0123456789, W0123456789'
     require('../../../lib/initializers/code-of-conduct')(robot)
     const sent = jasmine.createSpy('sent')
     robot.adapter.on('send', sent)
@@ -40,7 +40,7 @@ describe('code-of-conduct', () => {
 
     expect(sent).toHaveBeenCalledTimes(1)
     expect(sent.calls.mostRecent().args[1][0]).toContain('https://example.org/policy')
-    expect(sent.calls.mostRecent().args[1][0]).toContain('<@U0123456789>, @organizer')
+    expect(sent.calls.mostRecent().args[1][0]).toContain('<@U0123456789>, <@W0123456789>')
   })
 
   it('rejects unsafe policy links and moderator names at startup', () => {
@@ -49,7 +49,10 @@ describe('code-of-conduct', () => {
 
     process.env.SLACKBOT_CODE_OF_CONDUCT_URL = 'https://example.org/policy'
     process.env.SLACKBOT_MODERATORS = 'person\n@here'
-    expect(() => require('../../../lib/initializers/code-of-conduct')(robot)).toThrowError(/Slack IDs or usernames/)
+    expect(() => require('../../../lib/initializers/code-of-conduct')(robot)).toThrowError(/Slack user IDs/)
+
+    process.env.SLACKBOT_MODERATORS = '@organizer'
+    expect(() => require('../../../lib/initializers/code-of-conduct')(robot)).toThrowError(/Slack user IDs/)
 
     process.env.SLACKBOT_MODERATORS = '@here'
     expect(() => require('../../../lib/initializers/code-of-conduct')(robot)).toThrowError(/broadcast mentions/)

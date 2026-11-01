@@ -44,8 +44,8 @@ Set `ORGANIZER_BY_GROUP`, `ORGANIZER_FIRST_NAME_BY_GROUP`, `WELCOMER_BY_CHANNEL`
 The bot shares the [Code of Conduct](https://www.lansing.codes/code-of-conduct/)
 for `slackbot code of conduct` or a plain `code of conduct` question. Set
 `SLACKBOT_CODE_OF_CONDUCT_URL` to an HTTPS policy URL if it moves. Optionally
-set `SLACKBOT_MODERATORS` to comma-separated Slack user IDs or usernames to
-include contacts in the reply. Without that setting, the reply points to the
+set `SLACKBOT_MODERATORS` to comma-separated Slack user IDs (starting with `U`
+or `W`) to mention contacts in the reply. Without that setting, the reply points to the
 policy page, which has the current reporting contact.
 
 To move scheduled event announcements out of `#general` (issue #63), create or choose a dedicated `#events` channel, invite the bot, and set `EVENT_ANNOUNCEMENT_CHANNEL_ID` to that channel's Slack ID in the bot's Heroku config. This also moves the scheduler's morning and no-new-events messages. Set `EVENT_GROUP_CHANNEL_IDS` to a JSON object such as `{"devops":"C0123456789"}` for optional group reminders; each target channel must also contain the bot. Use channel IDs from the deployed workspace, not IDs from a test workspace. Test the routing there before enabling the production schedule.
