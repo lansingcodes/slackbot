@@ -22,6 +22,29 @@ describe('events-cacher', () => {
     }
   })
 
+  it('preserves notifications written by another memory cacher', async () => {
+    const previousMode = process.env.NOTIFICATION_STORE
+    process.env.NOTIFICATION_STORE = 'memory'
+    try {
+      const state = { 'notifications-cache': { 'old-event': true } }
+      const brain = {
+        get: key => state[key],
+        set: (key, value) => { state[key] = value }
+      }
+      const greeter = getEventsCacher({ brain })
+      const scheduler = await getEventsCacher({ brain }).load()
+      await scheduler.cache({ id: 'new-event' })
+      await greeter.deliverOnce({ id: 'member-greeting:T1:U1' }, async () => {})
+      expect(state['notifications-cache']).toEqual({
+        'old-event': true, 'new-event': true, 'member-greeting:T1:U1': true
+      })
+      expect(await greeter.deliverOnce({ id: 'new-event' }, async () => {})).toBeFalse()
+    } finally {
+      if (previousMode === undefined) delete process.env.NOTIFICATION_STORE
+      else process.env.NOTIFICATION_STORE = previousMode
+    }
+  })
+
   it('requires Admin credentials outside the emulator', async () => {
     const names = [
       'NOTIFICATION_STORE', 'FIRESTORE_EMULATOR_HOST', 'FIREBASE_SERVICE_ACCOUNT',
