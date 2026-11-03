@@ -1,46 +1,35 @@
+const EventEmitter = require('events')
 const includeHubot = require('../../helpers/include-hubot')
 
 describe('watch-for-disconnected', () => {
-  let waitTime
   includeHubot()
 
   beforeEach(() => {
-    // Signal test start
-    console.log('\n<HUBOT-STDOUT>')
-
-    // Load our module under test
+    robot.adapter.client = { socket: new EventEmitter() }
     require('../../../lib/initializers/watch-for-disconnected')(robot)
-
-    // Control the clock for unit testing
-    waitTime = parseInt(process.env.SLACKBOT_DISCONNECT_WAIT_TIME)
+    spyOn(process, 'exit')
     jasmine.clock().install()
   })
 
-  afterEach(() => {
-    console.log('</HUBOT-STDOUT>')
+  afterEach(() => jasmine.clock().uninstall())
 
-    jasmine.clock().uninstall()
+  it('exits after a lost connection is not restored', () => {
+    robot.adapter.client.socket.emit('close')
+    jasmine.clock().tick(20001)
+    expect(process.exit).toHaveBeenCalledOnceWith(1)
   })
 
-  it('does NOT start a timer without a match', () => {
-    expect(() => {
-      robot.logger.info('Some message that we should not trigger on')
-      jasmine.clock().tick(waitTime + 1)
-    }).not.toThrow()
+  it('does not exit when the connection returns', () => {
+    robot.adapter.client.socket.emit('close')
+    robot.adapter.client.socket.emit('open')
+    jasmine.clock().tick(20001)
+    expect(process.exit).not.toHaveBeenCalled()
   })
 
-  it('starts a timer when a disconnect is detected', () => {
-    expect(() => {
-      robot.logger.info('Slack client closed, waiting for reconnect')
-      jasmine.clock().tick(waitTime + 1)
-    }).toThrow(new Error('Force restarting due to disconnect'))
-  })
-
-  it('cancels a timer that has been started if the client reconnects', () => {
-    expect(() => {
-      robot.logger.info('Slack client closed, waiting for reconnect')
-      robot.logger.info('Slack client now connected')
-      jasmine.clock().tick(waitTime + 1)
-    }).not.toThrow()
+  it('does not exit during normal shutdown', () => {
+    robot.adapter.client.socket.shuttingDown = true
+    robot.adapter.client.socket.emit('close')
+    jasmine.clock().tick(20001)
+    expect(process.exit).not.toHaveBeenCalled()
   })
 })

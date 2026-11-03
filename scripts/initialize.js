@@ -14,8 +14,12 @@
 
 const fs = require('fs')
 const path = require('path')
+const legacyScripts = require('../legacy-scripts.json')
+const loadLegacyScripts = require('../lib/load-legacy-scripts')
 
-module.exports = (robot) => {
+require('coffeescript/register')
+
+module.exports = async (robot) => {
   robot.error((error, message) => {
     robot.logger.error(`${error}\n${error.stack}`)
     return process.exit(1)
@@ -23,14 +27,23 @@ module.exports = (robot) => {
 
   const initializersFolder = path.join(__dirname, '../lib/initializers')
 
-  fs.readdirSync(initializersFolder).forEach((file) => {
+  for (const file of fs.readdirSync(initializersFolder)) {
     try {
       const filepath = path.join(initializersFolder, file)
-      require(filepath)(robot)
+      await require(filepath)(robot)
       robot.parseHelp(filepath)
     } catch (error) {
       robot.logger.error(`Unable to load ${file}: ${error.stack}`)
       process.exit(1)
     }
-  })
+  }
+
+  if (!robot.router) robot.setupNullRouter()
+
+  try {
+    await loadLegacyScripts(robot, legacyScripts)
+  } catch (error) {
+    robot.logger.error(`Unable to load a legacy script: ${error.stack}`)
+    process.exit(1)
+  }
 }

@@ -1,34 +1,23 @@
-const Robot = require('hubot/src/robot')
-const TextMessage = require('hubot/src/message').TextMessage
-const EnterMessage = require('hubot/src/message').EnterMessage
-
 module.exports = () => {
-  beforeEach((done) => {
-    // Create new robot, without http, using the mock adapter
-    global.robot = new Robot(null, 'mock-adapter', false, 'slackbot')
+  beforeEach(async () => {
+    const { Robot, Adapter, TextMessage, EnterMessage } = await import('hubot')
 
-    // When the robot is connected
-    robot.adapter.on('connected', () => {
-      // Create a user
-      const user = robot.brain.userForId('1', {
-        name: 'jasmine',
-        room: 'jasmine'
-      })
+    class MockAdapter extends Adapter {
+      async send (envelope, ...strings) { this.emit('send', envelope, strings) }
+      async reply (envelope, ...strings) { this.emit('reply', envelope, strings) }
+      async run () { this.emit('connected') }
+    }
 
-      // Define helper methods for receiving messages
-      global.hubotHelpers = {
-        receiveMessage: (message) => {
-          robot.adapter.receive(new TextMessage(user, message))
-        },
-        receiveEntrance: (newUser) => {
-          robot.adapter.receive(new EnterMessage(newUser))
-        }
-      }
+    global.robot = new Robot('mock-adapter', false, 'slackbot')
+    robot.adapter = new MockAdapter(robot)
 
-      done()
-    })
+    const user = robot.brain.userForId('1', { name: 'jasmine', room: 'jasmine' })
+    global.hubotHelpers = {
+      receiveMessage: message => robot.adapter.receive(new TextMessage(user, message)),
+      receiveEntrance: newUser => robot.adapter.receive(new EnterMessage(newUser))
+    }
 
-    robot.run()
+    await robot.run()
   })
 
   afterEach(() => {

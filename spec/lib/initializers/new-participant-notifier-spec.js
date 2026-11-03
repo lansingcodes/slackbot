@@ -23,4 +23,21 @@ describe('new-participant-notifier', () => {
 
     hubotHelpers.receiveEntrance(newUser)
   })
+
+  it('uses configured Slack IDs for channel and welcomer', async () => {
+    process.env.WELCOMER_BY_CHANNEL = '{"C123":"U999"}'
+    robot.adapter.client = { fetchConversation: async () => ({ name: 'general' }) }
+    const sent = jasmine.createSpy('sent')
+    robot.adapter.on('send', sent)
+    const newUser = robot.brain.userForId('2', { name: 'new-user', room: 'C123' })
+
+    try {
+      await hubotHelpers.receiveEntrance(newUser)
+      expect(sent).toHaveBeenCalled()
+      expect(sent.calls.mostRecent().args[0].room).toBe('U999')
+      expect(sent.calls.mostRecent().args[1][0]).toContain('new-user just joined general')
+    } finally {
+      delete process.env.WELCOMER_BY_CHANNEL
+    }
+  })
 })
